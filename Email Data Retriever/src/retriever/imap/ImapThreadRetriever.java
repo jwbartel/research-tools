@@ -9,6 +9,7 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Store;
+import javax.mail.internet.MimeMessage;
 
 import retriever.MessageListener;
 
@@ -101,7 +102,7 @@ public class ImapThreadRetriever {
 				updateRetrievedMessageCounts(Math.max(0, startMessage - 1));
 
 				for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
-					Message message = messages[msgPos];
+					Message message = new OfflineMessage((MimeMessage) messages[msgPos]);
 
 					String messageID = message.getHeader("Message-ID")[0];
 					if (seenMessages.contains(messageID)) {
