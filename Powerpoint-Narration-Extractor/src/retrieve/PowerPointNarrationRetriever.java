@@ -141,7 +141,7 @@ public class PowerPointNarrationRetriever implements NarrationRetriever {
 		PowerPointNarrationRetriever retriever = 
 				new PowerPointNarrationRetriever(
 						new File(
-								"C:\\Users\\bartel\\Documents\\Papers\\My Papers\\Thesis Proposal\\Access Proposal 8.pptx"
+								"C:\\Users\\bartel\\Documents\\Papers\\My Papers\\Thesis Proposal\\Presentations\\Access Proposal 10.pptx"
 							));
 		
 		retriever.writeFullNarration();
