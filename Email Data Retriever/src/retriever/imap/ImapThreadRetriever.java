@@ -40,7 +40,7 @@ public class ImapThreadRetriever {
 		}
 	}
 
-	private ArrayList<String> getReferences(Message message) throws MessagingException {
+	private ArrayList<String> getReferences(OfflineMessage message) throws MessagingException {
 		ArrayList<String> references = new ArrayList<String>();
 		if (message.getHeader("References") != null) {
 			String[] refHeader = message.getHeader("References");
@@ -54,7 +54,7 @@ public class ImapThreadRetriever {
 		return references;
 	}
 
-	private String getInReplyTo(Message message) throws MessagingException {
+	private String getInReplyTo(OfflineMessage message) throws MessagingException {
 		String inReplyTo = null;
 		if (message.getHeader("In-Reply-To") != null) {
 			inReplyTo = message.getHeader("In-Reply-To")[0];
@@ -85,7 +85,7 @@ public class ImapThreadRetriever {
 		Message[] messages = folder.getMessages(minMessage, maxMessage);
 
 		ArrayList<ArrayList<String>> idsForThreads = new ArrayList<ArrayList<String>>();
-		ArrayList<Set<Message>> threads = new ArrayList<Set<Message>>();
+		ArrayList<Set<OfflineMessage>> threads = new ArrayList<Set<OfflineMessage>>();
 		Set<String> seenMessages = new TreeSet<String>();
 		Set<String> unseenMessages = new TreeSet<String>();
 
@@ -102,7 +102,7 @@ public class ImapThreadRetriever {
 				updateRetrievedMessageCounts(Math.max(0, startMessage - 1));
 
 				for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
-					Message message = new OfflineMessage((MimeMessage) messages[msgPos]);
+					OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos]);
 
 					String messageID = message.getHeader("Message-ID")[0];
 					if (seenMessages.contains(messageID)) {
@@ -141,17 +141,18 @@ public class ImapThreadRetriever {
 
 			}
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			logMessage("ERROR: " + e.getMessage());
 		}
 
 		updateRetrievedMessageCounts(MAX_MESSAGES);
-		return new ThreadData(threads, seenMessages);
+		return new ThreadData(totalMessages, threads, seenMessages);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void sortIntoThreads(Message message, String messageID, ArrayList<String> references,
+	public void sortIntoThreads(OfflineMessage message, String messageID, ArrayList<String> references,
 			String inReplyTo, ArrayList<ArrayList<String>> idsForThreads,
-			ArrayList<Set<Message>> threads, Set<String> unseenMessages, Set<String> seenMessages) {
+			ArrayList<Set<OfflineMessage>> threads, Set<String> unseenMessages, Set<String> seenMessages) {
 
 		if (references.size() == 0) {
 			references = new ArrayList<String>();
@@ -166,7 +167,7 @@ public class ImapThreadRetriever {
 		Integer prevThread = null;
 		for (int i = 0; i < idsForThreads.size(); i++) {
 			ArrayList<String> threadIDs = idsForThreads.get(i);
-			Set<Message> thread = threads.get(i);
+			Set<OfflineMessage> thread = threads.get(i);
 
 			if (getIntersectionSize(references, threadIDs) > 0) {
 				if (prevThread == null) {
@@ -197,7 +198,7 @@ public class ImapThreadRetriever {
 		boolean added = false;
 		if (prevThread == null && threads.size() < NUM_THREADS_RETRIEVED) {
 			idsForThreads.add(new ArrayList<String>(references));
-			Set<Message> thread = new HashSet<Message>();
+			Set<OfflineMessage> thread = new HashSet<OfflineMessage>();
 			thread.add(message);
 			threads.add(thread);
 			added = true;

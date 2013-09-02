@@ -14,7 +14,6 @@ import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -36,6 +35,17 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 	
 	public static final String TEMP_DATA_FILE = "email_thread_data.txt";
 	public static final String TO_ADDRESS = "bartel+emaildata@cs.unc.edu";
+	
+	public static final String INTRODUCTION_MESSAGE =
+		"<html>\r\n" +
+		"This tool collects anonymized email data for research purposes. " +
+		"We are working to study different how people collaborate and communicate through email " +
+		"and how we can assist in that process.  " +
+		"Thank you for participating!\r\n" +
+		"<br><br>\r\n" +
+		"After you retrieve your data, " +
+		"you will be able to modify and confirm what you send to us to ensure it is properly anonymized.\r\n" +
+		"</html>";
 	
 	ImapAuthenticator authenticator = new ImapAuthenticator();
 	ImapThreadRetriever retriever = null;
@@ -94,6 +104,7 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 			contentPane.validate();
 			return true;
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			logMessage("ERROR:"+e.getMessage());
 			return false;
 		}
@@ -111,7 +122,7 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 5));
 		
-		JLabel lblNewLabel = new JLabel("<html>\r\nThis tool collects anonymized email data for research purposes. We are working to study different reply rates and how we can predict when threads will receive a reply.  Thank you for participating!\r\n<br><br>\r\nAfter you retrieve your data, you will be able to modify and confirm what you send to us to ensure it is properly anonymized.\r\n</html>");
+		JLabel lblNewLabel = new JLabel(INTRODUCTION_MESSAGE);
 		contentPane.add(lblNewLabel, BorderLayout.NORTH);
 		
 		JPanel dataPane = authenticationPane;

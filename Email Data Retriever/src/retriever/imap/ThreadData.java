@@ -6,18 +6,18 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.Address;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 
 public class ThreadData {
 
-	ArrayList<Set<Message>> threads;
+	int totalMessages;
+	ArrayList<Set<OfflineMessage>> threads;
 	Set<String> seenMessages;
 	
 	Map<String,Integer> addressIDs;
 	
-	public ThreadData(ArrayList<Set<Message>> threads, Set<String> seenMessages){
-		
+	public ThreadData(int totalMessages, ArrayList<Set<OfflineMessage>> threads, Set<String> seenMessages){
+		this.totalMessages = totalMessages;
 		this.threads = threads;
 		this.seenMessages = seenMessages;
 	}
@@ -26,9 +26,9 @@ public class ThreadData {
 		
 		addressIDs = new HashMap<String, Integer>();
 		
-		for(Set<Message> thread: threads){
+		for(Set<OfflineMessage> thread: threads){
 			
-			for(Message message: thread){
+			for(OfflineMessage message: thread){
 				message.getSubject();
 				message.getReceivedDate();
 				Address[] from = message.getFrom();
@@ -67,10 +67,10 @@ public class ThreadData {
 		String messageVectors = "";
 		int threadID = 1;
 		int messageID = 1;
-		for(Set<Message> thread: threads){
+		for(Set<OfflineMessage> thread: threads){
 			totalMessagesInThreads += thread.size();
 			
-			for(Message message: thread){
+			for(OfflineMessage message: thread){
 				
 				String vector = "Message:"+messageID;
 				vector += " Thread:"+threadID;
@@ -109,6 +109,7 @@ public class ThreadData {
 		
 		
 		String toShare = "Source email:"+sourceEmail+"\n";
+		toShare += "Total messages in account:"+totalMessages+"\n";
 		toShare += "Total threads retrieved:"+threads.size()+"\n";
 		toShare += "Total messages checked:"+seenMessages.size()+"\n";
 		toShare += "Total messages in retrieved threads:" + totalMessagesInThreads + "\n";
