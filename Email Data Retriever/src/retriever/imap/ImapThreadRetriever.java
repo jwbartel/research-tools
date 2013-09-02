@@ -102,7 +102,8 @@ public class ImapThreadRetriever {
 				updateRetrievedMessageCounts(Math.max(0, startMessage - 1));
 
 				for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
-					OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos]);
+					String[] prefetchedHeaders = {"Message-ID", "References", "In-Reply-To"};
+					OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos], prefetchedHeaders);
 
 					String messageID = message.getHeader("Message-ID")[0];
 					if (seenMessages.contains(messageID)) {

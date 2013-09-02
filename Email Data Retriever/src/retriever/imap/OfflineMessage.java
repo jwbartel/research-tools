@@ -9,8 +9,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 public class OfflineMessage {
-
-	private static final String[] headers = {"Message-ID", "References", "In-Reply-To"};
 	
 	MimeMessage parent;
 	private final Map<String, String[]> seenHeaders = new TreeMap<String, String[]>();
@@ -19,17 +17,17 @@ public class OfflineMessage {
 	private Address[] from;
 	private Address[] allRecipients;
 
-	public OfflineMessage(MimeMessage parent) throws MessagingException {
+	public OfflineMessage(MimeMessage parent, String[] prefetchedHeaders) throws MessagingException {
 		this.parent = parent;
-		preloadData();
+		preloadData(prefetchedHeaders);
 	}
 	
-	private void preloadData() throws MessagingException {
+	private void preloadData(String[] prefetchedHeaders) throws MessagingException {
 		subject = parent.getSubject();
 		receivedDate = parent.getReceivedDate();
 		from = parent.getFrom();
 		allRecipients = parent.getAllRecipients();
-		for (String header : headers) {
+		for (String header : prefetchedHeaders) {
 			seenHeaders.put(header, parent.getHeader(header));
 		}
 	}
