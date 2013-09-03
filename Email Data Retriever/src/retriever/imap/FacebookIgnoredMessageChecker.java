@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 
+import retriever.OfflineMessage;
+
 public class FacebookIgnoredMessageChecker implements IgnoredMessageChecker {
 
 	Pattern fromPattern = Pattern.compile("(.*<)?\\s*update[+].+@facebookmail.com(\\s*>\\s*)?");

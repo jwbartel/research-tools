@@ -27,9 +27,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import retriever.MessageListener;
+import retriever.ThreadData;
 import retriever.imap.ImapAuthenticator;
 import retriever.imap.ImapThreadRetriever;
-import retriever.imap.ThreadData;
 
 public class EmailDataRetriever extends JFrame implements MessageListener {
 	

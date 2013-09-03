@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 
+import retriever.OfflineMessage;
+
 public class TwitterIgnoredMessageChecker implements IgnoredMessageChecker {
 
 	Pattern fromPattern = Pattern.compile("(.*<)?\\s*info@twitter.com(\\s*>\\s*)?");

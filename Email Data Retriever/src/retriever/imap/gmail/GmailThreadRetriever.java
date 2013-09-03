@@ -11,9 +11,9 @@ import javax.mail.Store;
 import javax.mail.internet.MimeMessage;
 
 import retriever.MessageListener;
+import retriever.OfflineMessage;
+import retriever.ThreadData;
 import retriever.ThreadRetriever;
-import retriever.imap.OfflineMessage;
-import retriever.imap.ThreadData;
 
 public class GmailThreadRetriever extends ThreadRetriever {
 
@@ -104,19 +104,19 @@ public class GmailThreadRetriever extends ThreadRetriever {
 						} else {
 							topPromotionsId = null;
 						}
-					} else {
+					} else if (threads.size() != NUM_THREADS_RETRIEVED
+							|| unseenMessages.contains(messageID)) {
 
 						String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
 								"References" };
 						OfflineMessage message = new OfflineMessage(
 								(MimeMessage) allMailMessages[msgPos], prefetchedHeaders);
 
-						if (!messageChecker.shouldIgnore(message)) {
-							ArrayList<String> references = message.getReferences();
-							String inReplyTo = message.getInReplyTo();
-							sortIntoThreads(message, messageID, references, inReplyTo,
-									idsForThreads, threads, unseenMessages, seenMessages);
-						}
+						ArrayList<String> references = message.getReferences();
+						String inReplyTo = message.getInReplyTo();
+						sortIntoThreads(message, messageID, references, inReplyTo, idsForThreads,
+								threads, unseenMessages, seenMessages);
+
 					}
 
 					if ((threads.size() >= NUM_THREADS_RETRIEVED && unseenMessages.size() == 0)

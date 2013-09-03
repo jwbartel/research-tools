@@ -10,6 +10,8 @@ import javax.mail.MessagingException;
 import javax.mail.Store;
 
 import retriever.MessageListener;
+import retriever.OfflineMessage;
+import retriever.ThreadData;
 import retriever.ThreadRetriever;
 import retriever.imap.gmail.GmailThreadRetriever;
 

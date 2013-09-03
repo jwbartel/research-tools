@@ -2,6 +2,8 @@ package retriever.imap;
 
 import javax.mail.MessagingException;
 
+import retriever.OfflineMessage;
+
 public class MasterIgnoredMessageChecker implements IgnoredMessageChecker {
 
 	IgnoredMessageChecker[] checkers = {

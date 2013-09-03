@@ -14,7 +14,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 
-import retriever.imap.ThreadData;
+import retriever.ThreadData;
+
 import javax.swing.JButton;
 
 public class SendPane extends JPanel {

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.mail.Address;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -13,12 +14,10 @@ import javax.mail.internet.MimeMessage;
 
 import retriever.imap.IgnoredMessageChecker;
 import retriever.imap.MasterIgnoredMessageChecker;
-import retriever.imap.OfflineMessage;
-import retriever.imap.ThreadData;
 
 public abstract class ThreadRetriever {
 
-	public final static int MAX_MESSAGES = 50; // 7000;
+	public final static int MAX_MESSAGES = 1000;
 	public final static int NUM_THREADS_RETRIEVED = 200;
 	public final static int BUFFER_SIZE = 100;
 
@@ -44,10 +43,62 @@ public abstract class ThreadRetriever {
 		messageListeners.add(l);
 	}
 
+	private ArrayList<String> getStringAddresses(Set<OfflineMessage> thread)
+			throws MessagingException {
+		Set<String> addressSet = new TreeSet<String>();
+		for (OfflineMessage msg : thread) {
+			for (Address recipient : msg.getAllRecipients()) {
+				addressSet.add(ThreadData.getCleanedAddress(recipient));
+			}
+			addressSet.add(ThreadData.getCleanedAddress(msg.getFrom()[0]));
+		}
+		return new ArrayList<String>(addressSet);
+	}
+
 	protected int getIntersectionSize(ArrayList<String> group1, ArrayList<String> group2) {
 		ArrayList<String> intersection = new ArrayList<String>(group1);
 		intersection.retainAll(group2);
 		return intersection.size();
+	}
+
+	private void pruneThreads(ArrayList<ArrayList<String>> idsForThreads,
+			ArrayList<Set<OfflineMessage>> threads) {
+		if (threads.size() > 1) {
+			for (int i = 0; i < threads.size(); i++) {
+				Set<OfflineMessage> thread = threads.get(i);
+				ArrayList<String> idsForThread = idsForThreads.get(i);
+				try {
+					String baseSubject = thread.iterator().next().getBaseSubject();
+					ArrayList<String> addresses = getStringAddresses(thread);
+
+					for (int j = i + 1; j < threads.size(); j++) {
+						try {
+							Set<OfflineMessage> comparatorThread = threads.get(j);
+							ArrayList<String> comparatorIdsForThread = idsForThreads.get(j);
+							String comparatorBaseSubject = comparatorThread.iterator().next()
+									.getBaseSubject();
+							if (baseSubject.equals(comparatorBaseSubject)) {
+								ArrayList<String> comparatorAddresses = getStringAddresses(comparatorThread);
+								comparatorAddresses.retainAll(addresses);
+								if (comparatorAddresses.size() > 0) {
+									threads.remove(j);
+									idsForThreads.remove(j);
+									thread.addAll(comparatorThread);
+									idsForThread.addAll(comparatorIdsForThread);
+									addresses = getStringAddresses(thread);
+								}
+							}
+						} catch (MessagingException e) {
+							logMessage("Error: " + e.getMessage());
+							e.printStackTrace();
+						}
+					}
+				} catch (MessagingException e) {
+					logMessage("Error: " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,6 +167,7 @@ public abstract class ThreadRetriever {
 				unseenMessages.add(id);
 			}
 		}
+		pruneThreads(idsForThreads, threads);
 	}
 
 	public void logFolderSizes(Folder folder, int depth) throws MessagingException {
@@ -175,7 +227,9 @@ public abstract class ThreadRetriever {
 						seenMessages.add(messageID);
 					}
 
-					if (!messageChecker.shouldIgnore(message)) {
+					if (!messageChecker.shouldIgnore(message)
+							|| (threads.size() == NUM_THREADS_RETRIEVED && unseenMessages
+									.contains(messageID))) {
 						ArrayList<String> references = message.getReferences();
 						String inReplyTo = message.getInReplyTo();
 						sortIntoThreads(message, messageID, references, inReplyTo, idsForThreads,

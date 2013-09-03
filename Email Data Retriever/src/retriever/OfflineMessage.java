@@ -1,4 +1,4 @@
-package retriever.imap;
+package retriever;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
