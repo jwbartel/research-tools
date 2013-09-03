@@ -62,7 +62,7 @@ public class SendPane extends JPanel {
 		JLabel lblSentData = new JLabel("Data that will be sent");
 		
 		textToSend = new JTextArea();
-		textToSend.setEditable(false);
+		textToSend.setEditable(true);
 		JScrollPane textAreaPane = new JScrollPane(textToSend);
 		
 		sendButton = new JButton("Send");
@@ -129,7 +129,6 @@ public class SendPane extends JPanel {
 	}
 	
 	public String getDataToSend() throws MessagingException{
-		updateDataToSend();
 		return textToSend.getText();
 	}
 	

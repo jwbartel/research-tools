@@ -174,7 +174,13 @@ public class AuthenticationPane extends JPanel implements MessageListener{
 		JLabel lblMessagesRetrieved = new JLabel("Data Collection Progress");
 		progressBar = new JProgressBar();
 		progressBar.setMaximum(ImapThreadRetriever.MAX_MESSAGES);
-		progressMessage = new JLabel("Message 0 of "+ImapThreadRetriever.MAX_MESSAGES);
+		progressMessage = new JLabel("<html>"
+				+"Message 0 of "+ImapThreadRetriever.MAX_MESSAGES+"\r\n"
+				+"<br>"
+				+"Collected data on 0 of "+ImapThreadRetriever.NUM_THREADS_RETRIEVED+" threads"
+				+"<br>"
+				+"Missing data from 0 messages"
+				+"</html>");
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
@@ -236,9 +242,19 @@ public class AuthenticationPane extends JPanel implements MessageListener{
 		textArea.setText(textArea.getText()+message+"\n");
 	}
 	
-	public void updateRetrievedMessageCounts(int latestRetrieved){
+	@Override
+	public void updateRetrievedMessageCounts(int latestRetrieved, int seenThreads, int missingMessages){
 		progressBar.setValue(latestRetrieved);
-		progressMessage.setText("Message "+latestRetrieved+" of "+ImapThreadRetriever.MAX_MESSAGES);
+		progressBar.setMaximum(latestRetrieved
+				+ (ImapThreadRetriever.NUM_THREADS_RETRIEVED - seenThreads)
+				+ missingMessages);
+		progressMessage.setText("<html>"
+				+"Message "+latestRetrieved+" of "+ImapThreadRetriever.MAX_MESSAGES+"\r\n"
+				+"<br>"
+				+"Collected data on "+seenThreads+" of "+ImapThreadRetriever.NUM_THREADS_RETRIEVED+" threads"
+				+"<br>"
+				+"Missing data from "+missingMessages+" messages"
+				+"</html>");
 	}
 
 	

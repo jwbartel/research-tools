@@ -1,5 +1,6 @@
 package retriever.imap;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
@@ -71,5 +72,28 @@ public class OfflineMessage {
 			allRecipients = parent.getAllRecipients();
 		}
 		return allRecipients;
+	}
+	
+	public ArrayList<String> getReferences() throws MessagingException {
+		ArrayList<String> references = new ArrayList<String>();
+		if (getHeader("References") != null) {
+			String[] refHeader = getHeader("References");
+			for (int i = 0; i < refHeader.length; i++) {
+				String[] entries = refHeader[i].split("\\s*((,\\s*\n)|(\n\\s*,)|(,)|(\n))\\s*");
+				for (int j = 0; j < entries.length; j++) {
+					references.add(entries[j]);
+				}
+			}
+		}
+		return references;
+	}
+
+
+	public String getInReplyTo() throws MessagingException {
+		String inReplyTo = null;
+		if (getHeader("In-Reply-To") != null) {
+			inReplyTo = getHeader("In-Reply-To")[0];
+		}
+		return inReplyTo;
 	}
 }

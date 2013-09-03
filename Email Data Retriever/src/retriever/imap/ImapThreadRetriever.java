@@ -16,11 +16,13 @@ import retriever.MessageListener;
 public class ImapThreadRetriever {
 	String imapServer;
 	Store store;
-
-	public final static int MAX_MESSAGES = 10000;
+	
+	public final static int MAX_MESSAGES = 50; //7000;
 	public final static int NUM_THREADS_RETRIEVED = 200;
 	public final static int BUFFER_SIZE = 100;
-
+	
+	private static final IgnoredMessageChecker messageChecker = new MasterIgnoredMessageChecker();
+	
 	ArrayList<MessageListener> messageListeners = new ArrayList<MessageListener>();
 
 	public ImapThreadRetriever(String imapServer, Store store) {
@@ -34,32 +36,10 @@ public class ImapThreadRetriever {
 		}
 	}
 
-	public void updateRetrievedMessageCounts(int latestRetrieved) {
+	public void updateRetrievedMessageCounts(int latestRetrieved, int seenThreads, int missingMessages) {
 		for (MessageListener listener : messageListeners) {
-			listener.updateRetrievedMessageCounts(latestRetrieved);
+			listener.updateRetrievedMessageCounts(latestRetrieved, seenThreads, missingMessages);
 		}
-	}
-
-	private ArrayList<String> getReferences(OfflineMessage message) throws MessagingException {
-		ArrayList<String> references = new ArrayList<String>();
-		if (message.getHeader("References") != null) {
-			String[] refHeader = message.getHeader("References");
-			for (int i = 0; i < refHeader.length; i++) {
-				String[] entries = refHeader[i].split("\\s*((,\\s*\n)|(\n\\s*,)|(,)|(\n))\\s*");
-				for (int j = 0; j < entries.length; j++) {
-					references.add(entries[j]);
-				}
-			}
-		}
-		return references;
-	}
-
-	private String getInReplyTo(OfflineMessage message) throws MessagingException {
-		String inReplyTo = null;
-		if (message.getHeader("In-Reply-To") != null) {
-			inReplyTo = message.getHeader("In-Reply-To")[0];
-		}
-		return inReplyTo;
 	}
 
 	private int getIntersectionSize(ArrayList<String> group1, ArrayList<String> group2) {
@@ -99,10 +79,10 @@ public class ImapThreadRetriever {
 				//
 				// logMessage("Retrieving messages "+(startMessage)+" to "+(endMessage)
 				// + " (newest first)");
-				updateRetrievedMessageCounts(Math.max(0, startMessage - 1));
+				updateRetrievedMessageCounts(Math.max(0, startMessage - 1), threads.size(), unseenMessages.size());
 
 				for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
-					String[] prefetchedHeaders = {"Message-ID", "References", "In-Reply-To"};
+					String[] prefetchedHeaders = {"Message-ID", "References", "In-Reply-To", "References"};
 					OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos], prefetchedHeaders);
 
 					String messageID = message.getHeader("Message-ID")[0];
@@ -111,21 +91,20 @@ public class ImapThreadRetriever {
 					} else {
 						seenMessages.add(messageID);
 					}
-
-					ArrayList<String> references = getReferences(message);
-					String inReplyTo = getInReplyTo(message);
-					sortIntoThreads(message, messageID, references, inReplyTo, idsForThreads,
-							threads, unseenMessages, seenMessages);
-					message.getSubject();
-					message.getReceivedDate();
-					message.getFrom();
+					
+					if (!messageChecker.shouldIgnore(message)) {
+						ArrayList<String> references = message.getReferences();
+						String inReplyTo = message.getInReplyTo();
+						sortIntoThreads(message, messageID, references, inReplyTo, idsForThreads,
+								threads, unseenMessages, seenMessages);	
+					}
 
 					if ((threads.size() >= NUM_THREADS_RETRIEVED && unseenMessages.size() == 0)
 							|| seenMessages.size() >= MAX_MESSAGES) {
 						break;
 					}
 
-					updateRetrievedMessageCounts(startMessage + (messages.length - msgPos));
+					updateRetrievedMessageCounts(startMessage + (messages.length - msgPos), threads.size(), unseenMessages.size());
 				}
 
 				if (minMessage == 0) {
@@ -146,7 +125,7 @@ public class ImapThreadRetriever {
 			logMessage("ERROR: " + e.getMessage());
 		}
 
-		updateRetrievedMessageCounts(MAX_MESSAGES);
+		updateRetrievedMessageCounts(MAX_MESSAGES, threads.size(), unseenMessages.size());
 		return new ThreadData(totalMessages, threads, seenMessages);
 	}
 
@@ -209,9 +188,7 @@ public class ImapThreadRetriever {
 			unseenMessages.remove(messageID);
 			references.removeAll(seenMessages);
 			for (String id : references) {
-				if (id.startsWith("Message Email Reply"))
-					continue;
-				if (id.endsWith("groups.facebook.com>"))
+				if (messageChecker.shouldIgnoreReference(id))
 					continue;
 
 				unseenMessages.add(id);

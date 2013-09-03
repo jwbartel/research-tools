@@ -44,4 +44,8 @@ public class ImapAuthenticator {
 	public void addMessageListener(MessageListener l){
 		messageListeners.add(l);
 	}
+	
+	public boolean isLoggedIn() {
+		return store.isConnected();
+	}
 }

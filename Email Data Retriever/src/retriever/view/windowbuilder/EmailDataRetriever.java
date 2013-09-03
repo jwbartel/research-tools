@@ -140,6 +140,10 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 			out.flush();
 			out.close();
 			
+			if(! authenticator.isLoggedIn()) {
+				login();
+			}
+			
 			sendData(authenticationPane.getSMTPServer(), authenticationPane.getEmailAddress(), authenticationPane.getPassword(), TO_ADDRESS);
 			
 			File tempFile = new File(TEMP_DATA_FILE);
@@ -207,7 +211,7 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 		authenticationPane.logMessage(message);
 	}
 	
-	public void updateRetrievedMessageCounts(int latestRetrieved){
-		authenticationPane.updateRetrievedMessageCounts(latestRetrieved);
+	public void updateRetrievedMessageCounts(int latestRetrieved, int seenThreads, int missingMessages){
+		authenticationPane.updateRetrievedMessageCounts(latestRetrieved, seenThreads, missingMessages);
 	}
 }
