@@ -92,10 +92,14 @@ public class GmailThreadRetriever extends ThreadRetriever {
 						promotionsPos--;
 						if (promotionsPos == -1 && promotionsMessages.length > 0) {
 							maxPromotionsMessages = minPromotionsMessage - 1;
-							minPromotionsMessage = Math.max(0, maxPromotionsMessages - BUFFER_SIZE
+							minPromotionsMessage = Math.max(1, maxPromotionsMessages - BUFFER_SIZE
 									+ 1);
-							promotionsMessages = promotionsFolder.getMessages(minPromotionsMessage,
-									maxPromotionsMessages);
+							if (maxPromotionsMessages < 1) {
+								promotionsMessages = new Message[0];
+							} else {
+								promotionsMessages = promotionsFolder.getMessages(
+										minPromotionsMessage, maxPromotionsMessages);
+							}
 							promotionsPos = promotionsMessages.length - 1;
 						}
 						if (promotionsMessages.length > 0) {
@@ -147,6 +151,6 @@ public class GmailThreadRetriever extends ThreadRetriever {
 		}
 
 		updateRetrievedMessageCounts(MAX_MESSAGES, threads.size(), unseenMessages.size());
-		return new ThreadData(totalAllMailMessages, threads, seenMessages);
+		return new ThreadData(totalAllMailMessages, threads, seenMessages, unseenMessages);
 	}
 }

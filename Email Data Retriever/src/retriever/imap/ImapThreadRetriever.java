@@ -35,7 +35,8 @@ public class ImapThreadRetriever extends ThreadRetriever implements MessageListe
 			return retrievers.get(GMAIL).retrieveThreads();
 		}
 
-		return new ThreadData(0, new ArrayList<Set<OfflineMessage>>(), new TreeSet<String>());
+		return new ThreadData(0, new ArrayList<Set<OfflineMessage>>(), new TreeSet<String>(),
+				new TreeSet<String>());
 	}
 
 }

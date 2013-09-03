@@ -13,14 +13,16 @@ public class ThreadData {
 	int totalMessages;
 	ArrayList<Set<OfflineMessage>> threads;
 	Set<String> seenMessages;
+	Set<String> unseenMessages;
 
 	Map<String, Integer> addressIDs;
 
 	public ThreadData(int totalMessages, ArrayList<Set<OfflineMessage>> threads,
-			Set<String> seenMessages) {
+			Set<String> seenMessages, Set<String> unseenMessages) {
 		this.totalMessages = totalMessages;
 		this.threads = threads;
 		this.seenMessages = seenMessages;
+		this.unseenMessages = unseenMessages;
 	}
 
 	private void buildAddressIDs() throws MessagingException {
@@ -119,6 +121,7 @@ public class ThreadData {
 		toShare += "Total threads retrieved:" + threads.size() + "\n";
 		toShare += "Total messages checked:" + seenMessages.size() + "\n";
 		toShare += "Total messages in retrieved threads:" + totalMessagesInThreads + "\n";
+		toShare += "Total unseen messages for retrieved threads:" + unseenMessages.size() + "\n";
 		toShare += "Includes subjects:" + includeSubjects + ", Includes email addresses:"
 				+ includeFullEmailAddresses + "\n";
 

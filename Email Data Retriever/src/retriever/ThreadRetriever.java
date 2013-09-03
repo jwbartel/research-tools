@@ -17,8 +17,8 @@ import retriever.imap.MasterIgnoredMessageChecker;
 
 public abstract class ThreadRetriever {
 
-	public final static int MAX_MESSAGES = 1000;
-	public final static int NUM_THREADS_RETRIEVED = 200;
+	public final static int MAX_MESSAGES = 2000;
+	public final static int NUM_THREADS_RETRIEVED = 400;
 	public final static int BUFFER_SIZE = 100;
 
 	protected static final IgnoredMessageChecker messageChecker = new MasterIgnoredMessageChecker();
@@ -69,6 +69,9 @@ public abstract class ThreadRetriever {
 				ArrayList<String> idsForThread = idsForThreads.get(i);
 				try {
 					String baseSubject = thread.iterator().next().getBaseSubject();
+					if (baseSubject == null || baseSubject.length() == 0) {
+						continue;
+					}
 					ArrayList<String> addresses = getStringAddresses(thread);
 
 					for (int j = i + 1; j < threads.size(); j++) {
@@ -253,8 +256,11 @@ public abstract class ThreadRetriever {
 					break;
 				}
 
-				maxMessage = minMessage - 1;
-				minMessage = Math.max(0, maxMessage - BUFFER_SIZE + 1);
+				maxMessage = Math.max(0, minMessage - 1);
+				minMessage = Math.max(1, maxMessage - BUFFER_SIZE + 1);
+				if (maxMessage == 0) {
+					break;
+				}
 				messages = folder.getMessages(minMessage, maxMessage);
 
 			}
@@ -264,7 +270,7 @@ public abstract class ThreadRetriever {
 		}
 
 		updateRetrievedMessageCounts(MAX_MESSAGES, threads.size(), unseenMessages.size());
-		return new ThreadData(totalMessages, threads, seenMessages);
+		return new ThreadData(totalMessages, threads, seenMessages, unseenMessages);
 	}
 
 	public abstract ThreadData retrieveThreads() throws MessagingException;
