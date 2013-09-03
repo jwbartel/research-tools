@@ -1,5 +1,6 @@
 package retriever;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +10,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.Address;
+import javax.mail.BodyPart;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
 
 public class OfflineMessage {
@@ -37,13 +41,15 @@ public class OfflineMessage {
 	private Date receivedDate;
 	private Address[] from;
 	private Address[] allRecipients;
+	private final ArrayList<String> attachedFiles = new ArrayList<String>();
 
-	public OfflineMessage(MimeMessage parent, String[] prefetchedHeaders) throws MessagingException {
+	public OfflineMessage(MimeMessage parent, String[] prefetchedHeaders)
+			throws MessagingException, IOException {
 		this.parent = parent;
 		preloadData(prefetchedHeaders);
 	}
 
-	private void preloadData(String[] prefetchedHeaders) throws MessagingException {
+	private void preloadData(String[] prefetchedHeaders) throws MessagingException, IOException {
 		subject = parent.getSubject();
 		receivedDate = parent.getReceivedDate();
 		from = parent.getFrom();
@@ -51,6 +57,7 @@ public class OfflineMessage {
 		for (String header : prefetchedHeaders) {
 			seenHeaders.put(header, parent.getHeader(header));
 		}
+		loadAttachments();
 	}
 
 	public String[] getHeader(String header) throws MessagingException {
@@ -127,6 +134,10 @@ public class OfflineMessage {
 		return baseSubject;
 	}
 
+	public ArrayList<String> getAttachedFiles() {
+		return attachedFiles;
+	}
+
 	private String extractBaseSubject() throws UnsupportedEncodingException {
 
 		String baseSubject = new String(subject.getBytes("UTF-8"), "UTF-8").toLowerCase();
@@ -168,5 +179,17 @@ public class OfflineMessage {
 			}
 		}
 		return baseSubject;
+	}
+
+	private void loadAttachments() throws IOException, MessagingException {
+		if (parent.getContent() instanceof Multipart) {
+			Multipart multipart = (Multipart) parent.getContent();
+			for (int i = 0; i < multipart.getCount(); i++) {
+				BodyPart bodypart = multipart.getBodyPart(i);
+				if (Part.ATTACHMENT.equalsIgnoreCase(bodypart.getDisposition())) {
+					attachedFiles.add(bodypart.getFileName());
+				}
+			}
+		}
 	}
 }

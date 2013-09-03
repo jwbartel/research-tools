@@ -62,7 +62,8 @@ public class ThreadData {
 	}
 
 	public String getDataString(String sourceEmail, boolean includeSubjects,
-			boolean includeFullEmailAddresses) throws MessagingException {
+			boolean includeFullEmailAddresses, boolean includeAttachments,
+			boolean includeAttachedFileNames) throws MessagingException {
 
 		if (addressIDs == null) {
 			buildAddressIDs();
@@ -91,6 +92,13 @@ public class ThreadData {
 								includeFullEmailAddresses);
 					}
 				vector += " From:[" + fromStr + "]";
+
+				if (includeAttachments) {
+					vector += " Num_Attachments:" + message.getAttachedFiles().size();
+					if (includeAttachedFileNames) {
+						vector += " AttachedFiles:" + message.getAttachedFiles();
+					}
+				}
 
 				message.getFrom();
 				String recipientStr = "";

@@ -1,5 +1,6 @@
 package retriever;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -264,7 +265,7 @@ public abstract class ThreadRetriever {
 				messages = folder.getMessages(minMessage, maxMessage);
 
 			}
-		} catch (MessagingException e) {
+		} catch (MessagingException | IOException e) {
 			e.printStackTrace();
 			logMessage("ERROR: " + e.getMessage());
 		}

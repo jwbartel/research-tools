@@ -26,6 +26,8 @@ public class SendPane extends JPanel {
 	JTextField emailAddress;
 	JCheckBox includeSubjects;
 	JCheckBox includeFullEmailAddresses;
+	JCheckBox includeAttachments;
+	JCheckBox includeAttachedFilenames;
 	JTextArea textToSend;
 	JButton sendButton;
 
@@ -59,6 +61,11 @@ public class SendPane extends JPanel {
 		includeSubjects.addActionListener(changeData);
 		includeFullEmailAddresses = new JCheckBox("Include full email addresses");
 		includeFullEmailAddresses.addActionListener(changeData);
+		includeAttachments = new JCheckBox("Include attachments");
+		includeAttachments.addActionListener(changeData);
+		includeAttachedFilenames = new JCheckBox("Include filenames of attachments");
+		includeAttachedFilenames.addActionListener(changeData);
+		includeAttachedFilenames.setEnabled(false);
 
 		JLabel lblSentData = new JLabel("Data that will be sent");
 
@@ -97,6 +104,14 @@ public class SendPane extends JPanel {
 																Alignment.LEADING,
 																GroupLayout.DEFAULT_SIZE, 265,
 																Short.MAX_VALUE)
+														.addComponent(includeAttachments,
+																Alignment.LEADING,
+																GroupLayout.DEFAULT_SIZE, 265,
+																Short.MAX_VALUE)
+														.addComponent(includeAttachedFilenames,
+																Alignment.LEADING,
+																GroupLayout.DEFAULT_SIZE, 265,
+																Short.MAX_VALUE)
 														.addGroup(
 																gl_dataPanel
 																		.createSequentialGroup()
@@ -132,6 +147,10 @@ public class SendPane extends JPanel {
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(includeSubjects)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(includeFullEmailAddresses)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(includeAttachments)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(includeAttachedFilenames)
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(lblSentData)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(textAreaPane, GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
@@ -153,8 +172,15 @@ public class SendPane extends JPanel {
 
 	public void updateDataToSend() throws MessagingException {
 		if (data != null) {
+			if (includeAttachments.isSelected()) {
+				includeAttachedFilenames.setEnabled(true);
+			} else {
+				includeAttachedFilenames.setSelected(false);
+				includeAttachedFilenames.setEnabled(false);
+			}
 			textToSend.setText(data.getDataString(emailAddress.getText(),
-					includeSubjects.isSelected(), includeFullEmailAddresses.isSelected()));
+					includeSubjects.isSelected(), includeFullEmailAddresses.isSelected(),
+					includeAttachments.isSelected(), includeAttachedFilenames.isSelected()));
 		} else {
 			textToSend.setText("");
 		}

@@ -1,5 +1,6 @@
 package retriever.imap.gmail;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -145,7 +146,7 @@ public class GmailThreadRetriever extends ThreadRetriever {
 				allMailMessages = allMailFolder.getMessages(minAllMailMessage, maxAllMailMessages);
 
 			}
-		} catch (MessagingException e) {
+		} catch (MessagingException | IOException e) {
 			e.printStackTrace();
 			logMessage("ERROR: " + e.getMessage());
 		}
