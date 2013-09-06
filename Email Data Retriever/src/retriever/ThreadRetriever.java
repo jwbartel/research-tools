@@ -48,10 +48,14 @@ public abstract class ThreadRetriever {
 			throws MessagingException {
 		Set<String> addressSet = new TreeSet<String>();
 		for (OfflineMessage msg : thread) {
-			for (Address recipient : msg.getAllRecipients()) {
-				addressSet.add(ThreadData.getCleanedAddress(recipient));
+			if (msg.getAllRecipients() != null) {
+				for (Address recipient : msg.getAllRecipients()) {
+					addressSet.add(ThreadData.getCleanedAddress(recipient));
+				}
 			}
-			addressSet.add(ThreadData.getCleanedAddress(msg.getFrom()[0]));
+			if (msg.getFrom() != null) {
+				addressSet.add(ThreadData.getCleanedAddress(msg.getFrom()[0]));
+			}
 		}
 		return new ArrayList<String>(addressSet);
 	}
@@ -73,7 +77,12 @@ public abstract class ThreadRetriever {
 					if (baseSubject == null || baseSubject.length() == 0) {
 						continue;
 					}
-					ArrayList<String> addresses = getStringAddresses(thread);
+					ArrayList<String> addresses = null;
+					try {
+						addresses = getStringAddresses(thread);
+					} catch (NullPointerException e) {
+						addresses = getStringAddresses(thread);
+					}
 
 					for (int j = i + 1; j < threads.size(); j++) {
 						try {

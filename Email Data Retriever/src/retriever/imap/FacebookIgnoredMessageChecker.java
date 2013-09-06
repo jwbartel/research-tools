@@ -2,7 +2,6 @@ package retriever.imap;
 
 import java.util.regex.Pattern;
 
-import javax.mail.Address;
 import javax.mail.MessagingException;
 
 import retriever.OfflineMessage;
@@ -17,10 +16,10 @@ public class FacebookIgnoredMessageChecker implements IgnoredMessageChecker {
 		if (id.startsWith("Message Email Reply") || id.endsWith("groups.facebook.com>")) {
 			return true;
 		}
-		Address[] from = message.getFrom();
-		if (from.length > 0 && fromPattern.matcher(from[0].toString()).matches()) {
-			return true;
-		}
+//		Address[] from = message.getFrom();
+//		if (from.length > 0 && fromPattern.matcher(from[0].toString()).matches()) {
+//			return true;
+//		}
 		return false;
 	}
 

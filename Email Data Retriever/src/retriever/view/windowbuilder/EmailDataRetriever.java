@@ -36,7 +36,7 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 
 	public static final String INTRODUCTION_MESSAGE = "<html>\r\n"
 			+ "This tool collects anonymized email data for research purposes. "
-			+ "We are working to study different how people collaborate and communicate through email "
+			+ "We are working to study how people collaborate and communicate through email "
 			+ "and how we can assist in that process.  "
 			+ "Thank you for participating!\r\n"
 			+ "<br><br>\r\n"
@@ -113,7 +113,7 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 	public EmailDataRetriever() {
 		setTitle("Email Data Point Retriever");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 406, 500);
+		setBounds(100, 100, 450, 550);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
