@@ -211,7 +211,7 @@ public class AuthenticationPane extends JPanel implements MessageListener {
 		Label label = new Label("Log");
 
 		textArea = new JTextArea();
-		textArea.setLineWrap(true);
+		textArea.setLineWrap(false);
 		JScrollPane textAreaPane = new JScrollPane(textArea);
 		textArea.setEditable(false);
 
