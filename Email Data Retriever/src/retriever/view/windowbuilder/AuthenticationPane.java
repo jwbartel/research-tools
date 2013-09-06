@@ -24,7 +24,7 @@ import retriever.imap.ImapAuthenticator;
 
 public class AuthenticationPane extends JPanel implements MessageListener {
 	EmailDataRetriever parent;
-	private final JComboBox imapServer;
+	private final JComboBox<String> imapServer;
 	private final JTextField smtpServer;
 	private final JTextField emailAddress;
 	private final JPasswordField password;
