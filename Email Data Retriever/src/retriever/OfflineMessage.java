@@ -117,7 +117,7 @@ public class OfflineMessage {
 
 	public String getInReplyTo() throws MessagingException {
 		String inReplyTo = null;
-		if (getHeader("In-Reply-To") != null) {
+		if (getHeader("In-Reply-To") != null && getHeader("In-Reply-To").length > 0) {
 			inReplyTo = getHeader("In-Reply-To")[0];
 		}
 		return inReplyTo;

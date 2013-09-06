@@ -53,7 +53,7 @@ public abstract class ThreadRetriever {
 					addressSet.add(ThreadData.getCleanedAddress(recipient));
 				}
 			}
-			if (msg.getFrom() != null) {
+			if (msg.getFrom() != null && msg.getFrom().length > 0) {
 				addressSet.add(ThreadData.getCleanedAddress(msg.getFrom()[0]));
 			}
 		}
@@ -232,6 +232,11 @@ public abstract class ThreadRetriever {
 							"References" };
 					OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos],
 							prefetchedHeaders);
+
+					if (message.getHeader("Message-ID") == null
+							|| message.getHeader("Message-ID").length < 1) {
+						continue;
+					}
 
 					String messageID = message.getHeader("Message-ID")[0];
 					if (seenMessages.contains(messageID)) {
