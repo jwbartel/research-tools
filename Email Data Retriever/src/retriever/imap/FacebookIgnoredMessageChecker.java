@@ -12,14 +12,20 @@ public class FacebookIgnoredMessageChecker implements IgnoredMessageChecker {
 
 	@Override
 	public boolean shouldIgnore(OfflineMessage message) throws MessagingException {
+
+		String[] messageIdArray = message.getHeader("Message-ID");
+		if (messageIdArray == null || messageIdArray.length < 1) {
+			return true;
+		}
 		String id = message.getHeader("Message-ID")[0];
 		if (id.startsWith("Message Email Reply") || id.endsWith("groups.facebook.com>")) {
 			return true;
 		}
-//		Address[] from = message.getFrom();
-//		if (from.length > 0 && fromPattern.matcher(from[0].toString()).matches()) {
-//			return true;
-//		}
+		// Address[] from = message.getFrom();
+		// if (from.length > 0 &&
+		// fromPattern.matcher(from[0].toString()).matches()) {
+		// return true;
+		// }
 		return false;
 	}
 
