@@ -151,7 +151,7 @@ public class EmailRetriever implements Serializable, MessageListener{
 	}
 
 	@Override
-	public void updateRetrievedMessageCounts(int latestRetrieved) {
+	public void updateRetrievedMessageCounts(int latestRetrieved, int seenThreads, int missingMessages) {
 		// TODO Auto-generated method stub
 		
 	}

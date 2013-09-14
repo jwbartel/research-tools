@@ -5,16 +5,13 @@ import java.awt.EventQueue;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -28,30 +25,41 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import retriever.MessageListener;
+import retriever.ThreadData;
 import retriever.imap.ImapAuthenticator;
 import retriever.imap.ImapThreadRetriever;
-import retriever.imap.ThreadData;
 
 public class EmailDataRetriever extends JFrame implements MessageListener {
-	
+
 	public static final String TEMP_DATA_FILE = "email_thread_data.txt";
 	public static final String TO_ADDRESS = "bartel+emaildata@cs.unc.edu";
-	
+
+	public static final String INTRODUCTION_MESSAGE = "<html>\r\n"
+			+ "This tool collects anonymized email data for research purposes. "
+			+ "We are working to study how people collaborate and communicate through email "
+			+ "and how we can assist in that process.  "
+			+ "Thank you for participating!\r\n"
+			+ "<br><br>\r\n"
+			+ "After you retrieve your data, "
+			+ "you will be able to modify and confirm what you send to us to ensure it is properly anonymized.\r\n"
+			+ "</html>";
+
 	ImapAuthenticator authenticator = new ImapAuthenticator();
 	ImapThreadRetriever retriever = null;
-	
+
 	AuthenticationPane authenticationPane = new AuthenticationPane(this, authenticator);
 	SendPane sendPane = new SendPane(this, TO_ADDRESS);
-	
+
 	public static final int FIELD_WIDTH = 200;
 
-	private JPanel contentPane;
+	private final JPanel contentPane;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					EmailDataRetriever frame = new EmailDataRetriever();
@@ -63,8 +71,8 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 			}
 		});
 	}
-	
-	protected boolean login(){
+
+	protected boolean login() {
 		String imapServer = authenticationPane.getIMAPServer();
 		String emailAddress = authenticationPane.getEmailAddress();
 		String password = authenticationPane.getPassword();
@@ -74,16 +82,16 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 			authenticator.login(imapServer, emailAddress, password);
 			sendPane.setEmailAddress(emailAddress);
 			return true;
-		} catch (MessagingException e) {
-			logMessage("ERROR:"+e.getMessage());
+		} catch (Exception e) {
+			displayException(e);
 			return false;
 		}
 	}
-	
-	protected boolean retrieve(){
+
+	protected boolean retrieve() {
 
 		String imapServer = authenticationPane.getIMAPServer();
-		try{
+		try {
 			retriever = new ImapThreadRetriever(imapServer, authenticator.getStore());
 			retriever.addMessageListener(this);
 			ThreadData data = retriever.retrieveThreads();
@@ -93,8 +101,8 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 			contentPane.add(sendPane, BorderLayout.CENTER);
 			contentPane.validate();
 			return true;
-		} catch (MessagingException e) {
-			logMessage("ERROR:"+e.getMessage());
+		} catch (Exception e) {
+			displayException(e);
 			return false;
 		}
 	}
@@ -105,52 +113,58 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 	public EmailDataRetriever() {
 		setTitle("Email Data Point Retriever");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 406, 500);
+		setBounds(100, 100, 450, 550);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 5));
-		
-		JLabel lblNewLabel = new JLabel("<html>\r\nThis tool collects anonymized email data for research purposes. We are working to study different reply rates and how we can predict when threads will receive a reply.  Thank you for participating!\r\n<br><br>\r\nAfter you retrieve your data, you will be able to modify and confirm what you send to us to ensure it is properly anonymized.\r\n</html>");
+
+		JLabel lblNewLabel = new JLabel(INTRODUCTION_MESSAGE);
 		contentPane.add(lblNewLabel, BorderLayout.NORTH);
-		
+
 		JPanel dataPane = authenticationPane;
 		contentPane.add(dataPane, BorderLayout.CENTER);
 	}
-	
-	public void setAuthenticationFocus(){
+
+	public void setAuthenticationFocus() {
 		authenticationPane.defaultFocus();
 	}
-	
-	public synchronized void packageAndSendData(String data){
+
+	public synchronized void packageAndSendData(String data) {
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(TEMP_DATA_FILE));
 			out.write(data);
 			out.flush();
 			out.close();
-			
-			sendData(authenticationPane.getSMTPServer(), authenticationPane.getEmailAddress(), authenticationPane.getPassword(), TO_ADDRESS);
-			
+
+			if (!(authenticator.isLoggedIn() && login())) {
+				return;
+			}
+
+			sendData(authenticationPane.getSMTPServer(), authenticationPane.getEmailAddress(),
+					authenticationPane.getPassword(), TO_ADDRESS);
+
 			File tempFile = new File(TEMP_DATA_FILE);
 			tempFile.delete();
-			
-			JOptionPane.showMessageDialog(null, "Thank you for contributing.  Your data has now been sent to our researchers.");
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+
+			JOptionPane.showMessageDialog(null,
+					"Thank you for contributing.  Your data has now been sent to our researchers.");
+
+		} catch (Exception e) {
+			displayException(e);
 		}
 	}
-	
-	private void sendData(String host, String from, String password, String to){
+
+	private void sendData(String host, String from, String password, String to) {
 		try {
 			// Get system properties
 			Properties props = System.getProperties();
 
 			// Setup mail server
 			props.put("mail.smtp.host", host);
-	        props.put("mail.from", from);
-	        props.put("mail.smtp.starttls.enable", "true");
-	        props.put("mail.smtp.port", 587);
+			props.put("mail.from", from);
+			props.put("mail.smtp.starttls.enable", "true");
+			props.put("mail.smtp.port", 587);
 
 			// Get session
 			Session session = Session.getInstance(props, null);
@@ -159,15 +173,15 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			message.setSubject("Email Thread Data");
 
-			// create the message part 
+			// create the message part
 			MimeBodyPart messageBodyPart = new MimeBodyPart();
-		    
-			//fill message
+
+			// fill message
 			messageBodyPart.setText("Attached is the data collected on my past email threads");
-			
+
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(messageBodyPart);
-			
+
 			// Part two is attachment
 			messageBodyPart = new MimeBodyPart();
 			DataSource source = new FileDataSource(TEMP_DATA_FILE);
@@ -176,27 +190,48 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 			multipart.addBodyPart(messageBodyPart);
 
 			// Put parts in message
-		    message.setContent(multipart);
+			message.setContent(multipart);
 
-		    // Send the message
-		    Transport transport = session.getTransport("smtp");
-		    transport.connect(from, password);
-		    transport.sendMessage(message, message.getAllRecipients());
-		    transport.close();
-		    
-			
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// Send the message
+			Transport transport = session.getTransport("smtp");
+			transport.connect(from, password);
+			transport.sendMessage(message, message.getAllRecipients());
+			transport.close();
+
+		} catch (Exception e) {
+			displayException(e);
 		}
+	}
+
+	private String getStackTrace(Exception e) {
+		StackTraceElement[] stack = e.getStackTrace();
+		String stacktrace = e.getClass().toString();
+		for (StackTraceElement s : stack) {
+			stacktrace += "\n\tat " + s.toString();
+		}
+		return stacktrace;
+	}
+
+	private void displayException(Exception e) {
+		e.printStackTrace();
+		logMessage("ERROR:" + getStackTrace(e));
+		String message = e.getMessage();
+		if (message == null) {
+			message = "[ERROR] " + e.toString();
+		}
+		JOptionPane.showMessageDialog(null, message
+				+ "\nPlease try again or contact the developer at bartel@cs.unc.edu");
 	}
 
 	@Override
 	public void logMessage(String message) {
 		authenticationPane.logMessage(message);
 	}
-	
-	public void updateRetrievedMessageCounts(int latestRetrieved){
-		authenticationPane.updateRetrievedMessageCounts(latestRetrieved);
+
+	@Override
+	public void updateRetrievedMessageCounts(int latestRetrieved, int seenThreads,
+			int missingMessages) {
+		authenticationPane.updateRetrievedMessageCounts(latestRetrieved, seenThreads,
+				missingMessages);
 	}
 }
