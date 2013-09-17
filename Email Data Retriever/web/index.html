@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Email Data Point Retriever</title>
+		<link rel="stylesheet" href="retriever.css">
+	</head>
+	
+	<body>
+		<div class="center" id="retriever">
+			<h1>Email Data Point Retriever</h1>
+			<p>
+				This tool collects anonymized email data for research purposes.
+				We are working to study different reply rates and how we can predict when threads will receive a reply.
+				Thank you for participating
+			</p>
+			<p>
+				After you retrieve your data, 
+				you will be able to modify and confirm what you send to the researchers to ensure it is properly anonymized.
+			</p>
+			<div class='section-border'>
+			<div class='section-label'><strong>Credentials</strong></div>
+			<form id="retriever-form">
+			<table>
+				<tr>
+					<td>IMAP Server</td>
+					<td class='email-input'>
+						<select>
+							<option>imap.gmail.com</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>SMTP Server</td>
+					<td class='email-input'>
+						<select>
+							<option>smtp.gmail.com</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Email or Username</td>
+					<td class='email-input'><input></input></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td class='email-input'><input type="password"></input></td>
+				</tr>
+			</table>
+			<div class="collector-button" ><input type="submit" value="Start collecting data" /></div>			
+			</form></div>
+			
+			<div class='section-border' id='collection-progress'>
+				<div class='section-label'><strong>Collection Progress</strong></div>
+				<progress value='0' max='100'></progress>
+				<table>
+					<tr><td>Message 0 of a maximum of 2000</td></tr>
+					<tr><td>Thread 0 of a maximum of 400</td></tr>
+					<tr><td>Missing data on 0 messages</td></tr>
+				</table>
+			</div>
+		</div>
+	</body>
+
+</html>
