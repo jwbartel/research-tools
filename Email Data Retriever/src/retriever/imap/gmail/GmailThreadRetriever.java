@@ -146,7 +146,10 @@ public class GmailThreadRetriever extends ThreadRetriever {
 				allMailMessages = allMailFolder.getMessages(minAllMailMessage, maxAllMailMessages);
 
 			}
-		} catch (MessagingException | IOException e) {
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logMessage("ERROR: " + e.getMessage());
+		} catch (IOException e) {
 			e.printStackTrace();
 			logMessage("ERROR: " + e.getMessage());
 		}

@@ -279,7 +279,10 @@ public abstract class ThreadRetriever {
 				messages = folder.getMessages(minMessage, maxMessage);
 
 			}
-		} catch (MessagingException | IOException e) {
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logMessage("ERROR: " + e.getMessage());
+		} catch (IOException e) {
 			e.printStackTrace();
 			logMessage("ERROR: " + e.getMessage());
 		}

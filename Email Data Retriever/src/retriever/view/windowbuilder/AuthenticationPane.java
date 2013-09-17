@@ -24,7 +24,7 @@ import retriever.imap.ImapAuthenticator;
 
 public class AuthenticationPane extends JPanel implements MessageListener {
 	EmailDataRetriever parent;
-	private final JComboBox<String> imapServer;
+	private final JComboBox imapServer;
 	private final JTextField smtpServer;
 	private final JTextField emailAddress;
 	private final JPasswordField password;
@@ -95,7 +95,7 @@ public class AuthenticationPane extends JPanel implements MessageListener {
 
 		String[] possibleImapServers = { "imap.gmail.com" };// ,
 															// "outlook.unc.edu"};
-		imapServer = new JComboBox<String>();
+		imapServer = new JComboBox();
 		for (String possibleImapServer : possibleImapServers) {
 			imapServer.addItem(possibleImapServer);
 		}
