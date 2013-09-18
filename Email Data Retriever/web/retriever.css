@@ -48,6 +48,39 @@ table.settings {
 	padding-left: 20px;
 }
 
+#loadingContainer {
+	width:100%;
+    position:absolute;
+    left:0;
+    top:200px;
+    display:block;
+}
+
+#loadingMessage {
+	position: float;
+	top: 100px;
+	background-color: white;
+	color: black;
+	width: 600px;
+	margin:0 auto;
+    margin:30px auto 0;
+    padding:6px;
+	border-style: solid;
+	border-radius: 10px;
+	border-width: 2px;
+	margin: auto;
+}
+
+#overlay {
+	opacity : 0.4;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: black;
+	width: 100%;
+	height: 100%;
+}
+
 #retriever {
 	width: 500px;
 	magin: auto;

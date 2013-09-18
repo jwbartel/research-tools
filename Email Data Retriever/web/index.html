@@ -3,7 +3,12 @@
 	<head>
 		<title>Email Data Point Retriever</title>
 		<link rel="stylesheet" href="retriever.css">
-		<script src='retriever.js'></script>
+		<script src='retriever.js' type='text/javascript'></script>
+		<script type='text/javascript'>
+			function collectData() {
+				showLoading();
+			}
+		</script>
 	</head>
 	
 	<body>
@@ -20,7 +25,7 @@
 			</p>
 			<div class='section-border'>
 			<div class='section-label'><strong>Credentials</strong></div>
-			<form id="retriever-form">
+			<div id="retriever-form">
 				<table>
 					<tr>
 						<td>IMAP Server</td>
@@ -81,21 +86,9 @@
 					</table>
 				</div>
 				<div class="collector-button">
-					<input type="submit" value="Start collecting data" />
+					<input type="submit" value="Start collecting data" onclick="collectData()"/>
 				</div>
-			</form>
-		</div>
-			
-			<div class='section-border' id='collection-progress'>
-				<div class='section-label'><strong>Collection Progress</strong></div>
-				<progress value='0' max='100'></progress>
-				<table>
-					<tr><td>Message 0 of a maximum of <span id=maxMessage>2000</span></td></tr>
-					<tr><td>Thread 0 of a maximum of <span id=maxThread>400</span></td></tr>
-					<tr><td>Missing data on 0 messages</td></tr>
-				</table>
 			</div>
 		</div>
-	</body>
-
-</html>
+		</div>
+		
