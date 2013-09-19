@@ -2,12 +2,12 @@ fileNamesDisabled = true;
 
 function switchFileNamesEnabled() {
 	fileNamesDisabled = !fileNamesDisabled;
-	document.getElementById('fileNames').disabled = fileNamesDisabled;
+	$('#fileNames').prop('disabled', fileNamesDisabled);
 	if (fileNamesDisabled) {
-		document.getElementById('fileNames').checked = false;
-		document.getElementById('fileNamesLabel').style.color = 'gray';
+		$('#fileNames').prop('checked', false);
+		$('#fileNamesLabel').css('color','gray');
 	} else {
-		document.getElementById('fileNamesLabel').style.color = 'black';
+		$('#fileNamesLabel').css('color', 'black');
 	}
 }
 
