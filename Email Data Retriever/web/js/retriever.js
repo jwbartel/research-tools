@@ -11,11 +11,6 @@ function switchFileNamesEnabled() {
 	}
 }
 
-function updateDepthCounts() {
-	document.getElementById('maxMessage').innerHTML = document.getElementById('messages').value;
-	document.getElementById('maxThread').innerHTML = document.getElementById('threads').value;
-}
-
 function showLoading() {
 	divElement = document.createElement('div');
 	divElement.innerHTML = "<div id='overlay'></div>" +
