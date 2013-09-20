@@ -6,3 +6,6 @@
 *.jar
 *.war
 *.ear
+
+# Ignore files from SyncToy
+*SyncToy_*

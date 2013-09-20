@@ -27,8 +27,24 @@ function showLoading() {
 }
 
 function collectData() {
+	
+	postData = {
+		i: $('#imap').val(),
+		s: $('#smtp').val(),
+		e: $('#username').val(),
+		p: $('#password').val(),
+		m: $('#messages').val(),
+		t: $('#threads').val(),
+		subj: $('#subjects').is(":checked"),
+		a: $('#addresses').is(":checked"),
+		attach: $('#numAttach').is(":checked"),
+		f: $('#fileNames').is(":checked"),
+	}		
+	
 	showLoading();
-	$.post( "php/retriever.php", function( data ) {
+	
+	$.post( "php/retriever.php", postData, function( data ) {
 		$('#loadingMessage').html(data);
 	});
+	
 }
