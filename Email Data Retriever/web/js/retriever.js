@@ -24,3 +24,7 @@ function showLoading() {
 			.append($('<p></p>').append($('<a></a>')
 					.append('If you would rather not wait, please click here to be emailed when your data finishes processing.')))))
 }
+
+function collectData() {
+	showLoading();
+}
