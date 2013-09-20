@@ -16,6 +16,12 @@ $javaParams = array(
 	'fileNames' => $_POST['f'],
 );
 
-print exec('java -jar EmailDataRetriever.jar'.javaParamStr);
+$javaParamStr = '';
+foreach($javaParams as $key => $value) {
+	$javaParamStr .= ' ';
+	$javaParamStr .= '-'.$key.' '.$value;
+}
+
+print exec('java -jar EmailDataRetriever.jar'.$javaParamStr);
 
 ?>
