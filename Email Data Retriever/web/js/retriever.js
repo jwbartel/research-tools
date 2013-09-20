@@ -41,10 +41,24 @@ function collectData() {
 		f: $('#fileNames').is(":checked"),
 	}		
 	
+	if (postData['e'].length == 0 || postData['p'].length == 0 ) {
+		alert("You need to specify both an email and a password.");
+		return;
+	}
+	
+	if (!(isInt(postData['m']) && isInt(postData['t']))) {
+		alert("Both max number of messages and number of threads should be positive integers.");
+		return;
+	}
+	
 	showLoading();
 	
 	$.post( "php/retriever.php", postData, function( data ) {
 		$('#loadingMessage').html(data);
 	});
 	
+}
+
+function isInt(input){
+	return ((input - 0) == input && input % 1==0 && (input - 0) > 0);
 }
