@@ -11,6 +11,11 @@ function switchFileNamesEnabled() {
 	}
 }
 
+function hideLoading() {
+	$('#overlay').remove();
+	$('#loadingContainer').remove();
+}
+
 function showLoading() {
 	$('<div></div>').prop('id','overlay').appendTo('body');
 	$('<div></div>').prop('id', 'loadingContainer').appendTo('body').append($('<div></div>')

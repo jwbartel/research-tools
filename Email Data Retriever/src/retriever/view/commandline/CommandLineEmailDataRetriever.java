@@ -5,6 +5,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.mail.MessagingException;
+
+import retriever.imap.ImapAuthenticator;
+
 /**
  * Tool to collect data from messages from the command line
  * 
@@ -17,7 +21,18 @@ public class CommandLineEmailDataRetriever {
 
 		ArrayList<String> argsList = new ArrayList<String>(Arrays.asList(args));
 		Map<String, String> flags = extractFlags(argsList);
-		System.out.print("Data Retriever called");
+
+		String imap = flags.get("imap");
+		String email = flags.get("email");
+		String password = flags.get("password");
+		ImapAuthenticator authenticator = new ImapAuthenticator();
+		try {
+			authenticator.login(imap, email, password);
+		} catch (MessagingException e) {
+			System.out.print("Login Failed: " + e.getMessage());
+			System.out.print("<br>");
+			System.out.print("<a href='javascript:hideLoading()'>Try Again</a>");
+		}
 
 	}
 
