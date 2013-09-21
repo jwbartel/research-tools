@@ -34,7 +34,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		String email = flags.get("email");
 		String password = flags.get("password");
 
-		File logFile = new File("/afs/cs.unc.edu/home/bartel/public_html/email threads/logs/"
+		File logFile = new File("/afs/cs.unc.edu/home/bartel/public_html/email_threads/logs/"
 				+ email + "_" + id + ".txt");
 		log = new BufferedWriter(new FileWriter(logFile, true));
 
@@ -74,13 +74,13 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					includeAttachedFileNames);
 
 			File privateFolder = new File(
-					"/afs/cs.unc.edu/home/bartel/public_html/email threads/private data/" + email
+					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/private data/" + email
 							+ "_" + id);
 			if (!privateFolder.exists()) {
 				privateFolder.mkdirs();
 			}
 			File anonymousFolder = new File(
-					"/afs/cs.unc.edu/home/bartel/public_html/email threads/anonymous data/" + email
+					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous data/" + email
 							+ "_" + id);
 			if (!anonymousFolder.exists()) {
 				anonymousFolder.mkdirs();
@@ -121,7 +121,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			log.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.print("<br>Exception: " + e.getMessage());
+			System.out.print("<br>Exception: " + getStackTrace(e));
 		}
 	}
 
@@ -160,5 +160,14 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			}
 		}
 		return flags;
+	}
+
+	private String getStackTrace(Exception e) {
+		StackTraceElement[] stack = e.getStackTrace();
+		String stacktrace = e.getClass().toString();
+		for (StackTraceElement s : stack) {
+			stacktrace += "\n\tat " + s.toString();
+		}
+		return stacktrace;
 	}
 }

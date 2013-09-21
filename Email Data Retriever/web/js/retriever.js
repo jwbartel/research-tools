@@ -34,7 +34,40 @@ function showLoading() {
 					.prop('alt', 'Loading...'))));
 }
 
+
+function testAuthentication() {
+	email = $('#username').val();
+	password = $('#password').val();
+	
+	if (email.length == 0 || password.length == 0 ) {
+		alert("You need to specify both an email and a password.");
+		return;
+	}
+	
+	messages = $('#messages').val();
+	threads = $('#threads').val();
+	
+	if (!(isInt(messages) && isInt(threads))) {
+		alert("Both max number of messages and number of threads should be positive integers.");
+		return;
+	}
+	showLoading();
+	sendData("php/authenticator.php");
+}
+
 function collectData() {
+
+	$('#loadingContainer').empty().append($('<div></div>')
+			.prop('id', 'loadingMessage')
+			.append($('<p></p>')
+					.append('Starting collection progress.'))
+			.append($('<center></center>').append($('<img></img>')
+					.prop('src', 'img/spinner.gif')
+					.prop('alt', 'Loading...'))));
+	sendData("php/retriever.php");
+}
+
+function sendData(address) {
 	
 	postData = {
 		i: $('#imap').val(),
@@ -47,21 +80,9 @@ function collectData() {
 		a: $('#addresses').is(":checked"),
 		attach: $('#numAttach').is(":checked"),
 		f: $('#fileNames').is(":checked"),
-	}		
-	
-	if (postData['e'].length == 0 || postData['p'].length == 0 ) {
-		alert("You need to specify both an email and a password.");
-		return;
 	}
 	
-	if (!(isInt(postData['m']) && isInt(postData['t']))) {
-		alert("Both max number of messages and number of threads should be positive integers.");
-		return;
-	}
-	
-	showLoading();
-	
-	$.post( "php/retriever.php", postData, function( data ) {
+	$.post(address , postData, function( data ) {
 		$('#loadingMessage').html(data);
 	});
 	
