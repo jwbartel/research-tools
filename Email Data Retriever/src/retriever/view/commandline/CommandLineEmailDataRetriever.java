@@ -53,8 +53,10 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		}
 		logMessage("Login successful");
 		if (args.contains("-onlyCheckLogin")) {
+			System.out.println("Login successful");
 			log.flush();
 			log.close();
+			return;
 		}
 
 		ImapThreadRetriever retriever = new ImapThreadRetriever(imap, authenticator.getStore());
@@ -104,6 +106,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		try {
 			new CommandLineEmailDataRetriever().run(argsList, flags);
 		} catch (IOException e) {
+			System.out.print("Error: " + e.getMessage());
 		}
 
 	}
