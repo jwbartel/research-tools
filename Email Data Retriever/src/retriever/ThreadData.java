@@ -83,7 +83,10 @@ public class ThreadData {
 			boolean includeAttachedFileNames) throws MessagingException {
 
 		Map<String, String> compartments = new HashMap<String, String>();
-
+		if (addressIDs == null) {
+			buildAddressIDs();
+		}
+		
 		String summaryStr = "";
 		String messagesStr = "";
 		String subjectsStr = "";

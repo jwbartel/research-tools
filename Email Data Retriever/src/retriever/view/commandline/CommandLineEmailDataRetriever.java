@@ -97,6 +97,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					"attachments.txt"));
 		} catch (Exception e) {
 			logMessage("Failure retrieving and saving threads: " + e.getMessage());
+			e.printStackTrace();
 		}
 
 		log.flush();
@@ -114,7 +115,6 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 	@Override
 	public void logMessage(String message) {
-		System.out.println(message);
 		try {
 			log.write("[" + new Date().toString() + "]" + message);
 			log.newLine();
