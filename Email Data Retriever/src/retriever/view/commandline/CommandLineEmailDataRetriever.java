@@ -13,7 +13,9 @@ import java.util.TreeMap;
 import javax.mail.MessagingException;
 
 import retriever.MessageListener;
+import retriever.ThreadData;
 import retriever.imap.ImapAuthenticator;
+import retriever.imap.ImapThreadRetriever;
 
 /**
  * Tool to collect data from messages from the command line
@@ -25,7 +27,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 	BufferedWriter log;
 
-	public void run(Map<String, String> flags) throws IOException {
+	public void run(ArrayList<String> args, Map<String, String> flags) throws IOException {
 
 		String id = flags.get("id");
 		String imap = flags.get("imap");
@@ -34,9 +36,6 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 		File logFile = new File("/afs/cs.unc.edu/home/bartel/public_html/email threads/logs/"
 				+ email + "_" + id + ".txt");
-		System.out.print(" " + logFile + " ");
-		System.out.print("<br>");
-		System.out.print(" " + logFile.getAbsolutePath() + " ");
 		log = new BufferedWriter(new FileWriter(logFile, true));
 
 		ImapAuthenticator authenticator = new ImapAuthenticator();
@@ -53,6 +52,20 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			return;
 		}
 		logMessage("Login successful");
+		if (args.contains("-onlyCheckLogin")) {
+			log.flush();
+			log.close();
+		}
+
+		ImapThreadRetriever retriever = new ImapThreadRetriever(imap, authenticator.getStore());
+		retriever.addMessageListener(this);
+		try {
+			ThreadData data = retriever.retrieveThreads();
+		} catch (Exception e) {
+			logMessage("Failure retrieving threads: " + e.getMessage());
+		}
+
+		System.out.print("Your threads were retrieved successfully");
 
 		log.flush();
 		log.close();
@@ -61,9 +74,9 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 	@Override
 	public void logMessage(String message) {
 		try {
-			System.out.print("<br>Logging message:" + message);
 			log.write("[" + new Date().toString() + "]" + message);
 			log.newLine();
+			log.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.print("<br>Exception: " + e.getMessage());
@@ -78,6 +91,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					+ ", seen " + seenThreads + " threads" + ", missing " + missingMessages
 					+ " messages");
 			log.newLine();
+			log.flush();
 		} catch (IOException e) {
 		}
 	}
@@ -88,7 +102,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		Map<String, String> flags = extractFlags(argsList);
 
 		try {
-			new CommandLineEmailDataRetriever().run(flags);
+			new CommandLineEmailDataRetriever().run(argsList, flags);
 		} catch (IOException e) {
 		}
 
@@ -103,10 +117,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					flags.put(args.get(i).substring(1), args.get(i + 1));
 					args.remove(i);
 					args.remove(i);
-				} else {
-					args.remove(i);
+					i--;
 				}
-				i--;
 			}
 		}
 		return flags;

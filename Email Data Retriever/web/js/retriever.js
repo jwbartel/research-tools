@@ -21,14 +21,10 @@ function showLoading() {
 	$('<div></div>').prop('id', 'loadingContainer').appendTo('body').append($('<div></div>')
 			.prop('id', 'loadingMessage')
 			.append($('<p></p>')
-					.append('Thank you for contributing.  ')
-					.append('Your anonymized data is being retrieved. ')
-					.append('You will be redirected to our reviewing tool after retrieval completes.'))
+					.append('Please wait while we verify your credentials.'))
 			.append($('<center></center>').append($('<img></img>')
 					.prop('src', 'img/spinner.gif')
-					.prop('alt', 'Loading...')))
-			.append($('<p></p>').append($('<a></a>')
-					.append('If you would rather not wait, please click here to be emailed when your data finishes processing.'))));
+					.prop('alt', 'Loading...'))));
 }
 
 function collectData() {

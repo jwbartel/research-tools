@@ -21,6 +21,13 @@ foreach($javaParams as $key => $value) {
 	$javaParamStr .= '-'.$key.' '.$value;
 }
 
-print exec('java -jar EmailDataRetriever.jar'.$javaParamStr);
+$output = exec('java -jar EmailDataRetriever.jar -onlyCheckLogin'.$javaParamStr);
+if (strlen($output) > 0) {
+	print $output;
+}else{
+	print "Thank you for contributing. Your data is being uploaded in the background. ";
+	print "You will be mailed at your provided email address when it has completed";
+// 	exec('java -jar EmailDataRetriever.jar'.$javaParamStr);
+}
 
 ?>
