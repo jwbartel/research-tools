@@ -31,7 +31,8 @@ if (strcmp($output, 'Login successful') != 0) {
 	print "We will be email you at your provided email address when it has completed";
 	print "<br>";
 	print "<a href='javascript:reset()'>Click here to try a different email address</a>";
-	// 	exec('java -jar EmailDataRetriever.jar'.$javaParamStr);
+	$logFile = '/afs/cs.unc.edu/home/bartel/public_html/email threads/logs/'.email.'_'.$javaParams['id'].'.txt';
+	exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' >& '.logFile);
 }
 
 ?>
