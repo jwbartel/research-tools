@@ -65,6 +65,36 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		retriever.addMessageListener(this);
 		try {
 			ThreadData data = retriever.retrieveThreads(messages, threads);
+			boolean includeSubjects = Boolean.parseBoolean(flags.get("subjects"));
+			boolean includeFullEmailAddresses = Boolean.parseBoolean(flags.get("addresses"));
+			boolean includeAttachments = Boolean.parseBoolean(flags.get("numAttach"));
+			boolean includeAttachedFileNames = Boolean.parseBoolean(flags.get("fileNames"));
+			Map<String, String> compartmentalizedData = data.getCompartmentalizedData(email,
+					includeSubjects, includeFullEmailAddresses, includeAttachments,
+					includeAttachedFileNames);
+
+			File privateFolder = new File(
+					"/afs/cs.unc.edu/home/bartel/public_html/email threads/private data/" + email
+							+ "_" + id);
+			if (!privateFolder.exists()) {
+				privateFolder.mkdirs();
+			}
+			File anonymousFolder = new File(
+					"/afs/cs.unc.edu/home/bartel/public_html/email threads/anonymous data/" + email
+							+ "_" + id);
+			if (!anonymousFolder.exists()) {
+				anonymousFolder.mkdirs();
+			}
+			writeIfNotNull(compartmentalizedData.get("summary"), new File(privateFolder,
+					"summary.txt"));
+			writeIfNotNull(compartmentalizedData.get("addresses"), new File(privateFolder,
+					"addresses.txt"));
+			writeIfNotNull(compartmentalizedData.get("messages"), new File(anonymousFolder,
+					"messages.txt"));
+			writeIfNotNull(compartmentalizedData.get("subjects"), new File(anonymousFolder,
+					"subjects.txt"));
+			writeIfNotNull(compartmentalizedData.get("attachments"), new File(anonymousFolder,
+					"attachments.txt"));
 		} catch (Exception e) {
 			logMessage("Failure retrieving and saving threads: " + e.getMessage());
 		}
