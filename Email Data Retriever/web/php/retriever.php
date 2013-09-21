@@ -29,6 +29,8 @@ if (strcmp($output, 'Login successful') != 0) {
 }else{
 	print "Thank you for contributing. Your data is being uploaded in the background. ";
 	print "We will be email you at your provided email address when it has completed";
+	print "<br>";
+	print "<a href='javascript:reset()'>Click here to try a different email address</a>";
 	// 	exec('java -jar EmailDataRetriever.jar'.$javaParamStr);
 }
 

@@ -16,6 +16,13 @@ function hideLoading() {
 	$('#loadingContainer').remove();
 }
 
+function reset() {
+	$('#overlay').remove();
+	$('#loadingContainer').remove();
+	$('#username').val('');
+	$('#password').val('');
+}
+
 function showLoading() {
 	$('<div></div>').prop('id','overlay').appendTo('body');
 	$('<div></div>').prop('id', 'loadingContainer').appendTo('body').append($('<div></div>')

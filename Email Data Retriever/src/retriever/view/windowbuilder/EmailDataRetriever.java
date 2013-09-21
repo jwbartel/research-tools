@@ -26,6 +26,7 @@ import javax.swing.border.EmptyBorder;
 
 import retriever.MessageListener;
 import retriever.ThreadData;
+import retriever.ThreadRetriever;
 import retriever.imap.ImapAuthenticator;
 import retriever.imap.ImapThreadRetriever;
 
@@ -94,7 +95,8 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 		try {
 			retriever = new ImapThreadRetriever(imapServer, authenticator.getStore());
 			retriever.addMessageListener(this);
-			ThreadData data = retriever.retrieveThreads();
+			ThreadData data = retriever.retrieveThreads(ThreadRetriever.DEFAULT_MAX_MESSAGES,
+					ThreadRetriever.DEFAULT_NUM_THREADS_RETRIEVED);
 			logMessage("Generating data points");
 			sendPane.setThreadData(data);
 			contentPane.remove(authenticationPane);

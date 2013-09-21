@@ -217,10 +217,10 @@ public class AuthenticationPane extends JPanel implements MessageListener {
 
 		JLabel lblMessagesRetrieved = new JLabel("Data Collection Progress");
 		progressBar = new JProgressBar();
-		progressBar.setMaximum(ThreadRetriever.MAX_MESSAGES);
+		progressBar.setMaximum(ThreadRetriever.DEFAULT_MAX_MESSAGES);
 		progressMessage = new JLabel("<html>" + "Message 0 of a maximum of "
-				+ ThreadRetriever.MAX_MESSAGES + "\r\n" + "<br>"
-				+ "Collected data on 0 of a maximum of " + ThreadRetriever.NUM_THREADS_RETRIEVED
+				+ ThreadRetriever.DEFAULT_MAX_MESSAGES + "\r\n" + "<br>"
+				+ "Collected data on 0 of a maximum of " + ThreadRetriever.DEFAULT_NUM_THREADS_RETRIEVED
 				+ " threads" + "<br>" + "Missing data from 0 messages" + "</html>");
 
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -331,10 +331,10 @@ public class AuthenticationPane extends JPanel implements MessageListener {
 			int missingMessages) {
 		progressBar.setValue(latestRetrieved);
 		progressBar.setMaximum(latestRetrieved
-				+ (ThreadRetriever.NUM_THREADS_RETRIEVED - seenThreads) + missingMessages);
+				+ (ThreadRetriever.DEFAULT_NUM_THREADS_RETRIEVED - seenThreads) + missingMessages);
 		progressMessage.setText("<html>" + "Message " + latestRetrieved + " of a maximum of "
-				+ ThreadRetriever.MAX_MESSAGES + "\r\n" + "<br>" + "Collected data on "
-				+ seenThreads + " of a maximum of " + ThreadRetriever.NUM_THREADS_RETRIEVED
+				+ ThreadRetriever.DEFAULT_MAX_MESSAGES + "\r\n" + "<br>" + "Collected data on "
+				+ seenThreads + " of a maximum of " + ThreadRetriever.DEFAULT_NUM_THREADS_RETRIEVED
 				+ " threads" + "<br>" + "Missing data from " + missingMessages + " messages"
 				+ "</html>");
 	}

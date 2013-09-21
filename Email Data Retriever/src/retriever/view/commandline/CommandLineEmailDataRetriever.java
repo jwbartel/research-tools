@@ -34,8 +34,10 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		String email = flags.get("email");
 		String password = flags.get("password");
 
-		File logFile = new File("/afs/cs.unc.edu/home/bartel/public_html/email threads/logs/"
-				+ email + "_" + id + ".txt");
+		File logFile = new File("temp.txt");
+		// File logFile = new
+		// File("/afs/cs.unc.edu/home/bartel/public_html/email threads/logs/"
+		// + email + "_" + id + ".txt");
 		log = new BufferedWriter(new FileWriter(logFile, true));
 
 		ImapAuthenticator authenticator = new ImapAuthenticator();
@@ -59,10 +61,12 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			return;
 		}
 
+		int messages = Integer.parseInt(flags.get("messages"));
+		int threads = Integer.parseInt(flags.get("threads"));
 		ImapThreadRetriever retriever = new ImapThreadRetriever(imap, authenticator.getStore());
 		retriever.addMessageListener(this);
 		try {
-			ThreadData data = retriever.retrieveThreads();
+			ThreadData data = retriever.retrieveThreads(messages, threads);
 		} catch (Exception e) {
 			logMessage("Failure retrieving threads: " + e.getMessage());
 		}
@@ -75,6 +79,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 	@Override
 	public void logMessage(String message) {
+		System.out.println(message);
 		try {
 			log.write("[" + new Date().toString() + "]" + message);
 			log.newLine();

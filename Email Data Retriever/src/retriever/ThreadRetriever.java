@@ -18,8 +18,8 @@ import retriever.imap.MasterIgnoredMessageChecker;
 
 public abstract class ThreadRetriever {
 
-	public final static int MAX_MESSAGES = 2000;
-	public final static int NUM_THREADS_RETRIEVED = 400;
+	public final static int DEFAULT_MAX_MESSAGES = 2000;
+	public final static int DEFAULT_NUM_THREADS_RETRIEVED = 400;
 	public final static int BUFFER_SIZE = 100;
 
 	protected static final IgnoredMessageChecker messageChecker = new MasterIgnoredMessageChecker();
@@ -115,7 +115,7 @@ public abstract class ThreadRetriever {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void sortIntoThreads(OfflineMessage message, String messageID,
+	public void sortIntoThreads(OfflineMessage message, String messageID, int maxThreads,
 			ArrayList<String> references, String inReplyTo,
 			ArrayList<ArrayList<String>> idsForThreads, ArrayList<Set<OfflineMessage>> threads,
 			Set<String> unseenMessages, Set<String> seenMessages) {
@@ -162,7 +162,7 @@ public abstract class ThreadRetriever {
 		}
 
 		boolean added = false;
-		if (prevThread == null && threads.size() < NUM_THREADS_RETRIEVED) {
+		if (prevThread == null && threads.size() < maxThreads) {
 			idsForThreads.add(new ArrayList<String>(references));
 			Set<OfflineMessage> thread = new HashSet<OfflineMessage>();
 			thread.add(message);
@@ -202,6 +202,11 @@ public abstract class ThreadRetriever {
 	}
 
 	protected ThreadData retrieveThreads(Folder folder) throws MessagingException {
+		return retrieveThreads(folder, DEFAULT_MAX_MESSAGES, DEFAULT_NUM_THREADS_RETRIEVED);
+	}
+
+	protected ThreadData retrieveThreads(Folder folder, int numMessages, int numThreads)
+			throws MessagingException {
 
 		int totalMessages = folder.getMessageCount();
 
@@ -214,11 +219,11 @@ public abstract class ThreadRetriever {
 		Set<String> seenMessages = new TreeSet<String>();
 		Set<String> unseenMessages = new TreeSet<String>();
 
-		logMessage("Retrieving data from the latest " + NUM_THREADS_RETRIEVED
-				+ " threads using at most the latest " + MAX_MESSAGES + " messages.\n");
+		logMessage("Retrieving data from the latest " + numThreads
+				+ " threads using at most the latest " + numMessages + " messages.\n");
 		try {
 			while (true) {
-				int startMessage = Math.min(-1 * (maxMessage - totalMessages) + 1, MAX_MESSAGES);
+				int startMessage = Math.min(-1 * (maxMessage - totalMessages) + 1, numMessages);
 				// int endMessage = Math.min(-1*(minMessage - totalMessages)+1,
 				// MAX_MESSAGES);
 				//
@@ -246,16 +251,15 @@ public abstract class ThreadRetriever {
 					}
 
 					if (!messageChecker.shouldIgnore(message)
-							|| (threads.size() == NUM_THREADS_RETRIEVED && unseenMessages
-									.contains(messageID))) {
+							|| (threads.size() == numThreads && unseenMessages.contains(messageID))) {
 						ArrayList<String> references = message.getReferences();
 						String inReplyTo = message.getInReplyTo();
-						sortIntoThreads(message, messageID, references, inReplyTo, idsForThreads,
-								threads, unseenMessages, seenMessages);
+						sortIntoThreads(message, messageID, numThreads, references, inReplyTo,
+								idsForThreads, threads, unseenMessages, seenMessages);
 					}
 
-					if ((threads.size() >= NUM_THREADS_RETRIEVED && unseenMessages.size() == 0)
-							|| seenMessages.size() >= MAX_MESSAGES) {
+					if ((threads.size() >= numThreads && unseenMessages.size() == 0)
+							|| seenMessages.size() >= numMessages) {
 						break;
 					}
 
@@ -266,8 +270,8 @@ public abstract class ThreadRetriever {
 				if (minMessage == 0) {
 					break;
 				}
-				if ((threads.size() >= NUM_THREADS_RETRIEVED && unseenMessages.size() == 0)
-						|| seenMessages.size() >= MAX_MESSAGES) {
+				if ((threads.size() >= numThreads && unseenMessages.size() == 0)
+						|| seenMessages.size() >= numMessages) {
 					break;
 				}
 
@@ -287,9 +291,10 @@ public abstract class ThreadRetriever {
 			logMessage("ERROR: " + e.getMessage());
 		}
 
-		updateRetrievedMessageCounts(MAX_MESSAGES, threads.size(), unseenMessages.size());
+		updateRetrievedMessageCounts(seenMessages.size(), threads.size(), unseenMessages.size());
 		return new ThreadData(totalMessages, threads, seenMessages, unseenMessages);
 	}
 
-	public abstract ThreadData retrieveThreads() throws MessagingException;
+	public abstract ThreadData retrieveThreads(int numMessages, int numThreads)
+			throws MessagingException;
 }

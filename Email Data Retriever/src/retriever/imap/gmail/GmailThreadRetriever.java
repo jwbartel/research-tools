@@ -24,20 +24,20 @@ public class GmailThreadRetriever extends ThreadRetriever {
 	}
 
 	@Override
-	public ThreadData retrieveThreads() throws MessagingException {
+	public ThreadData retrieveThreads(int numMessages, int numThreads) throws MessagingException {
 		Folder promotionsFolder = store.getFolder("Promotions");
 		if (promotionsFolder.exists()) {
 			promotionsFolder.open(Folder.READ_ONLY);
-			return retrieveGmailThreadsWithPromotions(promotionsFolder);
+			return retrieveGmailThreadsWithPromotions(promotionsFolder, numMessages, numThreads);
 		}
 
 		Folder folder = store.getFolder("[Gmail]/All Mail");
 		folder.open(Folder.READ_ONLY);
-		return super.retrieveThreads(folder);
+		return super.retrieveThreads(folder, numMessages, numThreads);
 	}
 
-	public ThreadData retrieveGmailThreadsWithPromotions(Folder promotionsFolder)
-			throws MessagingException {
+	public ThreadData retrieveGmailThreadsWithPromotions(Folder promotionsFolder, int numMessages,
+			int numThreads) throws MessagingException {
 		Folder allMailFolder = store.getFolder("[Gmail]/All Mail");
 		allMailFolder.open(Folder.READ_ONLY);
 
@@ -60,8 +60,8 @@ public class GmailThreadRetriever extends ThreadRetriever {
 		Set<String> seenMessages = new TreeSet<String>();
 		Set<String> unseenMessages = new TreeSet<String>();
 
-		logMessage("Retrieving data from the latest " + NUM_THREADS_RETRIEVED
-				+ " threads using at most the latest " + MAX_MESSAGES + " messages.\n");
+		logMessage("Retrieving data from the latest " + numThreads
+				+ " threads using at most the latest " + numMessages + " messages.\n");
 
 		int promotionsPos = promotionsMessages.length - 1;
 		String topPromotionsId = null;
@@ -71,7 +71,7 @@ public class GmailThreadRetriever extends ThreadRetriever {
 		try {
 			while (true) {
 				int startMessage = Math.min(-1 * (maxAllMailMessages - totalAllMailMessages) + 1,
-						MAX_MESSAGES);
+						numMessages);
 				// int endMessage = Math.min(-1*(minMessage - totalMessages)+1,
 				// MAX_MESSAGES);
 				//
@@ -109,8 +109,7 @@ public class GmailThreadRetriever extends ThreadRetriever {
 						} else {
 							topPromotionsId = null;
 						}
-					} else if (threads.size() != NUM_THREADS_RETRIEVED
-							|| unseenMessages.contains(messageID)) {
+					} else if (threads.size() != numThreads || unseenMessages.contains(messageID)) {
 
 						String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
 								"References" };
@@ -119,13 +118,13 @@ public class GmailThreadRetriever extends ThreadRetriever {
 
 						ArrayList<String> references = message.getReferences();
 						String inReplyTo = message.getInReplyTo();
-						sortIntoThreads(message, messageID, references, inReplyTo, idsForThreads,
-								threads, unseenMessages, seenMessages);
+						sortIntoThreads(message, messageID, numThreads, references, inReplyTo,
+								idsForThreads, threads, unseenMessages, seenMessages);
 
 					}
 
-					if ((threads.size() >= NUM_THREADS_RETRIEVED && unseenMessages.size() == 0)
-							|| seenMessages.size() >= MAX_MESSAGES) {
+					if ((threads.size() >= numThreads && unseenMessages.size() == 0)
+							|| seenMessages.size() >= numMessages) {
 						break;
 					}
 
@@ -136,8 +135,8 @@ public class GmailThreadRetriever extends ThreadRetriever {
 				if (minAllMailMessage == 0) {
 					break;
 				}
-				if ((threads.size() >= NUM_THREADS_RETRIEVED && unseenMessages.size() == 0)
-						|| seenMessages.size() >= MAX_MESSAGES) {
+				if ((threads.size() >= numThreads && unseenMessages.size() == 0)
+						|| seenMessages.size() >= numMessages) {
 					break;
 				}
 
@@ -154,7 +153,7 @@ public class GmailThreadRetriever extends ThreadRetriever {
 			logMessage("ERROR: " + e.getMessage());
 		}
 
-		updateRetrievedMessageCounts(MAX_MESSAGES, threads.size(), unseenMessages.size());
+		updateRetrievedMessageCounts(numMessages, threads.size(), unseenMessages.size());
 		return new ThreadData(totalAllMailMessages, threads, seenMessages, unseenMessages);
 	}
 }
