@@ -9,3 +9,6 @@
 
 # Ignore files from SyncToy
 *SyncToy_*
+
+# Ignore the credentials
+credentials

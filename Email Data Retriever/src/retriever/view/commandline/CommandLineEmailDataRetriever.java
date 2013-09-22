@@ -1,12 +1,15 @@
 package retriever.view.commandline;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -115,10 +118,9 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			e.printStackTrace();
 		}
 
-		String smtp = flags.get("smtp");
 		try {
 			logMessage("Sending notification of completion");
-			sendResponse(smtp, email, password);
+			sendResponse(email, id);
 		} catch (MessagingException e) {
 			logMessage(getStackTrace(e));
 		}
@@ -127,32 +129,38 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		log.close();
 	}
 
-	private synchronized void sendResponse(String host, String email, String password)
-			throws MessagingException {
+	private synchronized void sendResponse(String email, String id) throws MessagingException,
+			IOException {
+
+		Map<String, String> credentials = loadSenderCredentials(new File("credentials"));
+
 		// Get system properties
 		Properties props = System.getProperties();
 
 		// Setup mail server
-		props.put("mail.smtp.host", host);
-		props.put("mail.from", email);
+		props.put("mail.smtp.host", credentials.get("host"));
+		props.put("mail.from", credentials.get("from email"));
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.port", 587);
 
 		// Get session
 		Session session = Session.getInstance(props, null);
 		MimeMessage message = new MimeMessage(session);
-		message.setFrom(new InternetAddress(email));
+		message.setFrom(new InternetAddress(credentials.get("from email")));
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 		message.setSubject("Email Thread Data");
 
 		// create the message part
 		MimeBodyPart messageBodyPart = new MimeBodyPart();
 
+		String reviewAddress = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?d="
+				+ email + "_" + id;
+
 		// fill message
-		messageBodyPart
-				.setText(
-						"Your email data has been collected.  Thank you for your contribution.  <a href='https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/'>You can review the collected data here.</a>",
-						"utf-8", "html");
+		messageBodyPart.setText(
+				"Your email data has been collected.  Thank you for your contribution.  <a href='"
+						+ reviewAddress + "'>You can review the collected data here.</a>", "utf-8",
+				"html");
 
 		Multipart multipart = new MimeMultipart();
 		multipart.addBodyPart(messageBodyPart);
@@ -162,7 +170,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 		// Send the message
 		Transport transport = session.getTransport("smtp");
-		transport.connect(email, password);
+		transport.connect(credentials.get("username"), credentials.get("password"));
 		transport.sendMessage(message, message.getAllRecipients());
 		transport.close();
 	}
@@ -176,8 +184,30 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		}
 	}
 
+	private Map<String, String> loadSenderCredentials(File credentialsFile) throws IOException {
+		Map<String, String> loadedCredentials = new HashMap<String, String>();
+		BufferedReader in = new BufferedReader(new FileReader(credentialsFile));
+		String line = in.readLine();
+		while (line != null) {
+
+			if (line.startsWith("host:")) {
+				loadedCredentials.put("host", line.substring(line.indexOf(':') + 1));
+			} else if (line.startsWith("username:")) {
+				loadedCredentials.put("username", line.substring(line.indexOf(':') + 1));
+			} else if (line.startsWith("from email:")) {
+				loadedCredentials.put("from email", line.substring(line.indexOf(':') + 1));
+			} else if (line.startsWith("password:")) {
+				loadedCredentials.put("password", line.substring(line.indexOf(':') + 1));
+			}
+
+			line = in.readLine();
+		}
+		return loadedCredentials;
+	}
+
 	@Override
 	public void logMessage(String message) {
+		System.out.println(message);
 		try {
 			log.write("[" + new Date().toString() + "]" + message);
 			log.newLine();

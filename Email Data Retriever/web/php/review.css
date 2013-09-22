@@ -1,0 +1,140 @@
+div.settings {
+	margin-left: 10px;
+}
+
+input {
+	width: 100%;
+}
+
+progress {
+  color: #0063a6;
+  font-size: .6em;
+  line-height: 1.5em;
+  text-indent: .5em;
+  width: 15em;
+  height: 1.8em;
+  border: 1px solid #0063a6;
+  background: #fff;
+}
+
+progress {
+  color: #0063a6;
+  font-size: .6em;
+  line-height: 1.5em;
+  text-indent: .5em;
+  width: 300px;
+  height: 1.8em;
+  border: 1px solid #0063a6;
+  background: #fff;
+}
+
+progress::-moz-progress-bar { background: #0063a6; }
+progress::-webkit-progress-bar { background: #fff; }
+progress::-webkit-progress-value { background: #0063a6;}
+
+select {
+	width: 100%;
+}
+
+table.settings {
+	border-spacing: 10px 0px;
+}
+
+#fileNamesLabel {
+	color: gray;
+}
+
+#collection-progress {
+	padding-left: 20px;
+}
+
+#loadingContainer {
+	width:100%;
+    position:absolute;
+    left:0;
+    top:200px;
+    display:block;
+}
+
+#loadingMessage {
+	position: float;
+	top: 100px;
+	background-color: white;
+	color: black;
+	width: 600px;
+	margin:0 auto;
+    margin:30px auto 0;
+    padding:6px;
+	border-style: solid;
+	border-radius: 10px;
+	border-width: 2px;
+	margin: auto;
+}
+
+#overlay {
+	opacity : 0.4;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: black;
+	width: 100%;
+	height: 100%;
+}
+
+#reviewer {
+	width: 800px;
+	magin: auto;
+	background-color: #C0C0C0;
+	border-style: solid;
+	border-radius: 10px;
+	border-width: 2px;
+	padding: 10px;
+}
+
+#retriever-form {
+	margin-left: 40px;
+	margin-right: 40px;
+}
+
+.checkbox {
+	width: 10px;
+}
+
+.center {
+	margin:auto;
+}
+
+.collector-button {
+	width: 150px;
+	margin-right: 0px;
+	margin-left: auto;
+}
+
+.email-input {
+	width: 70%;
+}
+
+.section-border {
+	border-style: dashed;
+	border-width: 1px;
+	margin-top: 20px;
+	padding-top: 15px;
+	padding-bottom: 10px;
+}
+
+.section-label {
+	float: left;
+	width: fit-content;
+	margin-left: 15px;
+	margin-top: -25px;
+	background-color: #C0C0C0;
+	text-align: center;
+}
+
+.setting {
+	position: inline-block;
+}
+
+.short-input {
+	width: 50px;
+}
