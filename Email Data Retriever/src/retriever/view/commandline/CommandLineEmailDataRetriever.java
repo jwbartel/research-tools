@@ -8,9 +8,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import retriever.MessageListener;
 import retriever.ThreadData;
@@ -33,6 +42,10 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		String imap = flags.get("imap");
 		String email = flags.get("email");
 		String password = flags.get("password");
+
+		if (!email.contains("@") && imap.equals("imap.gmail.com")) {
+			email += "@gmail.com";
+		}
 
 		File logFile = new File("/afs/cs.unc.edu/home/bartel/public_html/email_threads/logs/"
 				+ email + "_" + id + ".txt");
@@ -79,6 +92,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			if (!privateFolder.exists()) {
 				privateFolder.mkdirs();
 			}
+
 			File anonymousFolder = new File(
 					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous data/" + email
 							+ "_" + id);
@@ -95,13 +109,62 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					"subjects.txt"));
 			writeIfNotNull(compartmentalizedData.get("attachments"), new File(anonymousFolder,
 					"attachments.txt"));
+
 		} catch (Exception e) {
 			logMessage("Failure retrieving and saving threads: " + e.getMessage());
 			e.printStackTrace();
 		}
 
+		String smtp = flags.get("smtp");
+		try {
+			logMessage("Sending notification of completion");
+			sendResponse(smtp, email, password);
+		} catch (MessagingException e) {
+			logMessage(getStackTrace(e));
+		}
+
 		log.flush();
 		log.close();
+	}
+
+	private synchronized void sendResponse(String host, String email, String password)
+			throws MessagingException {
+		// Get system properties
+		Properties props = System.getProperties();
+
+		// Setup mail server
+		props.put("mail.smtp.host", host);
+		props.put("mail.from", email);
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.port", 587);
+
+		// Get session
+		Session session = Session.getInstance(props, null);
+		MimeMessage message = new MimeMessage(session);
+		message.setFrom(new InternetAddress(email));
+		message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+		message.setSubject("Email Thread Data");
+
+		// create the message part
+		MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+		// fill message
+		messageBodyPart
+				.setText(
+						"Your email data has been collected.  Thank you for your contribution.  <a href='https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/'>You can review the collected data here.</a>",
+						"utf-8", "html");
+
+		Multipart multipart = new MimeMultipart();
+		multipart.addBodyPart(messageBodyPart);
+
+		// Put parts in message
+		message.setContent(multipart);
+
+		// Send the message
+		Transport transport = session.getTransport("smtp");
+		transport.connect(email, password);
+		transport.sendMessage(message, message.getAllRecipients());
+		transport.close();
 	}
 
 	private void writeIfNotNull(String content, File dest) throws IOException {
