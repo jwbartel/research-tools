@@ -4,7 +4,6 @@
 $javaParams = array(
 	'id' => time(),
 	'imap' => $_POST['i'],
-	'smtp' => $_POST['s'],
 	'email' => $_POST['e'],
 	'password' => $_POST['p'],
 	'messages' => $_POST['m'],

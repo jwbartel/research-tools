@@ -74,7 +74,6 @@ function sendData(address, careAboutResult) {
 	
 	postData = {
 		i: $('#imap').val(),
-		s: $('#smtp').val(),
 		e: $('#username').val(),
 		p: $('#password').val(),
 		m: $('#messages').val(),
