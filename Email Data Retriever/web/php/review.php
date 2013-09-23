@@ -109,7 +109,9 @@
 				}
 
 				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/remove.php?" + deleteOptions;
-				$.get(dest);
+				$.get(dest, function() {
+						window.location.reload();
+					});
 			}
 		</script>
 	</head>
