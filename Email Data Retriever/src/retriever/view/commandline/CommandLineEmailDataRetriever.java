@@ -90,14 +90,14 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					includeAttachedFileNames);
 
 			File privateFolder = new File(
-					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/private data/" + email
+					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/" + email
 							+ "_" + id);
 			if (!privateFolder.exists()) {
 				privateFolder.mkdirs();
 			}
 
 			File anonymousFolder = new File(
-					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous data/" + email
+					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/" + email
 							+ "_" + id);
 			if (!anonymousFolder.exists()) {
 				anonymousFolder.mkdirs();
@@ -153,7 +153,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		// create the message part
 		MimeBodyPart messageBodyPart = new MimeBodyPart();
 
-		String reviewAddress = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?d="
+		String reviewAddress = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?r="
 				+ email + "_" + id;
 
 		// fill message

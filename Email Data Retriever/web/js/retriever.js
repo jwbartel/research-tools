@@ -52,7 +52,7 @@ function testAuthentication() {
 		return;
 	}
 	showLoading();
-	sendData("php/authenticator.php");
+	sendData("php/authenticator.php", true);
 }
 
 function collectData() {
@@ -64,10 +64,13 @@ function collectData() {
 			.append($('<center></center>').append($('<img></img>')
 					.prop('src', 'img/spinner.gif')
 					.prop('alt', 'Loading...'))));
-	sendData("php/retriever.php");
+	sendData("php/retriever.php", false);
+	$('#loadingContainer').html("Thank you for contributing. Your data is being uploaded in the background."+
+			"You will be emailed at your provided email address when it has completed <br>" +
+			"<a href='javascript:reset()'>Click here to try a different email address</a>");
 }
 
-function sendData(address) {
+function sendData(address, careAboutResult) {
 	
 	postData = {
 		i: $('#imap').val(),
@@ -82,9 +85,13 @@ function sendData(address) {
 		f: $('#fileNames').is(":checked"),
 	}
 	
-	$.post(address , postData, function( data ) {
-		$('#loadingMessage').html(data);
-	});
+	if(careAboutResult) {
+		$.post(address , postData, function( data ) {
+			$('#loadingMessage').html(data);
+		});
+	} else {
+		$.post(address , postData);
+	}
 	
 }
 

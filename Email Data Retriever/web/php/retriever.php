@@ -25,10 +25,4 @@ $email = $_POST['e'];
 $logFile = '/afs/cs.unc.edu/home/bartel/public_html/email_threads/logs/'.$email.'_'.$javaParams['id'].'.txt';
 exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' >& '.$logFile);
 
-
-print "Thank you for contributing. Your data is being uploaded in the background. ";
-print "You will be emailed at your provided email address when it has completed";
-print "<br>";
-print "<a href='javascript:reset()'>Click here to try a different email address</a>";
-
 ?>

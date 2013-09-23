@@ -1,6 +1,8 @@
 *.class
 *.classpath
 *.project
+*.settings
+*credentials
 
 # Package Files #
 *.jar
@@ -9,6 +11,3 @@
 
 # Ignore files from SyncToy
 *SyncToy_*
-
-# Ignore the credentials
-credentials

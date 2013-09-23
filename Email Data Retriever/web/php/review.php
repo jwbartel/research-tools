@@ -1,14 +1,9 @@
 <html>
 	
-	<head>
-		<title>Email Thread Data Review</title>
-		<link rel="stylesheet" href="review.css">
-	</head>
-	
 	<?php 
 		$record_id = $_GET['r'];
-		$anonymous_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous data/'.$record_id;
-		$private_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/private data/'.$record_id;
+		$anonymous_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/'.$record_id;
+		$private_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/'.$record_id;
 		$messages_file = $anonymous_folder.'/messages.txt';
 		$addresses_file = $private_folder.'/addresses.txt';
 		$addr_exist = file_exists($addresses_file);
@@ -57,7 +52,7 @@
 			$num_columns += 1;
 		}
 		
-		$col_width = 800/$num_columns;
+		$col_width = ($num_columns > 0)? 800/$num_columns: 0;
 		
 		function writeColumn($exists, $data, $label, $width) {
 			if ($exists) {
@@ -74,6 +69,50 @@
 			}
 		}
 	?>
+	
+	<head>
+		<title>Email Thread Data Review</title>
+		<link rel="stylesheet" href="review.css">
+		<script src='../js/jquery-1.10.2.min.js' type='text/javascript'></script>
+		<script type='text/javascript'>
+			function removeData() {
+				<?php 
+					print 'deleteOptions = "id='.$_GET['r'].'";';
+				?>
+
+				deleteOptions += '&addr=';
+				if($('#removeAddresses') != null && $('#removeAddresses').is(":checked")){
+					deleteOptions += 'yes';
+				} else {
+					deleteOptions +='no';
+				}
+
+				deleteOptions += '&subj=';
+				if($('#removeSubjects') != null && $('#removeSubjects').is(":checked")){
+					deleteOptions += 'yes';
+				} else {
+					deleteOptions +='no';
+				}
+
+				deleteOptions += '&attach=';
+				if($('#removeAttachments') != null && $('#removeAttachments').is(":checked")){
+					deleteOptions += 'yes';
+				} else {
+					deleteOptions +='no';
+				}
+
+				deleteOptions += '&all=';
+				if($('#removeAll') != null && $('#removeAll').is(":checked")){
+					deleteOptions += 'yes';
+				} else {
+					deleteOptions +='no';
+				}
+
+				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/remove.php?" + deleteOptions;
+				$.get(dest);
+			}
+		</script>
+	</head>
 	<div class="center" id="reviewer">
 	<h1>Review Retrived Thread data</h1>
 	<table style='border-spacing:10'>
@@ -87,17 +126,9 @@
 		</tr>
 	</table>
 	
-	<center>
+	<input class="setting checkbox" type="checkbox" id="removeAll">
+	Remove all data about messages and threads.
 	
-		<?php 
-			if (!($addr_exist || $subj_exist || $attach_exist)) {
-				print('<h3>No data about email addresses, subjects, or attachments were collected.</h3>');
-			}
-		?>
-		<input class="setting checkbox" type="checkbox" id="removeAllData">
-		Remove all collected data about messages, threads, and dates.
-	</center>
-	
-	<input type='submit' value='Submit changes to retrieved data' style='width:100%'>
+	<input type='submit' value='Remove selected data' style='width:100%' onclick='removeData()'>
 	</div>
 </html>
