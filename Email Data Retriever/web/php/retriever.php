@@ -21,7 +21,6 @@ foreach($javaParams as $key => $value) {
 }
 
 $email = $_POST['e'];
-$logFile = '/afs/cs.unc.edu/home/bartel/public_html/email_threads/logs/'.$email.'_'.$javaParams['id'].'.txt';
-exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' >& '.$logFile);
+exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' &');
 
 ?>
