@@ -86,7 +86,7 @@ public class ThreadData {
 		if (addressIDs == null) {
 			buildAddressIDs();
 		}
-		
+
 		String summaryStr = "";
 		String messagesStr = "";
 		String subjectsStr = "";
@@ -94,7 +94,6 @@ public class ThreadData {
 		String addressesStr = (includeFullEmailAddresses) ? getAddressMappings() : "";
 
 		int totalMessagesInThreads = 0;
-		String messageVectors = "";
 		int threadID = 1;
 		int messageID = 1;
 		for (Set<OfflineMessage> thread : threads) {
@@ -142,10 +141,12 @@ public class ThreadData {
 
 				// Get Attachments
 				if (includeAttachments) {
-					messageVector += " Num_Attachments:" + message.getAttachedFiles().size();
+					attachmentsStr += "Message: " + messageID + " Num_Attachments:"
+							+ message.getAttachedFiles().size();
 					if (includeAttachedFileNames) {
-						messageVector += " AttachedFiles:" + message.getAttachedFiles();
+						attachmentsStr += " AttachedFiles:" + message.getAttachedFiles();
 					}
+					attachmentsStr += "\n";
 				}
 
 				messageID++;

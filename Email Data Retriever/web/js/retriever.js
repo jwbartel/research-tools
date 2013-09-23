@@ -65,7 +65,7 @@ function collectData() {
 					.prop('src', 'img/spinner.gif')
 					.prop('alt', 'Loading...'))));
 	sendData("php/retriever.php", false);
-	$('#loadingContainer').html("Thank you for contributing. Your data is being uploaded in the background."+
+	$('#loadingMessage').html("Thank you for contributing. Your data is being uploaded in the background."+
 			"You will be emailed at your provided email address when it has completed <br>" +
 			"<a href='javascript:reset()'>Click here to try a different email address</a>");
 }
