@@ -34,6 +34,15 @@ function showLoading() {
 					.prop('alt', 'Loading...'))));
 }
 
+function sharedNoData() {
+	return !(
+			$('#subjects').is(":checked") &&
+			$('#addresses').is(":checked") &&
+			$('#addresses').is(":checked") &&
+			$('#addresses').is(":checked")
+	)
+}
+
 
 function testAuthentication() {
 	email = $('#username').val();
@@ -51,6 +60,16 @@ function testAuthentication() {
 		alert("Both max number of messages and number of threads should be positive integers.");
 		return;
 	}
+	
+	if (sharedNoData()) {
+		shouldUseNoData = confirm('Are you sure you do not want to contribute any data about subjects, email, or attachments? '+
+				' It would greatly benefit our research.\n'+
+				'If you would like to go back to share this data, please kick cancel below.')
+		if (!shouldUseNoData) {
+			return;
+		}
+	}
+	
 	showLoading();
 	sendData("php/authenticator.php", true);
 }
