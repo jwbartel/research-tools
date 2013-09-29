@@ -74,8 +74,8 @@ function sendData(address, careAboutResult) {
 	
 	postData = {
 		i: $('#imap').val(),
-		e: $('#username').val(),
-		p: $('#password').val(),
+		e: encodeURIComponent($('#username').val()),
+		p: encodeURIComponent($('#password').val()),
 		m: $('#messages').val(),
 		t: $('#threads').val(),
 		subj: $('#subjects').is(":checked"),

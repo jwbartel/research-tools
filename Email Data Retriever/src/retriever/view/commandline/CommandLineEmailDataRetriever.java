@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,8 +44,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 		String id = flags.get("id");
 		String imap = flags.get("imap");
-		String email = flags.get("email");
-		String password = flags.get("password");
+		String email = URLDecoder.decode(flags.get("email"), "UTF-8");
+		String password = URLDecoder.decode(flags.get("password"), "UTF-8");
 
 		if (!email.contains("@") && imap.equals("imap.gmail.com")) {
 			email += "@gmail.com";
@@ -60,6 +61,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			authenticator.login(imap, email, password);
 		} catch (MessagingException e) {
 			logMessage("Failed logged in");
+			logMessage(getStackTrace(e));
 			System.out.print("Login Failed: " + e.getMessage());
 			System.out.print("<br>");
 			System.out.print("<a href='javascript:hideLoading()'>Try Again</a>");
