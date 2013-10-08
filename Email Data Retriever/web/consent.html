@@ -1,0 +1,203 @@
+<html>
+	<head>
+		<title>Adult Consent Form</title>
+		<link rel="stylesheet" href="consent.css">
+		<script type="text/javascript">
+		function validateForm() {
+			
+
+			var agreed=document.getElementById("readAndAgree").checked;
+			if (!agreed) {
+				alert("You must read and agree to the consent form");
+				return false;
+			}
+			
+			var signature=document.forms["agree"]["participantSig"].value;
+			if (signature==null || signature=="") {
+				alert("You must provide a signature");
+				return false;
+			}
+			
+			var currDate = new Date();
+			var monthStr = ""+(currDate.getMonth()+1);
+			monthStr = (monthStr.length == 1)? "0"+monthStr: monthStr;
+			var dayStr = ""+currDate.getDate();
+			dayStr = (dayStr.length == 1)? "0"+dayStr: dayStr;
+			var yearStr = ""+currDate.getFullYear();
+			var currDateStr = monthStr + "-" + dayStr + "-" + yearStr;
+			
+			var date=document.forms["agree"]["date"].value;
+			if (date==null || currDateStr.valueOf() != date.valueOf()) {
+				alert("The date must be of the form MM-DD-YYYY for the current day");
+				return false;
+			}
+		}
+		</script>
+	</head>
+	
+	<body>
+		<h3>Please read and sign the following consent form</h3>
+	
+		<div id="consentForm">
+		<p>
+		University of North Carolina-Chapel Hill <br>
+		Consent to Participate in a Research Study <br>
+		Adult Participants <br>
+		Social Behavioral Form <br>
+		</p>
+		
+		<hr>
+		
+		<p>
+		<strong>IRB Study #</strong> 08-1068 <br>
+		<strong>Consent Form Version Date:</strong> October 08, 2013 <br>
+		<br>
+		<strong>Title of Study:</strong> Collaborative Mixed-Initiative Access Control <br>
+		<br>
+		<strong>Principal Investigator:</strong> Prasun Dewan <br>
+		<strong>UNC-Chapel Hill Department:</strong> Computer Science <br>
+		<strong>UNC-Chapel Hill Phone number:</strong> 919-962-1823 <br>
+		<strong>Email Address:</strong> dewan@cs.unc.edu <br>
+		<strong>Funding Source:</strong> NSF <br>
+		<br>
+		<strong>Study Contact telephone number:</strong> 919-962-1823 <br>
+		<strong>Study Contact email:</strong> dewan@cs.unc.edu <br>
+		</p>
+		
+		<hr>
+		
+		<p>
+		<strong>What are some general things you should know about research studies?</strong><br>
+		You are being asked to take part in a research study. To join the study is voluntary. You may refuse to join, or you may withdraw your consent to be in the study, for any reason, without penalty.
+Research studies are designed to obtain new knowledge. This new information may help people in the future. You may not receive any direct benefit from being in the research study. There also may be risks to being in research studies.
+Details about this study are discussed below. It is important that you understand this information so that you can make an informed choice about being in this research study.
+You will be given a copy of this consent form. You should ask the researchers named above any questions you have about this study at any time.
+		</p>
+		
+		<p>
+		<strong>What is the purpose of this study?</strong><br>
+		The purpose of this study is to determine how easy it is to use certain access control mechanisms to ensure secure collaboration. The data will be collected from at least 6 as they specify access control policies using various access control mechanisms. The data may include the access control needs of the participants and participant-specific information that can be used to semi-automatically meet these needs. To determine how well the access control needs of the subjects are met, we may log interactions of the participants and ask them to answer questions evaluating the mechanisms.
+		</p>
+		
+		<p>
+		<strong>How many people will take part in this study?</strong><br>
+		This study will recruit at least 6 people.
+		</p>
+		
+		<p>
+		<strong>How long will your part in this study last?</strong><br>
+		Your part in this study will consist of one or more sessions involving different kinds of sub tasks, with each session lasting no more than three hours. You may be contacted by electronic mail after each session to determine additional information. If you are contacted by electronic mail, it will be within two months of today. You will be allowed to volunteer for more than one session involving different tasks.
+		</p>
+		
+		<p>
+		<strong>What will happen if you take part in the study?</strong><br>
+		During a study session, you will be asked to complete one or more subtasks, involving one or more of the following steps:
+		<ul>
+			<li>
+			Access control experience, needs, and relevant data: We might determine your experience with setting access control in various environments such as a file system or social network. We might also determine from you how you would ideally like to exert the control in each of these systems. We might also determine data such as who your friends are in a social network that will allow our tools to semi-automatically meet these needs.
+			</li>
+			<li>
+			Task training: The purpose of this step is to get you accustomed with the access control mechanisms and collaboration tools you will be using.
+			</li>
+			<li>
+			Complete the tasks: A task may involve no collaboration, collaboration with the computer/study-conductor, or collaboration with other participants. For example, you may be asked to individually create Facebook friend lists without conducting any collaboration task that needs these lists. On the other extreme, you may be asked to, for example, selectively share information with other participants while also competing with them to win a game that reliably predicts how well basketball teams did in playoffs based on the records of these teams before playoffs. You may collaborate with each other to determine and specify the access control policies. In general, you may be asked to complete the task alone, together with collocated users sharing a single computer, or with physically distributed users, each using a separate computer. The purpose of this step is to determine how easy-to-use certain access control mechanisms are to specify certain kinds of access control policies.
+			</li>
+			<li>
+			Debriefing: After the tasks are completed or the time allotted to them is over, you will be asked to answer a questionnaire and volunteer any additional comments.
+			</li>
+		</ul>
+		</p>
+		
+		<p>
+		<strong>What are the possible benefits from being in this study?</strong><br>
+		Research is designed to benefit society by gaining new knowledge. This study is designed to evaluate various aspects of access control mechanisms. You may not benefit personally from being in this research study.
+		</p>
+		
+		<p>
+		<strong>What are the possible risks or discomforts involved from being in this study?</strong><br>
+		There are no known risks.
+		</p>
+		
+		<p>
+		<strong>How will your privacy be protected?</strong><br>
+		To reduce privacy and confidentiality risks, the data collected in the study will not be associated with information that can be used to identify you. You will be assigned a code number, which will be the only link to your identity. You will not have any personally identifying
+information stored in the logs created as part of this study. All records will be stored electronically in a secure file system. Stored data will only have your code number and will not have any identifiers. The information that associates your name with a code number will be stored separately from these records. All mappings between code numbers and names will be destroyed at the conclusion of the experiment.
+Note that even though we will collect participant emails as contact data, the emails will in no way be associated with any of the data we collect. Furthermore, upon study completion, as mentioned above, all contact information will be destroyed.
+		</p>
+		
+		<p>
+		<strong>How will your privacy be protected?</strong><br>
+		To reduce privacy and confidentiality risks, the data collected in the study will not be associated with information that can be used to identify you. You will be assigned a code number, which will be the only link to your identity. You will not have any personally identifyinginformation stored in the logs created as part of this study. All records will be stored electronically in a secure file system. Stored data will only have your code number and will not have any identifiers. The information that associates your name with a code number  will be stored separately from these records. All mappings between code numbers and names will be destroyed at the conclusion of the experiment. <br>
+		Note that even though we will collect participant emails as contact data, the emails will in no way be associated with any of the data we collect. Furthermore, upon study completion, as mentioned above, all contact information will be destroyed.<br>
+		Participants will not be identified in any report or publication about this study. Although every effort will be made to keep research records private, there may be times when federal or state law requires the disclosure of such records, including personal information. This is very unlikely, but if disclosure is ever required, UNC-Chapel Hill will take steps allowable by law to protect the privacy of personal information. In some cases, your information in this research study could be reviewed by representatives of the University, research sponsors, or government agencies for purposes such as quality control or safety.
+		</p>
+		
+		<p>
+		<strong>Will you receive anything for being in this study?</strong><br>
+		You will receive up to $5 for participating in the study for each session, which will be paid when you start the session. Food and refreshments may be provided for you at the study site. You will not have to refund the money if you withdraw from the experiment at any time. If you do not arrive for the interview, you will not be paid.
+		</p>
+		
+		<p>
+		<strong>Will it cost you anything to be in this study?</strong><br>
+		There will be no costs for being in the study apart from your time.
+		</p>
+		
+		<p>
+		<strong>What if you are a UNC student?</strong><br>
+		You may choose not to be in the study or to stop being in the study before it is over at any time. This will not affect your class standing or grades at UNC-Chapel Hill. You will not be offered or receive any special consideration if you take part in this research.
+		</p>
+		
+		<p>
+		<strong>What if you are a UNC employee?</strong><br>
+		Taking part in this research is not a part of your University duties, and refusing will not affect your job. You will not be offered or receive any special job-related consideration if you take part in this research
+		</p>
+		
+		<p>
+		<strong>What if you have questions about this study?</strong><br>
+		You have the right to ask, and have answered, any questions you may have about this research. If you have questions, or concerns, you should contact the researchers listed on the first page of this form.
+		</p>
+		
+		<p>
+		<strong>What if you have questions about your rights as a research participant?</strong><br>
+		All research on human volunteers is reviewed by a committee that works to protect your rights and welfare. If you have questions or concerns about your rights as a research subject you may contact, anonymously if you wish, the Institutional Review Board at 919-966-3113 or by email to IRB_subjects@unc.edu.
+		</p>
+		
+		<form name="agree" action="php/consent.php" method="post" onsubmit="return validateForm();">
+		<p>
+		<strong>Participant's Agreement:</strong><br>
+		<table>
+			<tr>
+				<td>
+					<input type="checkbox" id="readAndAgree">
+				</td>
+				<td>
+					I have read the information provided above. I have asked all the questions I have at this time. I voluntarily agree to participate in this research study.
+				</td>
+			</tr>
+		</table>
+		</p>
+		
+		<table>
+			<tr>
+				<td>
+					<input class="signature" id="participantSig" name="participantSig">
+					<br>
+					Typed signature of the participant.
+				</td>
+				<td>
+					<input class="signature" id="date" name="date">
+					<br>
+					Date (MM-DD-YYYY)
+				</td>
+			</tr>
+		</table>
+		
+		<br>
+		<input type="Submit">
+		</form>
+		</div>
+	
+	</body>
+	
+
+</html>

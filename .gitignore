@@ -3,6 +3,7 @@
 *.project
 *.settings
 *credentials
+*config.php
 
 # Package Files #
 *.jar
@@ -11,3 +12,6 @@
 
 # Ignore files from SyncToy
 *SyncToy_*
+
+# Ignore libraries
+*google-api-php-client/
