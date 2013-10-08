@@ -2,7 +2,7 @@
 
 
 $javaParams = array(
-	'id' => time(),
+	'id' => $_POST['id'],
 	'imap' => $_POST['i'],
 	'email' => $_POST['e'],
 	'password' => $_POST['p'],

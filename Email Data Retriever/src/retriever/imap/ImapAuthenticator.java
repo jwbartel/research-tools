@@ -38,6 +38,8 @@ public class ImapAuthenticator {
 
 	public void login(String imapServer, String email, String password) throws MessagingException {
 		logMessage("Logging in");
+		logMessage("Email address:" + email);
+		logMessage("ImapServer:" + imapServer);
 
 		Properties props = System.getProperties();
 		props.setProperty("mail.store.protocol", "imaps");

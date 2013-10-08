@@ -51,8 +51,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			email += "@gmail.com";
 		}
 
-		File logFile = new File("/afs/cs.unc.edu/home/bartel/public_html/email_threads/logs/"
-				+ email + "_" + id + ".txt");
+		File logFile = new File("/afs/cs.unc.edu/home/bartel/public_html/email_threads/logs/" + id
+				+ ".txt");
 		log = new BufferedWriter(new FileWriter(logFile, true));
 
 		ImapAuthenticator authenticator = new ImapAuthenticator();
@@ -92,15 +92,13 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					includeAttachedFileNames);
 
 			File privateFolder = new File(
-					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/" + email
-							+ "_" + id);
+					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/" + id);
 			if (!privateFolder.exists()) {
 				privateFolder.mkdirs();
 			}
 
 			File anonymousFolder = new File(
-					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/" + email
-							+ "_" + id);
+					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/" + id);
 			if (!anonymousFolder.exists()) {
 				anonymousFolder.mkdirs();
 			}
@@ -156,7 +154,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		MimeBodyPart messageBodyPart = new MimeBodyPart();
 
 		String reviewAddress = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?r="
-				+ email + "_" + id;
+				+ id;
 
 		// fill message
 		messageBodyPart.setText(
