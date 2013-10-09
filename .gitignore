@@ -15,4 +15,3 @@
 
 # Ignore libraries
 *google-api-php-client/
-*google-auth/
