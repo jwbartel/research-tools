@@ -1,8 +1,10 @@
 <?php 
-	
+	session_start();	
+
 	$signature = $_POST['participantSig'];
 	$date = $_POST['date'];
 	$id = time();
+	$_SESSION['id'] = $id;
 	
 	$private_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/'.$id;
 	if (!file_exists ($private_folder)) {
