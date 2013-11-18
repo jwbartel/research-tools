@@ -93,8 +93,8 @@ public class AuthenticationPane extends JPanel implements MessageListener {
 		password = new JPasswordField();
 		password.addActionListener(listener);
 
-		String[] possibleImapServers = { "imap.gmail.com" };// ,
-															// "outlook.unc.edu"};
+		String[] possibleImapServers = { "imap.gmail.com" , "outlook.office365.com"};
+
 		imapServer = new JComboBox();
 		for (String possibleImapServer : possibleImapServers) {
 			imapServer.addItem(possibleImapServer);
@@ -105,8 +105,8 @@ public class AuthenticationPane extends JPanel implements MessageListener {
 			public void actionPerformed(ActionEvent arg0) {
 				if (getIMAPServer().equals("imap.gmail.com")) {
 					smtpServer.setText("smtp.gmail.com");
-				} else if (getIMAPServer().equals("outlook.unc.edu")) {
-					smtpServer.setText("smtp.unc.edu");
+				} else if (getIMAPServer().equals("outlook.office365.com")) {
+					smtpServer.setText("smtp.office365.com");
 				} else {
 					smtpServer.setText("");
 				}
