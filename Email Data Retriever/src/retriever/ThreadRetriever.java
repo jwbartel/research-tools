@@ -239,6 +239,7 @@ public abstract class ThreadRetriever {
                         String inReplyTo = message.getInReplyTo();
                         sortIntoThreads(message, messageID, numThreads, references, inReplyTo,
                                 idsForThreads, threads, unseenMessages, seenMessages);
+                        System.out.println(message.getReceivedDate());
                     }
 
                     if ((threads.size() >= numThreads && unseenMessages.size() == 0)

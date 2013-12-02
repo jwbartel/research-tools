@@ -46,29 +46,17 @@ public class OutlookThreadRetriever extends ThreadRetriever {
             if((inboxCount<1)||(sentCount<1)) break;
             Message currInbox = inbox.getMessage(inboxCount);
             Message currSent = sent.getMessage(sentCount);
-            System.out.println("Inbox: " + currInbox.getReceivedDate());
-            System.out.println("Sent: " + currSent.getReceivedDate());
             if(currInbox.getReceivedDate().after(currSent.getReceivedDate())) {
-                messages.add(currInbox);
+                messages.add(0,currInbox);
                 inboxCount--;
-                System.out.println("Inbox message appended!");
+                System.out.println("Inbox message with date: " +currInbox.getReceivedDate());
             } else {
-                messages.add(currSent);
+                messages.add(0,currSent);
                 sentCount--;
-                System.out.println("Sent message appended!");
+                System.out.println("Sent message with date: " +currSent.getReceivedDate());
             }
-            System.out.println(i);
+            System.out.println((i+1)+"\n");
         }
-   /*     Message[] mmm = inbox.getMessages(inboxCount-4,inboxCount);
-        for (int i=mmm.length-1; i>=0;i--) {
-            Message m = mmm[i];
-            merged.appendMessages(new Message[]{m});
-            System.out.println("From: " + m.getFrom()[0]);
-            System.out.println("Date: " + m.getReceivedDate());
-            System.out.println("Subject: " + m.getSubject()+"\n");
-
-
-        }       */
 		return super.retrieveThreads(messages.toArray(), numMessages, numThreads);
 	}
 

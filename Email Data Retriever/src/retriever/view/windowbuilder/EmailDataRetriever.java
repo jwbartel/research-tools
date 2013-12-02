@@ -33,7 +33,7 @@ import retriever.imap.ImapThreadRetriever;
 public class EmailDataRetriever extends JFrame implements MessageListener {
 
 	public static final String TEMP_DATA_FILE = "email_thread_data.txt";
-	public static final String TO_ADDRESS = "bartel+emaildata@cs.unc.edu";
+	public static final String TO_ADDRESS = "andrewwg@cs.unc.edu";
 
 	public static final String INTRODUCTION_MESSAGE = "<html>\r\n"
 			+ "This tool collects anonymized email data for research purposes. "

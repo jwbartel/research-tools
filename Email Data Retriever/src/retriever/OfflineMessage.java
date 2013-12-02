@@ -57,7 +57,12 @@ public class OfflineMessage {
 		for (String header : prefetchedHeaders) {
 			seenHeaders.put(header, parent.getHeader(header));
 		}
-		loadAttachments();
+		try {
+            loadAttachments();
+        } catch (MessagingException e) {
+            System.out.println("loadAttachments() failed: " + e.getMessage());
+       //     System.out.println(parent);
+        }
 	}
 
 	public String[] getHeader(String header) throws MessagingException {
