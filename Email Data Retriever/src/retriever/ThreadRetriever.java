@@ -41,7 +41,9 @@ public abstract class ThreadRetriever {
 	}
 
 	public void addMessageListener(MessageListener l) {
-		messageListeners.add(l);
+		if (!messageListeners.contains(l)) {
+			messageListeners.add(l);
+		}
 	}
 
 	private ArrayList<String> getStringAddresses(Set<OfflineMessage> thread)
@@ -205,62 +207,64 @@ public abstract class ThreadRetriever {
 		return retrieveThreads(folder, DEFAULT_MAX_MESSAGES, DEFAULT_NUM_THREADS_RETRIEVED);
 	}
 
-	protected ThreadData retrieveThreads(Object [] messages, int numMessages, int numThreads) {
-        ArrayList<ArrayList<String>> idsForThreads = new ArrayList<ArrayList<String>>();
-        ArrayList<Set<OfflineMessage>> threads = new ArrayList<Set<OfflineMessage>>();
-        Set<String> seenMessages = new TreeSet<String>();
-        Set<String> unseenMessages = new TreeSet<String>();
+	protected ThreadData retrieveThreads(Object[] messages, int numMessages, int numThreads) {
+		ArrayList<ArrayList<String>> idsForThreads = new ArrayList<ArrayList<String>>();
+		ArrayList<Set<OfflineMessage>> threads = new ArrayList<Set<OfflineMessage>>();
+		Set<String> seenMessages = new TreeSet<String>();
+		Set<String> unseenMessages = new TreeSet<String>();
 
-        logMessage("Retrieving data from the latest " + numThreads
-                + " threads using at most the latest " + numMessages + " messages.\n");
-        try {
+		logMessage("Retrieving data from the latest " + numThreads
+				+ " threads using at most the latest " + numMessages + " messages.\n");
+		try {
 
-                for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
-                    String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
-                            "References" };
-                    OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos],
-                            prefetchedHeaders);
+			for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
+				String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
+						"References" };
+				OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos],
+						prefetchedHeaders);
 
-                    if (message.getHeader("Message-ID") == null
-                            || message.getHeader("Message-ID").length < 1) {
-                        continue;
-                    }
+				if (message.getHeader("Message-ID") == null
+						|| message.getHeader("Message-ID").length < 1) {
+					continue;
+				}
 
-                    String messageID = message.getHeader("Message-ID")[0];
-                    if (seenMessages.contains(messageID)) {
-                        continue;
-                    } else {
-                        seenMessages.add(messageID);
-                    }
+				String messageID = message.getHeader("Message-ID")[0];
+				if (seenMessages.contains(messageID)) {
+					continue;
+				} else {
+					seenMessages.add(messageID);
+				}
 
-                    if (!messageChecker.shouldIgnore(message)
-                            || (threads.size() == numThreads && unseenMessages.contains(messageID))) {
-                        ArrayList<String> references = message.getReferences();
-                        String inReplyTo = message.getInReplyTo();
-                        sortIntoThreads(message, messageID, numThreads, references, inReplyTo,
-                                idsForThreads, threads, unseenMessages, seenMessages);
-                        System.out.println(message.getReceivedDate());
-                    }
+				if (!messageChecker.shouldIgnore(message)
+						|| (threads.size() == numThreads && unseenMessages.contains(messageID))) {
+					ArrayList<String> references = message.getReferences();
+					String inReplyTo = message.getInReplyTo();
+					sortIntoThreads(message, messageID, numThreads, references, inReplyTo,
+							idsForThreads, threads, unseenMessages, seenMessages);
+					System.out.println(message.getReceivedDate());
+				}
 
-                    if ((threads.size() >= numThreads && unseenMessages.size() == 0)
-                            || seenMessages.size() >= numMessages) {
-                        break;
-                    }
-                    updateRetrievedMessageCounts(seenMessages.size(), threads.size(), unseenMessages.size());
-                }
+				if ((threads.size() >= numThreads && unseenMessages.size() == 0)
+						|| seenMessages.size() >= numMessages) {
+					break;
+				}
+				updateRetrievedMessageCounts(seenMessages.size(), threads.size(),
+						unseenMessages.size());
+			}
 
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            logMessage("ERROR: " + e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            logMessage("ERROR: " + e.getMessage());
-        }
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logMessage("ERROR: " + e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+			logMessage("ERROR: " + e.getMessage());
+		}
 
-        updateRetrievedMessageCounts(seenMessages.size(), threads.size(), unseenMessages.size());
-        return new ThreadData(messages.length, threads, seenMessages, unseenMessages);
-    }
-    protected ThreadData retrieveThreads(Folder folder, int numMessages, int numThreads)
+		updateRetrievedMessageCounts(seenMessages.size(), threads.size(), unseenMessages.size());
+		return new ThreadData(messages.length, threads, seenMessages, unseenMessages);
+	}
+
+	protected ThreadData retrieveThreads(Folder folder, int numMessages, int numThreads)
 			throws MessagingException {
 
 		int totalMessages = folder.getMessageCount();
@@ -290,6 +294,11 @@ public abstract class ThreadRetriever {
 				for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
 					String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
 							"References" };
+
+					logMessage("Date: " + messages[msgPos].getHeader("Date")[0]);
+					logMessage("Received Date: " + messages[msgPos].getReceivedDate());
+					logMessage("Received Date Time: "
+							+ messages[msgPos].getReceivedDate().getTime());
 					OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos],
 							prefetchedHeaders);
 
@@ -347,8 +356,8 @@ public abstract class ThreadRetriever {
 		}
 
 		updateRetrievedMessageCounts(seenMessages.size(), threads.size(), unseenMessages.size());
-        folder.close(true);
-    //    folder.delete(true);
+		folder.close(true);
+		// folder.delete(true);
 		return new ThreadData(totalMessages, threads, seenMessages, unseenMessages);
 	}
 

@@ -20,7 +20,6 @@ foreach($javaParams as $key => $value) {
 	$javaParamStr .= '-'.$key.' '.$value;
 }
 
-$email = $_POST['e'];
 exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' &');
 
 ?>

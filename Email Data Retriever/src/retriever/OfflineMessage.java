@@ -2,6 +2,9 @@ package retriever;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -34,6 +37,8 @@ public class OfflineMessage {
 	static Pattern SUBJ_BLOB_PATTERN = Pattern.compile(SUBJ_BLOB);
 	static Pattern SUBJ_LEADER_PATTERN = Pattern.compile(SUBJ_LEADER);
 
+	final static DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+
 	MimeMessage parent;
 	private final Map<String, String[]> seenHeaders = new TreeMap<String, String[]>();
 	private String subject = null;
@@ -51,18 +56,32 @@ public class OfflineMessage {
 
 	private void preloadData(String[] prefetchedHeaders) throws MessagingException, IOException {
 		subject = parent.getSubject();
-		receivedDate = parent.getReceivedDate();
+		receivedDate = extractDate();
 		from = parent.getFrom();
 		allRecipients = parent.getAllRecipients();
 		for (String header : prefetchedHeaders) {
 			seenHeaders.put(header, parent.getHeader(header));
 		}
 		try {
-            loadAttachments();
-        } catch (MessagingException e) {
-            System.out.println("loadAttachments() failed: " + e.getMessage());
-       //     System.out.println(parent);
-        }
+			loadAttachments();
+		} catch (MessagingException e) {
+			System.out.println("loadAttachments() failed: " + e.getMessage());
+			// System.out.println(parent);
+		}
+	}
+
+	private Date extractDate() throws MessagingException {
+		String[] header = parent.getHeader("Date");
+		try {
+			if (header != null && header.length > 0) {
+				String dateStr = header[0];
+				Date date = dateFormat.parse(dateStr);
+				return date;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return parent.getReceivedDate();
 	}
 
 	public String[] getHeader(String header) throws MessagingException {

@@ -15,15 +15,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import javax.activation.DataHandler;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 import retriever.MessageListener;
 import retriever.ThreadData;
@@ -38,7 +36,14 @@ import retriever.imap.ImapThreadRetriever;
  */
 public class CommandLineEmailDataRetriever implements MessageListener {
 
+	final static File OUT_FOLDER = new File(
+			"/afs/cs.unc.edu/home/bartel/public_html/email_threads/");
+
 	BufferedWriter log;
+
+	private static File getSubOutFolder(String folderName) {
+		return new File(OUT_FOLDER, folderName);
+	}
 
 	public void run(ArrayList<String> args, Map<String, String> flags) throws IOException {
 
@@ -51,8 +56,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			email += "@gmail.com";
 		}
 
-		File logFile = new File("/afs/cs.unc.edu/home/bartel/public_html/email_threads/logs/" + id
-				+ ".txt");
+		File logFile = new File(getSubOutFolder("logs"), id + ".txt");
 		log = new BufferedWriter(new FileWriter(logFile, true));
 
 		ImapAuthenticator authenticator = new ImapAuthenticator();
@@ -82,6 +86,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		ImapThreadRetriever retriever = new ImapThreadRetriever(imap, authenticator.getStore());
 		retriever.addMessageListener(this);
 		try {
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 			ThreadData data = retriever.retrieveThreads(messages, threads);
 			boolean includeSubjects = Boolean.parseBoolean(flags.get("subjects"));
 			boolean includeFullEmailAddresses = Boolean.parseBoolean(flags.get("addresses"));
@@ -91,14 +96,12 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					includeSubjects, includeFullEmailAddresses, includeAttachments,
 					includeAttachedFileNames);
 
-			File privateFolder = new File(
-					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/" + id);
+			File privateFolder = new File(getSubOutFolder("private_data"), id);
 			if (!privateFolder.exists()) {
 				privateFolder.mkdirs();
 			}
 
-			File anonymousFolder = new File(
-					"/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/" + id);
+			File anonymousFolder = new File(getSubOutFolder("anonymous_data"), id);
 			if (!anonymousFolder.exists()) {
 				anonymousFolder.mkdirs();
 			}
@@ -149,26 +152,17 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		message.setFrom(new InternetAddress(credentials.get("from email")));
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 		message.setSubject("Email Thread Data");
-
 		// create the message part
-		MimeBodyPart messageBodyPart = new MimeBodyPart();
-
 		String reviewAddress = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?r="
 				+ id;
 
 		// fill message
-		messageBodyPart.setText(
-				"Your email data has been collected.  Thank you for your contribution.  <a href='"
-						+ reviewAddress + "'>You can review the collected data here.</a>", "utf-8",
-				"html");
-
-		Multipart multipart = new MimeMultipart();
-		multipart.addBodyPart(messageBodyPart);
-
-		// Put parts in message
-		message.setContent(multipart);
+		String bodyHtml = "Your email data has been collected.  Thank you for your contribution.  <a href='"
+				+ reviewAddress + "'>You can review the collected data here.</a>";
+		message.setDataHandler(new DataHandler(new ByteArrayDataSource(bodyHtml, "text/html")));
 
 		// Send the message
+		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 		Transport transport = session.getTransport("smtp");
 		transport.connect(credentials.get("username"), credentials.get("password"));
 		transport.sendMessage(message, message.getAllRecipients());
@@ -255,11 +249,19 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		return flags;
 	}
 
-	private String getStackTrace(Exception e) {
+	private String getStackTrace(Throwable e) {
 		StackTraceElement[] stack = e.getStackTrace();
 		String stacktrace = e.getClass().toString();
+		if (e.getMessage() != null) {
+			stacktrace += ": " + e.getMessage();
+		}
 		for (StackTraceElement s : stack) {
 			stacktrace += "\n\tat " + s.toString();
+		}
+
+		if (e.getCause() != null && e.getCause() != e) {
+			stacktrace += "\n\ncaused by ";
+			stacktrace += getStackTrace(e.getCause());
 		}
 		return stacktrace;
 	}
