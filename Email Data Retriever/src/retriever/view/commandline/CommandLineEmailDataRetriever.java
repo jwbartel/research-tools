@@ -42,7 +42,11 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 	BufferedWriter log;
 
 	private static File getSubOutFolder(String folderName) {
-		return new File(OUT_FOLDER, folderName);
+		File retVal = new File(OUT_FOLDER, folderName);
+		if (!retVal.exists()) {
+			retVal.mkdirs();
+		}
+		return retVal;
 	}
 
 	public void run(ArrayList<String> args, Map<String, String> flags) throws IOException {

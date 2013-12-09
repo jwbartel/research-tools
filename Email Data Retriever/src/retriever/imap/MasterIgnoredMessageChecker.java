@@ -9,6 +9,7 @@ public class MasterIgnoredMessageChecker implements IgnoredMessageChecker {
 	IgnoredMessageChecker[] checkers = {
 			new FacebookIgnoredMessageChecker(),
 			new TwitterIgnoredMessageChecker(),
+			new GooglePlusIgnoredMessageChecker(),
 	};
 	
 	@Override
