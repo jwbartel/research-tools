@@ -1,10 +1,15 @@
 package retriever;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.mail.Address;
 import javax.mail.MessagingException;
@@ -78,9 +83,220 @@ public class ThreadData {
 		return mappingsStr;
 	}
 
+	private static Long getResponseTime(Set<OfflineMessage> thread) throws MessagingException {
+		if (thread.size() < 2) {
+			return null;
+		}
+
+		OfflineMessage firstMessage = null;
+		OfflineMessage response = null;
+		for (OfflineMessage message : thread) {
+			Date msgDate = message.getReceivedDate();
+			if (msgDate != null) {
+				if (firstMessage == null || firstMessage.getReceivedDate().after(msgDate)) {
+					firstMessage = message;
+				} else if (response == null || response.getReceivedDate().after(msgDate)) {
+					response = message;
+
+				}
+			}
+		}
+
+		if (firstMessage != null && response != null) {
+			return response.getReceivedDate().getTime() - firstMessage.getReceivedDate().getTime();
+		} else {
+			return null;
+		}
+	}
+
+	private static OfflineMessage[] getOriginalAndResponse(Set<OfflineMessage> thread)
+			throws MessagingException {
+		if (thread.size() < 2) {
+			return null;
+		}
+
+		OfflineMessage firstMessage = null;
+		OfflineMessage response = null;
+		for (OfflineMessage message : thread) {
+			Date msgDate = message.getReceivedDate();
+			if (msgDate != null) {
+				if (firstMessage == null || firstMessage.getReceivedDate().after(msgDate)) {
+					firstMessage = message;
+				} else if (response == null || response.getReceivedDate().after(msgDate)) {
+					response = message;
+
+				}
+			}
+		}
+
+		if (firstMessage != null && response != null) {
+			OfflineMessage[] retVal = { firstMessage, response };
+			return retVal;
+		} else {
+			return null;
+		}
+	}
+
+	private void addThread(Long threshold, Set<OfflineMessage> thread,
+			Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads) {
+		ArrayList<Set<OfflineMessage>> thresholdThreads = sortedThreads.get(threshold);
+		if (thresholdThreads == null) {
+			thresholdThreads = new ArrayList<Set<OfflineMessage>>();
+			sortedThreads.put(threshold, thresholdThreads);
+		}
+
+		thresholdThreads.add(thread);
+	}
+
+	private Map<Long, ArrayList<Set<OfflineMessage>>> getThreadsSortedByResponseTime(
+			Collection<Long> timeThresholds) throws MessagingException {
+
+		TreeSet<Long> sortedTimeThresholds = new TreeSet<Long>(timeThresholds);
+
+		Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads = new TreeMap<Long, ArrayList<Set<OfflineMessage>>>();
+		for (Set<OfflineMessage> thread : threads) {
+
+			Long responseTime = getResponseTime(thread);
+			if (responseTime == null) {
+				continue;
+			}
+
+			boolean sorted = false;
+			for (Long threshold : sortedTimeThresholds) {
+				if (responseTime < threshold) {
+					addThread(threshold, thread, sortedThreads);
+					sorted = true;
+					break;
+				}
+			}
+
+			if (!sorted) {
+				Long threshold = -1L;
+				addThread(threshold, thread, sortedThreads);
+			}
+		}
+
+		return sortedThreads;
+	}
+
+	private Map<Long, Set<OfflineMessage>> getSelectedThreadsForSurvey(
+			Collection<Long> timeThresholds) throws MessagingException {
+
+		Map<Long, Set<OfflineMessage>> surveyThreads = new TreeMap<Long, Set<OfflineMessage>>();
+
+		Random rand = new Random();
+		Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads = getThreadsSortedByResponseTime(timeThresholds);
+		for (Entry<Long, ArrayList<Set<OfflineMessage>>> entry : sortedThreads.entrySet()) {
+			Long threshold = entry.getKey();
+			ArrayList<Set<OfflineMessage>> threads = entry.getValue();
+
+			int pos = rand.nextInt(threads.size());
+			surveyThreads.put(threshold, threads.get(pos));
+		}
+		return surveyThreads;
+	}
+
+	private final static long SECOND = 1000;
+	private final static long MINUTE = SECOND * 60;
+	private final static long HOUR = MINUTE * 60;
+	private final static long DAY = HOUR * 24;
+	private final static long WEEK = DAY * 7;
+	private final static long YEAR = DAY * 365;
+
+	private static String getTimeString(long time) {
+
+		String timeStr = "";
+
+		long year = time / YEAR;
+		if (year > 0) {
+			timeStr += year + " years, ";
+			time = time - (year * YEAR);
+		}
+
+		long week = time / WEEK;
+		;
+		if (week > 0) {
+			timeStr += week + " weeks, ";
+			time = time - (week * WEEK);
+		}
+
+		long day = time / DAY;
+		if (day > 0) {
+			timeStr += day + " days, ";
+			time = time - (day * DAY);
+		}
+
+		long hour = time / HOUR;
+		if (hour > 0) {
+			timeStr += hour + " hours, ";
+			time = time - (hour * HOUR);
+		}
+
+		long minute = time / MINUTE;
+		if (minute > 0) {
+			timeStr += minute + " minutes, ";
+			time = time - (minute * MINUTE);
+		}
+
+		long second = time / SECOND;
+		timeStr += second + " seconds";
+		return timeStr;
+	}
+
+	private String getSurveyThreadString(Set<OfflineMessage> thread) throws MessagingException {
+		Long responseTime = getResponseTime(thread);
+
+		String timeString = getTimeString(responseTime);
+		OfflineMessage[] originalAndResponse = getOriginalAndResponse(thread);
+		String from = null;
+		if (originalAndResponse[0].getFrom() != null && originalAndResponse[0].getFrom().length > 0) {
+			from = getPublicAddressRepresentation(originalAndResponse[0].getFrom()[0], true);
+		}
+		Collection<String> recipients = new ArrayList<String>();
+		if (originalAndResponse[0].getAllRecipients() != null) {
+			for (Address recipient : originalAndResponse[0].getAllRecipients()) {
+				recipients.add(getPublicAddressRepresentation(recipient, true));
+			}
+		}
+		String subject = originalAndResponse[0].getSubject();
+		String responder = null;
+		if (originalAndResponse[1].getFrom() != null && originalAndResponse[1].getFrom().length > 0) {
+			responder = getPublicAddressRepresentation(originalAndResponse[1].getFrom()[0], true);
+		}
+
+		String threadString = "Subject:" + subject + "\n";
+		threadString += "From:" + from + "\n";
+		threadString += "Recipients:" + recipients + "\n";
+		threadString += "Response Time:" + timeString + "\n";
+		threadString += "Responder:" + responder;
+
+		return threadString;
+	}
+
+	private String getAllSurveyThreadStrings(Collection<Long> timeThresholds)
+			throws MessagingException {
+
+		String surveyString = "";
+
+		Map<Long, Set<OfflineMessage>> surveyThreads = getSelectedThreadsForSurvey(timeThresholds);
+		for (Long threshold : timeThresholds) {
+			Set<OfflineMessage> thread = surveyThreads.get(threshold);
+			if (thread != null) {
+				surveyString += getSurveyThreadString(thread) + "\n\n";
+			}
+		}
+
+		Set<OfflineMessage> thread = surveyThreads.get(-1L);
+		if (thread != null) {
+			surveyString += getSurveyThreadString(thread) + "\n";
+		}
+		return surveyString;
+	}
+
 	public Map<String, String> getCompartmentalizedData(String sourceEmail,
 			boolean includeSubjects, boolean includeFullEmailAddresses, boolean includeAttachments,
-			boolean includeAttachedFileNames) throws MessagingException {
+			boolean includeAttachedFileNames, Collection<Long> timeThresholds)
+			throws MessagingException {
 
 		Map<String, String> compartments = new HashMap<String, String>();
 		if (addressIDs == null) {
@@ -173,6 +389,9 @@ public class ThreadData {
 		}
 		if (includeAttachments) {
 			compartments.put("attachments", attachmentsStr);
+		}
+		if (includeSubjects && includeFullEmailAddresses) {
+			compartments.put("survey", getAllSurveyThreadStrings(timeThresholds));
 		}
 		return compartments;
 	}
@@ -273,6 +492,9 @@ public class ThreadData {
 
 	private String getPublicAddressRepresentation(Address addressObj,
 			boolean includeFullEmailAddresses) {
+		if (addressObj == null) {
+			return null;
+		}
 		String address = addressObj.toString();
 		if (includeFullEmailAddresses) {
 			return address;

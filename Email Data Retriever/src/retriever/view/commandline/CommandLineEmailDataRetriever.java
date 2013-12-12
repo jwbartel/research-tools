@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +37,18 @@ import retriever.imap.ImapThreadRetriever;
  */
 public class CommandLineEmailDataRetriever implements MessageListener {
 
-	final static File OUT_FOLDER = new File(
-			"/afs/cs.unc.edu/home/bartel/public_html/email_threads/");
+	final static File OUT_FOLDER = new File("temp_out");
+//			"/afs/cs.unc.edu/home/bartel/public_html/email_threads/");
+
+	final static Collection<Long> timeThresholds = new ArrayList<Long>();
+
+	static {
+		timeThresholds.add(1000L * 60); // minute;
+		timeThresholds.add(1000L * 60 * 30); // 30 minutes;
+		timeThresholds.add(1000L * 60 * 60); // hour;
+		timeThresholds.add(1000L * 60 * 60 * 24); // day;
+		timeThresholds.add(1000L * 60 * 60 * 24 * 7); // week;
+	}
 
 	BufferedWriter log;
 
@@ -98,7 +109,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			boolean includeAttachedFileNames = Boolean.parseBoolean(flags.get("fileNames"));
 			Map<String, String> compartmentalizedData = data.getCompartmentalizedData(email,
 					includeSubjects, includeFullEmailAddresses, includeAttachments,
-					includeAttachedFileNames);
+					includeAttachedFileNames, timeThresholds);
 
 			File privateFolder = new File(getSubOutFolder("private_data"), id);
 			if (!privateFolder.exists()) {
@@ -113,6 +124,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					"summary.txt"));
 			writeIfNotNull(compartmentalizedData.get("addresses"), new File(privateFolder,
 					"addresses.txt"));
+			writeIfNotNull(compartmentalizedData.get("survey"), new File(privateFolder,
+					"survey_questions.txt"));
 			writeIfNotNull(compartmentalizedData.get("messages"), new File(anonymousFolder,
 					"messages.txt"));
 			writeIfNotNull(compartmentalizedData.get("subjects"), new File(anonymousFolder,
