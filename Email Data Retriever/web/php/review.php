@@ -303,6 +303,10 @@
 	<input class="setting checkbox" type="checkbox" id="removeAll">
 	Remove all data about messages and threads.
 	
+<<<<<<< HEAD
 	<input type='submit' value='Submit' style='width:100%' onclick='submitData()'>
+=======
+	<input type='submit' value='Submit' style='width:100%' onclick='removeData()'>
+>>>>>>> Added displaying of survey questions
 	</div>
 </html>
