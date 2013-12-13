@@ -37,7 +37,8 @@ public class OfflineMessage {
 	static Pattern SUBJ_BLOB_PATTERN = Pattern.compile(SUBJ_BLOB);
 	static Pattern SUBJ_LEADER_PATTERN = Pattern.compile(SUBJ_LEADER);
 
-	final static DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+	final static DateFormat[] dateFormats = { new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z"),
+			new SimpleDateFormat("dd MMM yyyy HH:mm:ss z"), };
 
 	MimeMessage parent;
 	private final Map<String, String[]> seenHeaders = new TreeMap<String, String[]>();
@@ -72,14 +73,17 @@ public class OfflineMessage {
 
 	private Date extractDate() throws MessagingException {
 		String[] header = parent.getHeader("Date");
-		try {
-			if (header != null && header.length > 0) {
-				String dateStr = header[0];
-				Date date = dateFormat.parse(dateStr);
-				return date;
+
+		for (DateFormat dateFormat : dateFormats) {
+			try {
+				if (header != null && header.length > 0) {
+					String dateStr = header[0];
+					Date date = dateFormat.parse(dateStr);
+					return date;
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
-		} catch (ParseException e) {
-			e.printStackTrace();
 		}
 		return parent.getReceivedDate();
 	}
