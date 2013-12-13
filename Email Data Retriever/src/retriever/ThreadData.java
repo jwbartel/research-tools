@@ -282,7 +282,7 @@ public class ThreadData {
 		for (Long threshold : timeThresholds) {
 			Set<OfflineMessage> thread = surveyThreads.get(threshold);
 			if (thread != null) {
-				surveyString += getSurveyThreadString(thread) + "\n\n";
+				surveyString += getSurveyThreadString(thread) + "\n";
 			}
 		}
 

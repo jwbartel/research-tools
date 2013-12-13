@@ -4,13 +4,65 @@
 		$record_id = $_GET['r'];
 		$anonymous_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/'.$record_id;
 		$private_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/'.$record_id;
+		
 		$messages_file = $anonymous_folder.'/messages.txt';
+		
+		$survey_questions_file = $private_folder.'/survey_questions.txt';
+		$survey_exist = file_exists($survey_questions_file);
+		
 		$addresses_file = $private_folder.'/addresses.txt';
 		$addr_exist = file_exists($addresses_file);
+		
 		$subjects_file = $anonymous_folder.'/subjects.txt';
 		$subj_exist = file_exists($subjects_file);
+		
 		$attachments_file = $anonymous_folder.'/attachments.txt';
 		$attach_exist = file_exists($attachments_file);
+		
+		$survey_count = 0;
+		$survey_items = array();
+		if ($survey_exist) {
+			$file_handle = fopen($survey_questions_file, "r");
+			while(!feof($file_handle)) {
+				
+				//Get the subject
+				$line = fgets($file_handle);
+				$subject = substr($line, strpos($line,':')+1);
+				
+				//Get the from
+				$line = fgets($file_handle);
+				$from = substr($line, strpos($line,':')+1);
+				$from = str_replace('<', '&lt', $from);
+				$from = str_replace('>', '&gt', $from);
+				
+				//Get the recipients
+				$line = fgets($file_handle);
+				$recipients = substr($line, strpos($line,':')+1);
+				$recipients = str_replace('<', '&lt', $recipients);
+				$recipients = str_replace('>', '&gt', $recipients);
+				
+				//Get the response time
+				$line = fgets($file_handle);
+				$responseTime = substr($line, strpos($line,':')+1);
+				
+				//Get the responder
+				$line = fgets($file_handle);
+				$responder = substr($line, strpos($line,':')+1);
+				$responder = str_replace('<', '&lt', $responder);
+				$responder = str_replace('>', '&gt', $responder);
+				
+				$survey_items[$survey_count] = array(
+							'subject' => $subject,
+							'from' => $from,
+							'recipients' => $recipients,
+							'responseTime' => $responseTime,
+							'responder' => $responder,
+						);
+				
+				$survey_count = $survey_count + 1;
+				
+			}
+		}
 		
 		$addresses_data = '';
 		if ($addr_exist) {
@@ -53,6 +105,39 @@
 		}
 		
 		$col_width = ($num_columns > 0)? 800/$num_columns: 0;
+		
+		function writeSingleQuestion($question, $question_id) {
+			print('<tr>');
+			print('<td><i>'.$question.'</i></td>');
+			print('<td><input style="width:20px" type="radio" name="'.$question_id.'" value="yes">Yes</td>');
+			print('<td><input style="width:20px" type="radio" name="'.$question_id.'" value="no">No</td>');
+			print('<td><input style="width:30px" type="radio" name="'.$question_id.'" value="unknown">Don\'t know</td>');
+			print('</tr>');
+		}
+		
+		function writeSurveyQuestions($surveyItem, $item_id) {
+			print('<b>');
+			print('The sender <i>'.$surveyItem['from'].'</i> ');
+			print('sent a message with the subject <i>'.$surveyItem['subject'].'</i> ');
+			print('to the recipients <i>'.$surveyItem['recipients'].'</i>');
+			print('<br>');
+			print('The responder <i>'.$surveyItem['responder'].'</i> ');
+			print('sent a response '.$surveyItem['responseTime'].' later');
+			print('</b>');
+			print('<table>');
+			writeSingleQuestion('Would it have helped to know that a response was coming?', strval($item_id).'_1');
+			writeSingleQuestion('Would it have helped to know a when the response would occur?', strval($item_id).'_2');
+			print('</table>');
+			print('Would the response time still be helpful if it were off by');
+			print('<table>');
+			writeSingleQuestion('1 minute', strval($item_id).'_3');
+			writeSingleQuestion('5 minutes', strval($item_id).'_4');
+			writeSingleQuestion('30 minutes', strval($item_id).'_5');
+			writeSingleQuestion('1 hour', strval($item_id).'_6');
+			writeSingleQuestion('1 day', strval($item_id).'_7');
+			writeSingleQuestion('1 week', strval($item_id).'_8');
+			print('</table>');
+		}
 		
 		function writeColumn($exists, $data, $label, $width) {
 			if ($exists) {
@@ -116,6 +201,16 @@
 		</script>
 	</head>
 	<div class="center" id="reviewer">
+	<?php 
+		if ($survey_exist) {
+			print('<h1>Please complete this short survey about response time</h1>');
+			for ($i = 0; $i < $survey_count-1; $i++) {
+				writeSurveyQuestions($survey_items[$i], $i);
+			}
+		}
+	?>
+	
+	
 	<h1>Review Retrived Thread data</h1>
 	<table style='border-spacing:10'>
 		<tr>
@@ -131,6 +226,6 @@
 	<input class="setting checkbox" type="checkbox" id="removeAll">
 	Remove all data about messages and threads.
 	
-	<input type='submit' value='Remove selected data' style='width:100%' onclick='removeData()'>
+	<input type='submit' value='Submit' style='width:100%' onclick='removeData()'>
 	</div>
 </html>
