@@ -106,7 +106,7 @@ public class OfflineMessage {
 
 	public Date getReceivedDate() throws MessagingException {
 		if (receivedDate == null) {
-			receivedDate = parent.getReceivedDate();
+			receivedDate = extractDate();
 		}
 		return receivedDate;
 	}

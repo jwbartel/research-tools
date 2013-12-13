@@ -241,7 +241,6 @@ public abstract class ThreadRetriever {
 					String inReplyTo = message.getInReplyTo();
 					sortIntoThreads(message, messageID, numThreads, references, inReplyTo,
 							idsForThreads, threads, unseenMessages, seenMessages);
-					System.out.println(message.getReceivedDate());
 				}
 
 				if ((threads.size() >= numThreads && unseenMessages.size() == 0)
@@ -295,10 +294,6 @@ public abstract class ThreadRetriever {
 					String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
 							"References" };
 
-					logMessage("Date: " + messages[msgPos].getHeader("Date")[0]);
-					logMessage("Received Date: " + messages[msgPos].getReceivedDate());
-					logMessage("Received Date Time: "
-							+ messages[msgPos].getReceivedDate().getTime());
 					OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos],
 							prefetchedHeaders);
 
