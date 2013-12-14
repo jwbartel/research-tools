@@ -10,6 +10,9 @@
 		$survey_questions_file = $private_folder.'/survey_questions.txt';
 		$survey_exist = file_exists($survey_questions_file);
 		
+		$survey_results_file = $private_folder.'/survey_data.txt';
+		$survey_results_exist = file_exists($survey_results_file);
+		
 		$addresses_file = $private_folder.'/addresses.txt';
 		$addr_exist = file_exists($addresses_file);
 		
@@ -27,6 +30,10 @@
 				
 				//Get the subject
 				$line = fgets($file_handle);
+				if (strlen($line) == 0) {
+					break;
+				}
+				
 				$subject = substr($line, strpos($line,':')+1);
 				
 				//Get the from
@@ -116,14 +123,51 @@
 		}
 		
 		function writeSurveyQuestions($surveyItem, $item_id) {
-			print('<b>');
-			print('The sender <i>'.$surveyItem['from'].'</i> ');
-			print('sent a message with the subject <i>'.$surveyItem['subject'].'</i> ');
-			print('to the recipients <i>'.$surveyItem['recipients'].'</i>');
-			print('<br>');
-			print('The responder <i>'.$surveyItem['responder'].'</i> ');
-			print('sent a response '.$surveyItem['responseTime'].' later');
-			print('</b>');
+			$message_item_width = "260px";
+			$message_item_height = "35px";
+			print "<table>";
+			print "<tr>";
+			print "<td>";
+			print "<div style='width:340px'>";
+			print "<b>The following message was sent</b><br>";
+			print "</div>";
+			print "</td>";
+			print "<td>";
+			print "<div style='width:340px'>";
+			print "<b>And the following response was received ".$surveyItem['responseTime']." later</b><br>";
+			print "</div>";
+			print "</td>";
+			print "<tr>";
+			print "</tr>";
+			print "<td>";
+				print "<div style='background-color:white;height:144px;position:inline;border:1px solid'><table>";
+				print "<tr>";
+					print "<td>From:</td>";
+					print "<td><textarea style='width:".$message_item_width.";height:".$message_item_height."'>".$surveyItem['from']."</textarea></td>";
+				print "</tr>";
+				print "<tr>";
+					print "<td>Recipients:</td>";
+					print "<td><textarea style='width:".$message_item_width.";height:50px'>".$surveyItem['recipients']."</textarea></td>";
+				print "</tr>";
+				print "<tr>";
+					print "<td>Subject:</td>";
+					print "<td><textarea style='width:".$message_item_width.";height:".$message_item_height."'>".$surveyItem['subject']."</textarea></td>";
+				print "</tr>";
+				print "</table></div>";
+			print "</td>";
+			print "<td style='height:100%'>";
+				print "<div style='background-color:white;height:144px;position:inline;border:1px solid'><table>";
+				print "<tr>";
+					print "<td>From:</td>";
+					print "<td><textarea style='width:".$message_item_width.";height:".$message_item_height."'>".$surveyItem['responder']."</textarea></td>";
+				print "</tr>";
+					print "<td>Subject:</td>";
+					print "<td><textarea style='width:".$message_item_width.";height:".$message_item_height."'>".$surveyItem['subject']."</textarea></td>";
+				print "</tr>";
+				print "</table></div>";
+			print "</td>";
+			print "</tr>";
+			print "</table>";
 			print('<table>');
 			writeSingleQuestion('Would it have helped to know that a response was coming?', strval($item_id).'_1');
 			writeSingleQuestion('Would it have helped to know a when the response would occur?', strval($item_id).'_2');
@@ -198,20 +242,53 @@
 						window.location.reload();
 					});
 			}
+
+
+			function storeSurveyData() {
+
+				<?php 
+					$surveyDataStr = 'id='.$_GET['r'];
+					$surveyDataStr = $surveyDataStr.'&count='.strval($survey_count);
+					
+					print "surveyData = '".$surveyDataStr."';\n";	
+					
+					for ($i = 0; $i < $survey_count; $i++) {
+						for ($j =0; $j <= 8; $j++) {
+							$question_id = strval($i)."_".strval($j);
+							print "checkedVal = $('input[name=".$question_id."]').filter(':checked').val();\n";
+							print "if (checkedVal != undefined) {";
+							print "\tsurveyData += '&".$question_id."='+checkedVal;\n";
+							print "} else {";
+							print "\tsurveyData += '&".$question_id."=unanswered';\n";
+							print "}";
+						}
+					}
+				?>
+
+				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/survey.php?"+surveyData;
+				$.get(dest);
+			}
+
+			function submitData() {
+				storeSurveyData();
+				removeData();
+			}
+			
 		</script>
 	</head>
 	<div class="center" id="reviewer">
 	<?php 
-		if ($survey_exist) {
+		if ($survey_exist && !$survey_results_exist) {
 			print('<h1>Please complete this short survey about response time</h1>');
-			for ($i = 0; $i < $survey_count-1; $i++) {
+			for ($i = 0; $i < $survey_count; $i++) {
 				writeSurveyQuestions($survey_items[$i], $i);
+				print "<br>";
 			}
 		}
 	?>
 	
 	
-	<h1>Review Retrived Thread data</h1>
+	<h1>Review your retrieved email data below</h1>
 	<table style='border-spacing:10'>
 		<tr>
 			<?php 
@@ -226,6 +303,6 @@
 	<input class="setting checkbox" type="checkbox" id="removeAll">
 	Remove all data about messages and threads.
 	
-	<input type='submit' value='Submit' style='width:100%' onclick='removeData()'>
+	<input type='submit' value='Submit' style='width:100%' onclick='submitData()'>
 	</div>
 </html>
