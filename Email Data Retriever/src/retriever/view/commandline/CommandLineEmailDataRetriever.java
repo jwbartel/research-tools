@@ -124,6 +124,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					"summary.txt"));
 			writeIfNotNull(compartmentalizedData.get("addresses"), new File(privateFolder,
 					"addresses.txt"));
+			writeIfNotNull(compartmentalizedData.get("threads with responses"), new File(privateFolder,
+					"threads with responses.txt"));
 			writeIfNotNull(compartmentalizedData.get("survey"), new File(privateFolder,
 					"survey_questions.txt"));
 			writeIfNotNull(compartmentalizedData.get("messages"), new File(anonymousFolder,
