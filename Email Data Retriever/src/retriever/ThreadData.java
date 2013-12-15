@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -82,12 +83,13 @@ public class ThreadData {
 		}
 		return mappingsStr;
 	}
-
-	private static Long getResponseTime(Set<OfflineMessage> thread) throws MessagingException {
+	
+	private static Date[] getFirstAndResponseDates(Set<OfflineMessage> thread) throws MessagingException {
 		if (thread.size() < 2) {
 			return null;
 		}
-
+		
+		
 		OfflineMessage firstMessage = null;
 		OfflineMessage response = null;
 		for (OfflineMessage message : thread) {
@@ -101,9 +103,28 @@ public class ThreadData {
 				}
 			}
 		}
+		
+		Date[] retVal = new Date[2];
+		if (firstMessage != null) {
+			retVal[0] = firstMessage.getReceivedDate();
+		}
+		if (response != null) {
+			retVal[1] = response.getReceivedDate();
+		}
+		
+		return retVal;
+		
+	}
 
-		if (firstMessage != null && response != null) {
-			return response.getReceivedDate().getTime() - firstMessage.getReceivedDate().getTime();
+	private static Long getResponseTime(Set<OfflineMessage> thread) throws MessagingException {
+		if (thread.size() < 2) {
+			return null;
+		}
+
+		Date[] orignalAndResponseTime = getFirstAndResponseDates(thread);
+
+		if (orignalAndResponseTime[0] != null && orignalAndResponseTime[1] != null) {
+			return orignalAndResponseTime[1].getTime() - orignalAndResponseTime[0].getTime();
 		} else {
 			return null;
 		}
@@ -178,6 +199,19 @@ public class ThreadData {
 
 		return sortedThreads;
 	}
+	
+	private String getAllThreadStrings(Collection<Long> timeThresholds) throws MessagingException {
+		Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads = getThreadsSortedByResponseTime(timeThresholds);
+		
+		String retVal = "";
+		for(ArrayList<Set<OfflineMessage>> threads: sortedThreads.values()) {
+			for (Set<OfflineMessage> thread: threads) {
+				retVal += getSurveyThreadString(thread) + "\n"; 
+			}
+		}
+		
+		return retVal;
+	}
 
 	private Map<Long, Set<OfflineMessage>> getSelectedThreadsForSurvey(
 			Collection<Long> timeThresholds) throws MessagingException {
@@ -245,6 +279,7 @@ public class ThreadData {
 
 	private String getSurveyThreadString(Set<OfflineMessage> thread) throws MessagingException {
 		Long responseTime = getResponseTime(thread);
+		Date[] originalAndResponseDate = getFirstAndResponseDates(thread);
 
 		String timeString = getTimeString(responseTime);
 		OfflineMessage[] originalAndResponse = getOriginalAndResponse(thread);
@@ -266,8 +301,10 @@ public class ThreadData {
 
 		String threadString = "Subject:" + subject + "\n";
 		threadString += "From:" + from + "\n";
+		threadString += "Original Date:" + originalAndResponseDate[0] + "\n";
 		threadString += "Recipients:" + recipients + "\n";
-		threadString += "Response Time:" + timeString + "\n";
+		threadString += "Time to Response:" + timeString + "\n";
+		threadString += "Response Date:" + originalAndResponseDate[1] + "\n";
 		threadString += "Responder:" + responder;
 
 		return threadString;
@@ -391,6 +428,7 @@ public class ThreadData {
 			compartments.put("attachments", attachmentsStr);
 		}
 		if (includeSubjects && includeFullEmailAddresses) {
+			compartments.put("threads with responses", getAllThreadStrings(timeThresholds));
 			compartments.put("survey", getAllSurveyThreadStrings(timeThresholds));
 		}
 		return compartments;

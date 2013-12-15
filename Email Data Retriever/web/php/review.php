@@ -42,6 +42,10 @@
 				$from = str_replace('<', '&lt', $from);
 				$from = str_replace('>', '&gt', $from);
 				
+				//Get the original date
+				$line = fgets($file_handle);
+				$originalDate = substr($line, strpos($line,':')+1);
+				
 				//Get the recipients
 				$line = fgets($file_handle);
 				$recipients = substr($line, strpos($line,':')+1);
@@ -51,6 +55,10 @@
 				//Get the response time
 				$line = fgets($file_handle);
 				$responseTime = substr($line, strpos($line,':')+1);
+				
+				//Get the response date
+				$line = fgets($file_handle);
+				$responseDate = substr($line, strpos($line,':')+1);
 				
 				//Get the responder
 				$line = fgets($file_handle);
