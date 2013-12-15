@@ -182,7 +182,7 @@ public abstract class ThreadRetriever {
 				unseenMessages.add(id);
 			}
 		}
-		pruneThreads(idsForThreads, threads);
+//		pruneThreads(idsForThreads, threads);
 	}
 
 	public void logFolderSizes(Folder folder, int depth) throws MessagingException {
@@ -322,7 +322,7 @@ public abstract class ThreadRetriever {
 						break;
 					}
 
-					updateRetrievedMessageCounts(startMessage + (messages.length - msgPos),
+					updateRetrievedMessageCounts((startMessage - 1) + (messages.length - msgPos),
 							threads.size(), unseenMessages.size());
 				}
 
