@@ -37,8 +37,8 @@ import retriever.imap.ImapThreadRetriever;
  */
 public class CommandLineEmailDataRetriever implements MessageListener {
 
-	final static File OUT_FOLDER = new File("temp_out");
-//			"/afs/cs.unc.edu/home/bartel/public_html/email_threads/");
+	final static File OUT_FOLDER = new File(
+			"/afs/cs.unc.edu/home/bartel/public_html/email_threads/");
 
 	final static Collection<Long> timeThresholds = new ArrayList<Long>();
 
@@ -124,8 +124,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					"summary.txt"));
 			writeIfNotNull(compartmentalizedData.get("addresses"), new File(privateFolder,
 					"addresses.txt"));
-			writeIfNotNull(compartmentalizedData.get("threads with responses"), new File(privateFolder,
-					"threads with responses.txt"));
+			writeIfNotNull(compartmentalizedData.get("threads with responses"), new File(
+					privateFolder, "threads with responses.txt"));
 			writeIfNotNull(compartmentalizedData.get("survey"), new File(privateFolder,
 					"survey_questions.txt"));
 			writeIfNotNull(compartmentalizedData.get("messages"), new File(anonymousFolder,
