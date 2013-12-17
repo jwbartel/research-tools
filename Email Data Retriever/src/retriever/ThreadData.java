@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -83,13 +82,13 @@ public class ThreadData {
 		}
 		return mappingsStr;
 	}
-	
-	private static Date[] getFirstAndResponseDates(Set<OfflineMessage> thread) throws MessagingException {
+
+	private static Date[] getFirstAndResponseDates(Set<OfflineMessage> thread)
+			throws MessagingException {
 		if (thread.size() < 2) {
 			return null;
 		}
-		
-		
+
 		OfflineMessage firstMessage = null;
 		OfflineMessage response = null;
 		for (OfflineMessage message : thread) {
@@ -103,7 +102,7 @@ public class ThreadData {
 				}
 			}
 		}
-		
+
 		Date[] retVal = new Date[2];
 		if (firstMessage != null) {
 			retVal[0] = firstMessage.getReceivedDate();
@@ -111,9 +110,9 @@ public class ThreadData {
 		if (response != null) {
 			retVal[1] = response.getReceivedDate();
 		}
-		
+
 		return retVal;
-		
+
 	}
 
 	private static Long getResponseTime(Set<OfflineMessage> thread) throws MessagingException {
@@ -199,17 +198,17 @@ public class ThreadData {
 
 		return sortedThreads;
 	}
-	
+
 	private String getAllThreadStrings(Collection<Long> timeThresholds) throws MessagingException {
 		Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads = getThreadsSortedByResponseTime(timeThresholds);
-		
+
 		String retVal = "";
-		for(ArrayList<Set<OfflineMessage>> threads: sortedThreads.values()) {
-			for (Set<OfflineMessage> thread: threads) {
-				retVal += getSurveyThreadString(thread) + "\n"; 
+		for (ArrayList<Set<OfflineMessage>> threads : sortedThreads.values()) {
+			for (Set<OfflineMessage> thread : threads) {
+				retVal += getSurveyThreadString(thread) + "\n";
 			}
 		}
-		
+
 		return retVal;
 	}
 
@@ -318,7 +317,6 @@ public class ThreadData {
 		Map<Long, Set<OfflineMessage>> surveyThreads = getSelectedThreadsForSurvey(timeThresholds);
 		for (Long threshold : timeThresholds) {
 			Set<OfflineMessage> thread = surveyThreads.get(threshold);
-
 			if (thread != null) {
 				surveyString += getSurveyThreadString(thread) + "\n";
 			}
