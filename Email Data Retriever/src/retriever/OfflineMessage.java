@@ -82,8 +82,12 @@ public class OfflineMessage {
 					return date;
 				}
 			} catch (ParseException e) {
-				e.printStackTrace();
 			}
+		}
+		try {
+			throw new RuntimeException("Unparsed date:" + header[0]);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
 		}
 		return parent.getReceivedDate();
 	}
