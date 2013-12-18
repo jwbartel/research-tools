@@ -105,7 +105,10 @@ function collectData() {
 	sendData("php/retriever.php", false);
 	$('#loadingMessage').html("Thank you for contributing. Your data is being uploaded in the background."+
 			"You will be emailed at your provided email address when it has completed <br>" +
-			"<a href='javascript:reset()'>Click here to try a different email address</a>");
+			"<center>"+
+			"<button onclick='reset()'>Try a different email address</button>"+
+			"<button onclick='switchToCalendar($.getUrlVar(\"s\"))'>Upload calendar data</button>");
+	$('switchToCalendar').visible = true;
 }
 
 function sendData(address, careAboutResult) {

@@ -40,6 +40,11 @@ table.settings {
 	border-spacing: 10px 0px;
 }
 
+#calendarData {
+	width: 80%;
+	height: 200px;
+}
+
 #fileNamesLabel {
 	color: gray;
 }
@@ -96,6 +101,10 @@ table.settings {
 	margin-right: 40px;
 }
 
+#switchToCalendar {
+	visibility:  hidden;
+}
+
 .checkbox {
 	width: 10px;
 }
@@ -136,9 +145,4 @@ table.settings {
 
 .short-input {
 	width: 50px;
-}
-
-#calendarData {
-	width: 80%;
-	height: 200px;
 }
