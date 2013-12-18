@@ -103,6 +103,9 @@ function collectData() {
 					.prop('src', 'img/spinner.gif')
 					.prop('alt', 'Loading...'))));
 	sendData("php/retriever.php", false);
+	window.onbeforeunload = function() {
+	    return "Are you sure you do not want to share any calendar data?  It would be very helpful for our research.";
+	}
 	$('#loadingMessage').html("Thank you for contributing. Your data is being uploaded in the background."+
 			"You will be emailed at your provided email address when it has completed <br>" +
 			"<center>"+
@@ -141,6 +144,7 @@ function isInt(input){
 }
 
 function switchToCalendar(id) {
+	window.onbeforeunload = null;
 	window.location = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/?s="+id;
 }
 
