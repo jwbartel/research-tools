@@ -136,3 +136,14 @@ function sendData(address, careAboutResult) {
 function isInt(input){
 	return ((input - 0) == input && input % 1==0 && (input - 0) > 0);
 }
+
+function collectCalendarData() {
+	getData = {
+			m: $('#months').val(),
+			e: $('#event_names').is(":checked"),
+			a: $('#attendee_names').is(":checked"),
+		};
+	$.get("https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/calendar_query.php", getData, function(data) {
+		location.reload();
+	});
+}

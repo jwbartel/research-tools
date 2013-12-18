@@ -138,3 +138,8 @@ table.settings {
 .short-input {
 	width: 50px;
 }
+
+#calendarData {
+	width: 80%;
+	height: 200px;
+}
