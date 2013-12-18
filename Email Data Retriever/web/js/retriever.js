@@ -137,6 +137,10 @@ function isInt(input){
 	return ((input - 0) == input && input % 1==0 && (input - 0) > 0);
 }
 
+function switchToCalendar(id) {
+	window.location = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/?s="+id;
+}
+
 function collectCalendarData() {
 	getData = {
 			m: $('#months').val(),
