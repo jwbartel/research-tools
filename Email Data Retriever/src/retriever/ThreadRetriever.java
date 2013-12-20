@@ -121,8 +121,7 @@ public abstract class ThreadRetriever {
 			ArrayList<String> references, String inReplyTo,
 			ArrayList<ArrayList<String>> idsForThreads, ArrayList<Set<OfflineMessage>> threads,
 			Set<String> unseenMessages, Set<String> seenMessages) {
-
-		if (references.size() == 0) {
+        if (references.size() == 0) {
 			references = new ArrayList<String>();
 			if (inReplyTo != null) {
 				references.add(inReplyTo);
@@ -155,7 +154,7 @@ public abstract class ThreadRetriever {
 					}
 					threads.get(prevThread).addAll(threads.get(i));
 
-					threadIDs.remove(i);
+					idsForThreads.remove(i);
 					threads.remove(i);
 					i--;
 
