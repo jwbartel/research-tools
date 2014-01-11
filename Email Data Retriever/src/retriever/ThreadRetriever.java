@@ -155,7 +155,7 @@ public abstract class ThreadRetriever {
 					}
 					threads.get(prevThread).addAll(threads.get(i));
 
-					threadIDs.remove(i);
+					idsForThreads.remove(i);
 					threads.remove(i);
 					i--;
 

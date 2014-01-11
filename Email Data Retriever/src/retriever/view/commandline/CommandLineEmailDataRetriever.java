@@ -177,7 +177,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 		// fill message
 		String bodyHtml = "Your email data has been collected.  Thank you for your contribution.  <a href='"
-				+ reviewAddress + "'>You can review the collected data here.</a>";
+				+ reviewAddress
+				+ "'>Please click here to complete a short survey and review your data.</a>";
 		message.setDataHandler(new DataHandler(new ByteArrayDataSource(bodyHtml, "text/html")));
 
 		// Send the message

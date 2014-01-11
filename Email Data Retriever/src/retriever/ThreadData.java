@@ -375,7 +375,7 @@ public class ThreadData {
 				Address[] recipients = message.getAllRecipients();
 				if (recipients != null)
 					for (Address addressObj : recipients) {
-						if (recipientStr.length() > 1) {
+						if (recipientStr.length() > 0) {
 							recipientStr += ",";
 						}
 						recipientStr += getPublicAddressRepresentation(addressObj, false);
