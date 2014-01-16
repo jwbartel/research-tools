@@ -182,6 +182,11 @@ if (isset($_SESSION['a'])) {
 		<link rel="stylesheet" href="../../retriever.css">
 		<script src='../../js/jquery-1.10.2.min.js' type='text/javascript'></script>
 		<script src='../../js/retriever.js' type='text/javascript'></script>
+		<script type='text/javascript'>
+			function completeSubmission() {
+				location.href = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/complete.html";
+			}
+		</script>
 	</head>
 	
 	<body>
@@ -258,6 +263,7 @@ if (isset($_SESSION['a'])) {
 				?>
 				
 			</div>
+			<input type="submit" value="I am done submitting my data" onclick="completeSubmission()" />
 		</div>
 		</div>
 	</body>

@@ -121,12 +121,18 @@
 		
 		$col_width = ($num_columns > 0)? 800/$num_columns: 0;
 		
-		function writeSingleQuestion($question, $question_id) {
+		function writeSingleQuestion($question, $question_id, $setOnClick, $message_id) {
 			print('<tr>');
 			print('<td><i>'.$question.'</i></td>');
-			print('<td><input style="width:20px" type="radio" name="'.$question_id.'" value="yes">Yes</td>');
-			print('<td><input style="width:20px" type="radio" name="'.$question_id.'" value="no">No</td>');
-			print('<td><input style="width:30px" type="radio" name="'.$question_id.'" value="unknown">Don\'t know</td>');
+			if ($setOnClick) {
+				print('<td><input style="width:20px" type="radio" name="'.$question_id.'" value="yes" onclick="showTime('.$message_id.')">Yes</td>');
+				print('<td><input style="width:20px" type="radio" name="'.$question_id.'" value="no" onclick="showTime('.$message_id.')">No</td>');
+				print('<td><input style="width:30px" type="radio" name="'.$question_id.'" value="unknown" onclick="showTime('.$message_id.')">Don\'t know</td>');
+			} else {
+				print('<td><input style="width:20px" type="radio" name="'.$question_id.'" value="yes">Yes</td>');
+				print('<td><input style="width:20px" type="radio" name="'.$question_id.'" value="no">No</td>');
+				print('<td><input style="width:30px" type="radio" name="'.$question_id.'" value="unknown">Don\'t know</td>');
+			}
 			print('</tr>');
 		}
 		
@@ -177,18 +183,23 @@
 			print "</tr>";
 			print "</table>";
 			print('<table>');
-			writeSingleQuestion('Would it have helped to know that a response was coming?', strval($item_id).'_1');
-			writeSingleQuestion('Would it have helped to know a when the response would occur?', strval($item_id).'_2');
+			writeSingleQuestion('Would it have helped to know that a response was coming?', strval($item_id).'_1', false, strval($item_id));
+			writeSingleQuestion('Would it have helped to know when the response would occur?', strval($item_id).'_2', true, strval($item_id));
 			print('</table>');
+			print('<div style="display:none" id="'.strval($item_id).'_times_list">');
 			print('Would the response time still be helpful if it were off by');
+			print('<br/> (Please select "Yes", "No", or "Don\'t know" for each of the following)');
 			print('<table>');
-			writeSingleQuestion('1 minute', strval($item_id).'_3');
-			writeSingleQuestion('5 minutes', strval($item_id).'_4');
-			writeSingleQuestion('30 minutes', strval($item_id).'_5');
-			writeSingleQuestion('1 hour', strval($item_id).'_6');
-			writeSingleQuestion('1 day', strval($item_id).'_7');
-			writeSingleQuestion('1 week', strval($item_id).'_8');
+			writeSingleQuestion('1 minute', strval($item_id).'_3', false, strval($item_id));
+			writeSingleQuestion('5 minutes', strval($item_id).'_4', false, strval($item_id));
+			writeSingleQuestion('30 minutes', strval($item_id).'_5', false, strval($item_id));
+			writeSingleQuestion('1 hour', strval($item_id).'_6', false, strval($item_id));
+			writeSingleQuestion('1 day', strval($item_id).'_7', false, strval($item_id));
+			writeSingleQuestion('1 week', strval($item_id).'_8', false, strval($item_id));
 			print('</table>');
+			print('</div>');
+			
+			print('<br><br>');
 		}
 		
 		function writeColumn($exists, $data, $label, $width) {
@@ -247,34 +258,79 @@
 
 				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/remove.php?" + deleteOptions;
 				$.get(dest, function() {
+						alert("Thank you for contributing.  You may close this tab or continue you review your shared data");
 						window.location.reload();
 					});
 			}
 
 
+			function showTime(id) {
+				var div = $('#'+id+'_times_list');
+				console.log(div);
+				var answers = $("input[type='radio'][name='"+id+"_2']:checked");
+				console.log(answers);
+				var checkedVal = $("input[type='radio'][name='"+id+"_2']:checked").val();
+				console.log(checkedVal);
+				if (checkedVal == 'yes') {
+					div.css('display', 'block');
+				} else {
+					div.css('display', 'none');
+				}
+			}
+
 			function storeSurveyData() {
 
+				surveyData = {};
 				<?php 
 					$surveyDataStr = 'id='.$_GET['r'];
 					$surveyDataStr = $surveyDataStr.'&count='.strval($survey_count);
 					
-					print "surveyData = '".$surveyDataStr."';\n";	
+					print "surveyCount = ".strval($survey_count).";\n";
+					print "userId = '".strval($_GET['r'])."';\n";
+// 					print "surveyData = '".$surveyDataStr."';\n";	
 					
-					for ($i = 0; $i < $survey_count; $i++) {
-						for ($j =0; $j <= 8; $j++) {
-							$question_id = strval($i)."_".strval($j);
-							print "checkedVal = $('input[name=".$question_id."]').filter(':checked').val();\n";
-							print "if (checkedVal != undefined) {";
-							print "\tsurveyData += '&".$question_id."='+checkedVal;\n";
-							print "} else {";
-							print "\tsurveyData += '&".$question_id."=unanswered';\n";
-							print "}";
-						}
-					}
+// 					for ($i = 0; $i < $survey_count; $i++) {
+// 						for ($j =0; $j <= 8; $j++) {
+// 							$question_id = strval($i)."_".strval($j);
+// 							print "checkedVal = $('input[name=\"".$question_id."\"]:checked').val();\n";
+// 							print "if (checkedVal != undefined) {\n";
+// 							print "\tsurveyData[\"".$question_id."\"] = checkedVal;\n";
+// 							print "} else {\n";
+// 							print "\tsurveyData[\"".$question_id."\"] = 'unanswered';\n";
+// 							print "}\n";
+// 						}
+// 					}
 				?>
 
-				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/survey.php?"+surveyData;
-				$.get(dest);
+				surveyData.id = userId;
+				surveyData.count = surveyCount;
+				for (i = 0; i < surveyCount; i++) {
+					for (j = 1; j <= 8; j++) {
+						question_id = "" + i  + "_" + j;
+						checkedVal = $('input[name="'+question_id+'"]:checked').val();
+						if (checkedVal != undefined) {
+							surveyData[question_id] = checkedVal;;
+						} else {
+							surveyData[question_id] = 'unanswered';
+						}
+					}
+				}
+				surveyData.ifReason = $('#ifReason').val();
+				surveyData.whenReason = $('#whenReason').val();
+				surveyData.selfReason = $('#selfReason').val();
+				
+				surveyData.wouldDo_nothing = $('#doNothing').prop('checked');
+				surveyData.wouldDo_notSend = $('#notSend').prop('checked');
+				surveyData.wouldDo_addRecipient = $('#addRecipients').prop('checked');
+				surveyData.wouldDo_removeRecipient = $('#removeRecipients').prop('checked');
+				surveyData.wouldDo_findAnswer = $('#findAnswer').prop('checked');
+				surveyData.wouldDo_other = $('#doOther').prop('checked');
+				surveyData.wouldDo_otherVal = $('#otherVal').val();
+
+				console.dir(surveyData);
+
+				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/survey.php";
+				$.post(dest, surveyData);
 			}
 
 			function submitData() {
@@ -292,6 +348,89 @@
 				writeSurveyQuestions($survey_items[$i], $i);
 				print "<br>";
 			}
+				
+			print('<b>Please give any reasons why you in particular would want to know:</b>');
+			print('<br><br>');
+			print('<table>');
+			print('<tr><td>');
+			print('If you will get a response to a message?');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<textarea style="width:700px;height:100px" id="ifReason"></textarea>');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('When you will get a response to a message?');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<textarea style="width:700px;height:100px" id="whenReason"></textarea>');
+			print('</td></tr>');
+			print('<table>');
+			
+			print('<br>');
+
+			print("<table style='width:700px'>");
+			print('<tr><td>');
+			print("<b>Assume you receive the following message from your classmate Anne on a Monday, and by Thursday evening you have not responded.");
+			print("<div style='background-color:white;width:350px;position:inline;border:1px solid'><table>");
+			print "<tr>";
+			print "<td>From:</td>";
+			print "<td><textarea style='width:250px;height:20px'>"."Anne</textarea></td>";
+			print "</tr>";
+			print "<tr>";
+			print "<td>Recipients:</td>";
+			print "<td><textarea style='width:100%;height:20px'>"."Me</textarea></td>";
+			print "</tr>";
+			print "<tr>";
+			print "<td>Subject:</td>";
+			print "<td><textarea style='width:100%;height:20px'>"."Group project</textarea></td>";
+			print "</tr>";
+			print "<td></td>";
+			print "<td><textarea style='width:100%;height:60px'>"."Could you send me your part of the group project that is due Friday?</textarea></td>";
+			print "</tr>";
+			print "</table></div>";
+			print('</td></tr>');
+			print('<tr><td>');
+			print('On Thursday evening, would it be helpful if you were informed that you may have forgotten to respond to the message? Why or why not?');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<textarea style="width:700px;height:100px" id="selfReason"></textarea>');
+			print('</td></tr>');
+			print('</table>');
+			
+			print("<br>");
+			
+			print("<table style='width:700px'>");
+			print('<tr><td>');
+			print("<b>Assume you sent the following message on a Wednesday afternoon and your email client predicted that you would likely not receive a response until 5 days later.");
+			print("<div style='background-color:white;width:350px;position:inline;border:1px solid'><table>");
+			print "<tr>";
+			print "<td>From:</td>";
+			print "<td><textarea style='width:250px;height:20px'>"."Me</textarea></td>";
+			print "</tr>";
+			print "<tr>";
+			print "<td>Recipients:</td>";
+			print "<td><textarea style='width:100%;height:20px'>"."Prof. Smith, TA Jones</textarea></td>";
+			print "</tr>";
+			print "<tr>";
+			print "<td>Subject:</td>";
+			print "<td><textarea style='width:100%;height:60px'>"."Question about homework due Friday</textarea></td>";
+			print "</tr>";
+			print "</table></div>";
+			print('</td></tr>');
+			print('<tr><td>');
+			print('Would you do any of the following? (You may select more than one)');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<table>');
+			print("<tr><td><input style='width:10px' type='checkbox' id='doNothing'></td><td>Send the email as is</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='notSend'></td><td>Not send the email</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='addRecipients'></td><td>Send the email with more recipients (e.g. other TAs, other classmates, etc.)</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='removeRecipients'></td><td>Remove one or more of the already listed recipients before sending</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='findAnswer'></td><td>Try to find the answer myself</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='doOther'></td><td>Other: <input style='width:250px' id='otherVal'/></td></tr>");
+			print('</table>');
+			print('</td></tr>');
+			print('</table>');
 		}
 	?>
 	
