@@ -37,8 +37,7 @@ import retriever.imap.ImapThreadRetriever;
  */
 public class CommandLineEmailDataRetriever implements MessageListener {
 
-	final static File OUT_FOLDER = new File(
-			"/afs/cs.unc.edu/home/bartel/public_html/email_threads/");
+	final static File OUT_FOLDER = new File("/afs/cs.unc.edu/home/bartel/email_threads/");
 
 	final static Collection<Long> timeThresholds = new ArrayList<Long>();
 

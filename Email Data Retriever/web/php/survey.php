@@ -3,8 +3,8 @@
 	$id = $_POST['id'];
 	$count = intval($_POST['count']);
 	
-	$anonymous_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/'.$id;
-	$private_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/'.$id;
+	$anonymous_folder= '/afs/cs.unc.edu/home/bartel/email_threads/anonymous_data/'.$id;
+	$private_folder= '/afs/cs.unc.edu/home/bartel/email_threads/private_data/'.$id;
 	
 	$survey_data_file = $private_folder.'/survey_data.txt';
 	

@@ -2,8 +2,8 @@
 	
 	<?php 
 		$record_id = $_GET['r'];
-		$anonymous_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/'.$record_id;
-		$private_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/'.$record_id;
+		$anonymous_folder= '/afs/cs.unc.edu/home/bartel/email_threads/anonymous_data/'.$record_id;
+		$private_folder= '/afs/cs.unc.edu/home/bartel/email_threads/private_data/'.$record_id;
 		
 		$messages_file = $anonymous_folder.'/messages.txt';
 		

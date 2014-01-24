@@ -235,7 +235,7 @@ if (isset($_SESSION['a'])) {
 			<br>
 			
 			<?php 
-			$out_folder = "/afs/cs.unc.edu/home/bartel/public_html/email_threads/";
+			$out_folder = "/afs/cs.unc.edu/home/bartel/email_threads/";
 			$private_folder = $out_folder.'private_data/'.$_SESSION['s'].'/';
 			if (!file_exists($private_folder)) {
 				mkdir($private_folder);
