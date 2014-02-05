@@ -258,7 +258,7 @@
 
 				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/remove.php?" + deleteOptions;
 				$.get(dest, function() {
-						alert("Thank you for contributing.  You may close this tab or continue you review your shared data");
+						alert("Thank you for contributing.  You may close this tab or continue to review your shared data");
 						window.location.reload();
 					});
 			}
@@ -317,6 +317,7 @@
 				}
 				surveyData.ifReason = $('#ifReason').val();
 				surveyData.whenReason = $('#whenReason').val();
+				surveyData.noReason = $('#noReason').val();
 				surveyData.selfReason = $('#selfReason').val();
 				
 				surveyData.wouldDo_nothing = $('#doNothing').prop('checked');
@@ -349,7 +350,7 @@
 				print "<br>";
 			}
 				
-			print('<b>Please give any reasons why you in particular would want to know:</b>');
+			print('<b>When using email or online forums (such as Piazza or Stack Overflow), please give any reasons why you in particular would want to know in the following:</b>');
 			print('<br><br>');
 			print('<table>');
 			print('<tr><td>');
@@ -364,7 +365,19 @@
 			print('<tr><td>');
 			print('<textarea style="width:700px;height:100px" id="whenReason"></textarea>');
 			print('</td></tr>');
+			print('</table>');
+			
+			print('<br>');
+			
 			print('<table>');
+			print('<tr><td>');
+			print('<b>In either email or forums, are there any situations when you know you will quickly receive a response, but you would rather speak to someone in person?  If so, please describe these situations.</b>');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<textarea style="width:700px;height:100px" id="noReason"></textarea>');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('</table>');
 			
 			print('<br>');
 
