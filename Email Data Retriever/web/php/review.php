@@ -349,101 +349,95 @@
 				writeSurveyQuestions($survey_items[$i], $i);
 				print "<br>";
 			}
+			
+		}
+
+		if (!$survey_results_exist) {
+			print("<br>");
 				
-			print('<b>When using email or online forums (such as Piazza or Stack Overflow), please give any reasons why you in particular would want to know in the following:</b>');
-			print('<br><br>');
+			print("<table style='width:700px'>");;
+			print('<tr><td>');
+			print('<b>Do you recall any situation(s) where you needed a response to an email or a post on a forum such as Piazza or Stack Overflow quickly enough to meet some deadline?  If so, please describe them.</b>');
+			print('<br>');
+			print('For example, you may have messaged friends or family about meeting for dinner that evening, or you may have needed to contact your professor, TA, boss, colleague, or coworker about an assignment or project shortly before it is due.');
+			print('</td></tr>');
+			print('<tr><td>');
 			print('<table>');
-			print('<tr><td>');
-			print('If you will get a response to a message?');
+			print('<tr>');
+			print('<td><input style="width:20px" type="radio" name="deadlineConfirm" value="yes">Yes</td>');
+			print('<td><input style="width:20px" type="radio" name="deadlineConfirm" value="no">No</td>');
+			print('</tr>');
+			print('</table>');
 			print('</td></tr>');
 			print('<tr><td>');
-			print('<textarea style="width:700px;height:100px" id="ifReason"></textarea>');
+			print('<b>Please describe the situations.</b>');
 			print('</td></tr>');
 			print('<tr><td>');
-			print('When you will get a response to a message?');
+			print('<textarea style="width:700px;height:50px" id="deadlineSituation"></textarea>');
 			print('</td></tr>');
 			print('<tr><td>');
-			print('<textarea style="width:700px;height:100px" id="whenReason"></textarea>');
+			print('<br>');
+			print('<b>In the described situation(s), suppose that as you were composing your message, we predicted when you would receive a response, and it would not arrive quickly enough for you to meet your deadline. ');
+			print('Would you do any of the following?</b>');
+			print('<br>');
+			print('(You may select more than one)');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<table>');
+			print("<tr><td><input style='width:10px' type='checkbox' id='doNothing'></td><td>Send the message or post as is</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='notSend'></td><td>Not send it</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='addRecipients'></td><td>Add more recipients (e.g. post to other forums or include other TAs, other classmates, etc.)</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='removeRecipients'></td><td>Remove one or more of the already listed recipients before sending</td></tr>");
+			print("<tr><td></td><td>".
+					"<div style='margin-left:10px'>Why would you remove them? (e.g. Not bother them, not share sensitive information with them, etc.)".
+					"<input style='width:250px' id='removeVal'/></div>".
+					"</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='findAnswer'></td><td>Try to an answer myself</td></tr>");
+			print("<tr><td><input style='width:10px' type='checkbox' id='doOther'></td><td>Other (Please specify): <input style='width:250px' id='otherVal'/></td></tr>");
+			print('</table>');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<br><br>');
+			print('<b>There may be other reasons other than trying to meet a deadline where you care about when you will receive a response, such as wanting to confirm people are paying attention or to plan your schedule.
+					Please list any other reasons you in particular would want to know when you will receive a response.</b>');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<textarea style="width:700px;height:50px" id="othersSituation"></textarea>');
 			print('</td></tr>');
 			print('</table>');
+				
+			print("<br>");
+			print("<br>");
+			
+			print("<table style='width:700px'>");;
+			print('<br>');
+			print('<b>Would it be helpful if we were able to detect how long it normally takes for you to respond and notify you when you took longer than normal to respond to a post or message? '.
+					'Why or why not?</b>');
+			print('<br>');
+			print('</td></tr>');
+			print('<tr><td>');
+			print('<textarea style="width:700px;height:50px" id="selfReason"></textarea>');
+			print('</td></tr>');
+			print('</table>');
+				
+			print("<br>");
+			print("<br>");
 			
 			print('<br>');
 			
 			print('<table>');
 			print('<tr><td>');
-			print('<b>In either email or forums, are there any situations when you know you will quickly receive a response, but you would rather speak to someone in person?  If so, please describe these situations.</b>');
+			print('<b>Please list any situations you can think of where it would be harmful or not helpful for the sender or reciever of a message to know when a response will occur.</b>');
 			print('</td></tr>');
 			print('<tr><td>');
-			print('<textarea style="width:700px;height:100px" id="noReason"></textarea>');
+			print('<textarea style="width:700px;height:50px" id="noReason"></textarea>');
 			print('</td></tr>');
 			print('<tr><td>');
 			print('</table>');
 			
 			print('<br>');
 
-			print("<table style='width:700px'>");
-			print('<tr><td>');
-			print("<b>Assume you receive the following message from your classmate Anne on a Monday, and by Thursday evening you have not responded.");
-			print("<div style='background-color:white;width:350px;position:inline;border:1px solid'><table>");
-			print "<tr>";
-			print "<td>From:</td>";
-			print "<td><textarea style='width:250px;height:20px'>"."Anne</textarea></td>";
-			print "</tr>";
-			print "<tr>";
-			print "<td>Recipients:</td>";
-			print "<td><textarea style='width:100%;height:20px'>"."Me</textarea></td>";
-			print "</tr>";
-			print "<tr>";
-			print "<td>Subject:</td>";
-			print "<td><textarea style='width:100%;height:20px'>"."Group project</textarea></td>";
-			print "</tr>";
-			print "<td></td>";
-			print "<td><textarea style='width:100%;height:60px'>"."Could you send me your part of the group project that is due Friday?</textarea></td>";
-			print "</tr>";
-			print "</table></div>";
-			print('</td></tr>');
-			print('<tr><td>');
-			print('On Thursday evening, would it be helpful if you were informed that you may have forgotten to respond to the message? Why or why not?');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<textarea style="width:700px;height:100px" id="selfReason"></textarea>');
-			print('</td></tr>');
-			print('</table>');
 			
-			print("<br>");
-			
-			print("<table style='width:700px'>");
-			print('<tr><td>');
-			print("<b>Assume you sent the following message on a Wednesday afternoon and your email client predicted that you would likely not receive a response until 5 days later.");
-			print("<div style='background-color:white;width:350px;position:inline;border:1px solid'><table>");
-			print "<tr>";
-			print "<td>From:</td>";
-			print "<td><textarea style='width:250px;height:20px'>"."Me</textarea></td>";
-			print "</tr>";
-			print "<tr>";
-			print "<td>Recipients:</td>";
-			print "<td><textarea style='width:100%;height:20px'>"."Prof. Smith, TA Jones</textarea></td>";
-			print "</tr>";
-			print "<tr>";
-			print "<td>Subject:</td>";
-			print "<td><textarea style='width:100%;height:60px'>"."Question about homework due Friday</textarea></td>";
-			print "</tr>";
-			print "</table></div>";
-			print('</td></tr>');
-			print('<tr><td>');
-			print('Would you do any of the following? (You may select more than one)');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<table>');
-			print("<tr><td><input style='width:10px' type='checkbox' id='doNothing'></td><td>Send the email as is</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='notSend'></td><td>Not send the email</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='addRecipients'></td><td>Send the email with more recipients (e.g. other TAs, other classmates, etc.)</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='removeRecipients'></td><td>Remove one or more of the already listed recipients before sending</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='findAnswer'></td><td>Try to find the answer myself</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='doOther'></td><td>Other: <input style='width:250px' id='otherVal'/></td></tr>");
-			print('</table>');
-			print('</td></tr>');
-			print('</table>');
 		}
 	?>
 	
