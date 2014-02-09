@@ -263,6 +263,15 @@
 					});
 			}
 
+			function toggleVisible(id, isVisible) {
+				var item = $('#'+id);
+				if (isVisible) {
+					item.css('display', 'inline');
+				} else {
+					item.css('display', 'none');
+				}
+			} 
+
 
 			function showTime(id) {
 				var div = $('#'+id+'_times_list');
@@ -360,7 +369,7 @@
 				<td>
 					<b>
 						Do you recall any situation(s) where you needed a response to
-						an email or a post on a forum such as Piazza or Stack Overflow
+						an email or a post on an online forum (such as Piazza or Stack Overflow)
 						quickly enough to meet some deadline? If so, please describe them.
 					</b>
 					<br>
@@ -375,19 +384,20 @@
 					<table>
 						<tr>
 							<td>
-								<input style="width: 20px" type="radio" name="deadlineConfirm" value="yes">
+								<input style="width: 20px" type="radio" name="deadlineConfirm"
+								onclick="toggleVisible('shortAnswerDeadlines', true)" value="yes">
 								Yes
 							</td>
 							<td>
-								<input style="width: 20px" type="radio"	name="deadlineConfirm" value="no">
+								<input style="width: 20px" type="radio"	name="deadlineConfirm"
+								onclick="toggleVisible('shortAnswerDeadlines', false)" value="no">
 								No
 							</td>
 						</tr>
 					</table>
-				</td>
-			</tr>
+			<table id="shortAnswerDeadlines" style="margin-top:0px; display:none">
 			<tr>
-				<td><b>Please describe the situations.</b>
+				<td><b>Please describe the situation(s).</b>
 				</td>
 			</tr>
 			<tr>
@@ -426,7 +436,8 @@
 								other TAs, other classmates, etc.)</td>
 						</tr>
 						<tr>
-							<td><input style='width: 10px' type='checkbox'
+							<td><input style='width: 10px' type='checkbox' 
+								onclick='toggleVisible("removeReasonAnswer",  $("#removeRecipients").prop("checked"));'
 								id='removeRecipients'></td>
 							<td>Remove one or more of the already listed recipients before
 								sending</td>
@@ -434,8 +445,8 @@
 						<tr>
 							<td></td>
 							<td>
-								<div style='margin-left: 10px'>
-									Why would you remove them? (e.g. Not bother them, not share
+								<div id='removeReasonAnswer' style='display:none; margin-left: 10px'>
+								Why would you remove them? (e.g. Not bother them, not share
 									sensitive information with them, etc.) <input
 										style='width: 250px' id='removeVal' />
 								</div>
@@ -454,6 +465,9 @@
 					</table>
 				</td>
 			</tr>
+			</table>
+				</td>
+			</tr>
 			<tr>
 				<td>
 					<br>
@@ -462,7 +476,7 @@
 						There may be other reasons other than trying to
 						meet a deadline where you care about when you will receive a
 						response, such as wanting to confirm people are paying attention
-						or to plan your schedule. Please list any other reasons you in
+						or to plan your schedule. Please list any other reasons why you in
 						particular would want to know when you will receive a response.
 					</b>
 				</td>
@@ -480,7 +494,7 @@
 			<br>
 			<b>Would it be helpful if we were able to detect how long it normally
 				takes for you to respond and notify you when you took longer than
-				normal to respond to a post or message? '. 'Why or why not?</b>
+				normal to respond to a post or message? Why or why not?</b>
 			<br>
 			</td>
 			</tr>
