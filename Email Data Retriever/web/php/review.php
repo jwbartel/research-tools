@@ -376,7 +376,7 @@
 					For example, you may have messaged friends or family about
 					meeting for dinner that evening, or you may have needed to contact
 					your professor, TA, boss, colleague, or coworker about an
-					assignment or project shortly before it is due.
+					assignment or project shortly before it was due.
 				</td>
 			</tr>
 			<tr>
@@ -410,7 +410,7 @@
 					<br> 
 					<b>
 						In the described situation(s), suppose that as you were
-						composing your message, we predicted when you would receive a
+						composing your message we predicted when you would receive a
 						response, and it would not arrive quickly enough for you to meet
 						your deadline. Would you do any of the following?
 					</b>
@@ -454,7 +454,7 @@
 						</tr>
 						<tr>
 							<td><input style='width: 10px' type='checkbox' id='findAnswer'></td>
-							<td>Try to an answer myself</td>
+							<td>Try to find an answer myself</td>
 						</tr>
 						<tr>
 							<td><input style='width: 10px' type='checkbox' id='doOther'></td>
@@ -473,12 +473,14 @@
 					<br>
 					<br>
 					<b>
-						There may be other reasons other than trying to
-						meet a deadline where you care about when you will receive a
-						response, such as wanting to confirm people are paying attention
-						or to plan your schedule. Please list any other reasons why you in
+						There may be other reasons besides trying to meet a deadline 
+						where you care about when you will receive a response.
+						Please list any other reasons why you in
 						particular would want to know when you will receive a response.
 					</b>
+					<br>
+					For example, you may want to confirm people are paying attention
+						or to plan your schedule. 
 				</td>
 			</tr>
 			<tr>
