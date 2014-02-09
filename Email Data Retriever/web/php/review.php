@@ -324,18 +324,21 @@
 						}
 					}
 				}
-				surveyData.ifReason = $('#ifReason').val();
-				surveyData.whenReason = $('#whenReason').val();
-				surveyData.noReason = $('#noReason').val();
-				surveyData.selfReason = $('#selfReason').val();
+				surveyData.deadlineConfirm = $('input[name=deadlineConfirm]:checked').val();
+				surveyData.deadlineSituation = $('#deadlineSituation').val();
 				
-				surveyData.wouldDo_nothing = $('#doNothing').prop('checked');
-				surveyData.wouldDo_notSend = $('#notSend').prop('checked');
-				surveyData.wouldDo_addRecipient = $('#addRecipients').prop('checked');
-				surveyData.wouldDo_removeRecipient = $('#removeRecipients').prop('checked');
-				surveyData.wouldDo_findAnswer = $('#findAnswer').prop('checked');
-				surveyData.wouldDo_other = $('#doOther').prop('checked');
-				surveyData.wouldDo_otherVal = $('#otherVal').val();
+				surveyData.deadline_wouldDo_nothing = $('#doNothing').prop('checked');
+				surveyData.deadline_wouldDo_notSend = $('#notSend').prop('checked');
+				surveyData.deadline_wouldDo_addRecipient = $('#addRecipients').prop('checked');
+				surveyData.deadline_wouldDo_removeRecipient = $('#removeRecipients').prop('checked');
+				surveyData.deadline_wouldDo_removeRecipient_reason = $('#removeReason').val();
+				surveyData.deadline_wouldDo_findAnswer = $('#findAnswer').prop('checked');
+				surveyData.deadline_wouldDo_other = $('#doOther').prop('checked');
+				surveyData.deadline_wouldDo_otherVal = $('#otherVal').val();
+
+				surveyData.otherSituations = $('#otherSituations').val();
+				surveyData.selfReason = $('#selfReason').val();
+				surveyData.noReason = $('#noReason').val();
 
 				console.dir(surveyData);
 
@@ -352,13 +355,15 @@
 	</head>
 	<div class="center" id="reviewer">
 	<?php 
-		if ($survey_exist && !$survey_results_exist) {
+		if (!$survey_results_exist) {
 			print('<h1>Please complete this short survey about response time</h1>');
-			for ($i = 0; $i < $survey_count; $i++) {
-				writeSurveyQuestions($survey_items[$i], $i);
-				print "<br>";
-			}
+			if ($survey_exist) {
+				for ($i = 0; $i < $survey_count; $i++) {
+					writeSurveyQuestions($survey_items[$i], $i);
+					print "<br>";
+				}
 			
+			}
 		}
 	?>
 	
@@ -448,7 +453,7 @@
 								<div id='removeReasonAnswer' style='display:none; margin-left: 10px'>
 								Why would you remove them? (e.g. Not bother them, not share
 									sensitive information with them, etc.) <input
-										style='width: 250px' id='removeVal' />
+										id="removeReason" style='width: 250px' id='removeVal' />
 								</div>
 							</td>
 						</tr>
@@ -485,7 +490,7 @@
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px"
-						id="othersSituation"></textarea>
+						id="otherSituations"></textarea>
 				</td>
 			</tr>
 		</table>
