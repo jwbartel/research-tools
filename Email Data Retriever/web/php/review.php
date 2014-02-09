@@ -351,14 +351,9 @@
 			}
 			
 		}
-
-		if (!$survey_results_exist) {
-			// TODO: print javascript to display results
-		}
 	?>
 	
-	<div id="shortAnswer">
-		<br>
+	<div id="shortAnswer" style="display:none">
 
 		<table style='width: 700px'>
 			<tr>
@@ -516,6 +511,14 @@
 		<br>
 
 	</div>
+	
+	<script type="text/javascript">
+		<?php 
+			if (!$survey_results_exist) {
+				print('$("#shortAnswer").css("display","inline");');
+			}
+		?>
+	</script>
 
 	
 	<h1>Review your retrieved email data below</h1>
