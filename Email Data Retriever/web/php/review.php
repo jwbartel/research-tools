@@ -353,94 +353,170 @@
 		}
 
 		if (!$survey_results_exist) {
-			print("<br>");
-				
-			print("<table style='width:700px'>");;
-			print('<tr><td>');
-			print('<b>Do you recall any situation(s) where you needed a response to an email or a post on a forum such as Piazza or Stack Overflow quickly enough to meet some deadline?  If so, please describe them.</b>');
-			print('<br>');
-			print('For example, you may have messaged friends or family about meeting for dinner that evening, or you may have needed to contact your professor, TA, boss, colleague, or coworker about an assignment or project shortly before it is due.');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<table>');
-			print('<tr>');
-			print('<td><input style="width:20px" type="radio" name="deadlineConfirm" value="yes">Yes</td>');
-			print('<td><input style="width:20px" type="radio" name="deadlineConfirm" value="no">No</td>');
-			print('</tr>');
-			print('</table>');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<b>Please describe the situations.</b>');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<textarea style="width:700px;height:50px" id="deadlineSituation"></textarea>');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<br>');
-			print('<b>In the described situation(s), suppose that as you were composing your message, we predicted when you would receive a response, and it would not arrive quickly enough for you to meet your deadline. ');
-			print('Would you do any of the following?</b>');
-			print('<br>');
-			print('(You may select more than one)');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<table>');
-			print("<tr><td><input style='width:10px' type='checkbox' id='doNothing'></td><td>Send the message or post as is</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='notSend'></td><td>Not send it</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='addRecipients'></td><td>Add more recipients (e.g. post to other forums or include other TAs, other classmates, etc.)</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='removeRecipients'></td><td>Remove one or more of the already listed recipients before sending</td></tr>");
-			print("<tr><td></td><td>".
-					"<div style='margin-left:10px'>Why would you remove them? (e.g. Not bother them, not share sensitive information with them, etc.)".
-					"<input style='width:250px' id='removeVal'/></div>".
-					"</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='findAnswer'></td><td>Try to an answer myself</td></tr>");
-			print("<tr><td><input style='width:10px' type='checkbox' id='doOther'></td><td>Other (Please specify): <input style='width:250px' id='otherVal'/></td></tr>");
-			print('</table>');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<br><br>');
-			print('<b>There may be other reasons other than trying to meet a deadline where you care about when you will receive a response, such as wanting to confirm people are paying attention or to plan your schedule.
-					Please list any other reasons you in particular would want to know when you will receive a response.</b>');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<textarea style="width:700px;height:50px" id="othersSituation"></textarea>');
-			print('</td></tr>');
-			print('</table>');
-				
-			print("<br>");
-			print("<br>");
-			
-			print("<table style='width:700px'>");;
-			print('<br>');
-			print('<b>Would it be helpful if we were able to detect how long it normally takes for you to respond and notify you when you took longer than normal to respond to a post or message? '.
-					'Why or why not?</b>');
-			print('<br>');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<textarea style="width:700px;height:50px" id="selfReason"></textarea>');
-			print('</td></tr>');
-			print('</table>');
-				
-			print("<br>");
-			print("<br>");
-			
-			print('<br>');
-			
-			print('<table>');
-			print('<tr><td>');
-			print('<b>Please list any situations you can think of where it would be harmful or not helpful for the sender or reciever of a message to know when a response will occur.</b>');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('<textarea style="width:700px;height:50px" id="noReason"></textarea>');
-			print('</td></tr>');
-			print('<tr><td>');
-			print('</table>');
-			
-			print('<br>');
-
-			
+			// TODO: print javascript to display results
 		}
 	?>
 	
+	<div id="shortAnswer">
+		<br>
+
+		<table style='width: 700px'>
+			<tr>
+				<td>
+					<b>
+						Do you recall any situation(s) where you needed a response to
+						an email or a post on a forum such as Piazza or Stack Overflow
+						quickly enough to meet some deadline? If so, please describe them.
+					</b>
+					<br>
+					For example, you may have messaged friends or family about
+					meeting for dinner that evening, or you may have needed to contact
+					your professor, TA, boss, colleague, or coworker about an
+					assignment or project shortly before it is due.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<input style="width: 20px" type="radio" name="deadlineConfirm" value="yes">
+								Yes
+							</td>
+							<td>
+								<input style="width: 20px" type="radio"	name="deadlineConfirm" value="no">
+								No
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td><b>Please describe the situations.</b>
+				</td>
+			</tr>
+			<tr>
+				<td><textarea style="width: 700px; height: 50px"
+						id="deadlineSituation"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<br> 
+					<b>
+						In the described situation(s), suppose that as you were
+						composing your message, we predicted when you would receive a
+						response, and it would not arrive quickly enough for you to meet
+						your deadline. Would you do any of the following?
+					</b>
+					<br>
+					(You may select more than one)
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='doNothing'></td>
+							<td>Send the message or post as is</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='notSend'></td>
+							<td>Not send it</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='addRecipients'>
+							</td>
+							<td>Add more recipients (e.g. post to other forums or include
+								other TAs, other classmates, etc.)</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox'
+								id='removeRecipients'></td>
+							<td>Remove one or more of the already listed recipients before
+								sending</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<div style='margin-left: 10px'>
+									Why would you remove them? (e.g. Not bother them, not share
+									sensitive information with them, etc.) <input
+										style='width: 250px' id='removeVal' />
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='findAnswer'></td>
+							<td>Try to an answer myself</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='doOther'></td>
+							<td>Other (Please specify): <input style='width: 250px'
+								id='otherVal' />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<br>
+					<br>
+					<b>
+						There may be other reasons other than trying to
+						meet a deadline where you care about when you will receive a
+						response, such as wanting to confirm people are paying attention
+						or to plan your schedule. Please list any other reasons you in
+						particular would want to know when you will receive a response.
+					</b>
+				</td>
+			</tr>
+			<tr>
+				<td><textarea style="width: 700px; height: 50px"
+						id="othersSituation"></textarea>
+				</td>
+			</tr>
+		</table>
+
+		<br> <br>
+
+		<table style='width: 700px'>
+			<br>
+			<b>Would it be helpful if we were able to detect how long it normally
+				takes for you to respond and notify you when you took longer than
+				normal to respond to a post or message? '. 'Why or why not?</b>
+			<br>
+			</td>
+			</tr>
+			<tr>
+				<td><textarea style="width: 700px; height: 50px" id="selfReason"></textarea>
+				</td>
+			</tr>
+		</table>
+
+		<br> <br> <br>
+
+		<table>
+			<tr>
+				<td><b>Please list any situations you can think of where it would be
+						harmful or not helpful for the sender or reciever of a message to
+						know when a response will occur.</b>
+				</td>
+			</tr>
+			<tr>
+				<td><textarea style="width: 700px; height: 50px" id="noReason"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+		
+		</table>
+
+		<br>
+
+	</div>
+
 	
 	<h1>Review your retrieved email data below</h1>
 	<table style='border-spacing:10'>
