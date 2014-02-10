@@ -182,7 +182,9 @@
 			print "</td>";
 			print "</tr>";
 			print "</table>";
-			print('<table>');
+			print("<input style='width: 10px' type='checkbox' name='".strval($item_id)."_notAnswer' onclick='hideTimeQuestions(".strval($item_id).")'>");
+			print("<i>I would rather not answer questions about these messages</i>");
+			print('<table id="'.strval($item_id).'_questions">');
 			writeSingleQuestion('Would it have helped to know that a response was coming?', strval($item_id).'_1', false, strval($item_id));
 			writeSingleQuestion('Would it have helped to know when the response would occur?', strval($item_id).'_2', true, strval($item_id));
 			print('</table>');
@@ -263,6 +265,14 @@
 					});
 			}
 
+			function hideTimeQuestions(id) {
+				if ($('input[name="'+id+'_notAnswer"]').prop('checked')) {
+					$('#'+id+"_questions").css('display', 'none');
+				} else {
+					$('#'+id+"_questions").css('display', 'inline');
+				}
+			}
+
 			function toggleVisible(id, isVisible) {
 				var item = $('#'+id);
 				if (isVisible) {
@@ -314,6 +324,13 @@
 				surveyData.id = userId;
 				surveyData.count = surveyCount;
 				for (i = 0; i < surveyCount; i++) {
+					var question_id = ""+i+"_notAnswer";
+					checkedVal = $('input[name="'+question_id+'"]:checked').val();
+					if (checkedVal != undefined) {
+						surveyData[question_id] = checkedVal;;
+					} else {
+						surveyData[question_id] = 'unanswered';
+					}
 					for (j = 1; j <= 8; j++) {
 						question_id = "" + i  + "_" + j;
 						checkedVal = $('input[name="'+question_id+'"]:checked').val();
@@ -375,7 +392,9 @@
 					<b>
 						Do you recall any situation(s) where you needed a response to
 						an email or a post on an online forum (such as Piazza or Stack Overflow)
-						quickly enough to meet some deadline? If so, please describe them.
+						quickly enough to meet some deadline? These may be situations in the above 
+						questions, which you may have already answered.
+						<br>If so, please describe them.
 					</b>
 					<br>
 					For example, you may have messaged friends or family about
@@ -437,7 +456,7 @@
 						<tr>
 							<td><input style='width: 10px' type='checkbox' id='addRecipients'>
 							</td>
-							<td>Add more recipients (e.g. post to other forums or include
+							<td>Send to more people (e.g. post to other forums or include
 								other TAs, other classmates, etc.)</td>
 						</tr>
 						<tr>
@@ -445,21 +464,21 @@
 								onclick='toggleVisible("removeReasonAnswer",  $("#removeRecipients").prop("checked"));'
 								id='removeRecipients'></td>
 							<td>Remove one or more of the already listed recipients before
-								sending</td>
+								sending (e.g. You may not want to bother them, share
+									sensitive information with them, etc.)</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
 								<div id='removeReasonAnswer' style='display:none; margin-left: 10px'>
-								Why would you remove them? (e.g. Not bother them, not share
-									sensitive information with them, etc.) <input
+								Why would you remove them? <input
 										id="removeReason" style='width: 250px' id='removeVal' />
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td><input style='width: 10px' type='checkbox' id='findAnswer'></td>
-							<td>Try to find an answer myself</td>
+							<td>Use means other than sending an email or posting on forums (e.g. searching Google) to find an answer.</td>
 						</tr>
 						<tr>
 							<td><input style='width: 10px' type='checkbox' id='doOther'></td>
@@ -484,8 +503,8 @@
 						particular would want to know when you will receive a response.
 					</b>
 					<br>
-					For example, you may want to confirm people are paying attention
-						or to plan your schedule. 
+					For example, you may want to plan your schedule or confirm people are not 
+						ignoring you.
 				</td>
 			</tr>
 			<tr>
@@ -500,8 +519,8 @@
 		<table style='width: 700px'>
 			<br>
 			<b>Would it be helpful if we were able to detect how long it normally
-				takes for you to respond and notify you when you took longer than
-				normal to respond to a post or message? Why or why not?</b>
+				takes for you to respond to a particular post or message and notify you when
+				you took longer than normal to respond? Why or why not?</b>
 			<br>
 			</td>
 			</tr>
@@ -515,9 +534,10 @@
 
 		<table>
 			<tr>
-				<td><b>Please list any situations you can think of where it would be
-						harmful or not helpful for the sender or reciever of a message to
-						know when a response will occur.</b>
+				<td>
+					<b>Are there any situations where it would not be useful or even harmful for
+					the sender or receiver of a message to know when a response will occur?  If so,
+					please list them and explain why they would be harmful or not useful.</b>
 				</td>
 			</tr>
 			<tr>
