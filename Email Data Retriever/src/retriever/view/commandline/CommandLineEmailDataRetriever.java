@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.activation.DataHandler;
 import javax.mail.Message;
@@ -24,7 +25,10 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import retriever.AddressThreadCluster;
 import retriever.MessageListener;
+import retriever.ResponseTimeThreadCluster;
+import retriever.ThreadCluster;
 import retriever.ThreadData;
 import retriever.imap.ImapAuthenticator;
 import retriever.imap.ImapThreadRetriever;
@@ -37,16 +41,16 @@ import retriever.imap.ImapThreadRetriever;
  */
 public class CommandLineEmailDataRetriever implements MessageListener {
 
-	final static File OUT_FOLDER = new File("/afs/cs.unc.edu/home/bartel/email_threads/");
+	final static File OUT_FOLDER = new File("email_threads");//"/afs/cs.unc.edu/home/bartel/email_threads/");
 
-	final static Collection<Long> timeThresholds = new ArrayList<Long>();
+	final static Collection<ThreadCluster> threadClusters = new TreeSet<ThreadCluster>();
 
 	static {
-		timeThresholds.add(1000L * 60); // minute;
-		timeThresholds.add(1000L * 60 * 30); // 30 minutes;
-		timeThresholds.add(1000L * 60 * 60); // hour;
-		timeThresholds.add(1000L * 60 * 60 * 24); // day;
-		timeThresholds.add(1000L * 60 * 60 * 24 * 7); // week;
+		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60)); // minute;
+		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 30)); // 30 minutes;
+		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 60)); // hour;
+		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 60 * 24)); // day;
+		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 60 * 24 * 7)); // week;
 	}
 
 	BufferedWriter log;
@@ -65,6 +69,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		String imap = flags.get("imap");
 		String email = URLDecoder.decode(flags.get("email"), "UTF-8");
 		String password = URLDecoder.decode(flags.get("password"), "UTF-8");
+
+		threadClusters.add(new AddressThreadCluster(".+@cs[.]unc[.]edu(>)?\\s*", email));
 
 		if (!email.contains("@") && imap.equals("imap.gmail.com")) {
 			email += "@gmail.com";
@@ -108,7 +114,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			boolean includeAttachedFileNames = Boolean.parseBoolean(flags.get("fileNames"));
 			Map<String, String> compartmentalizedData = data.getCompartmentalizedData(email,
 					includeSubjects, includeFullEmailAddresses, includeAttachments,
-					includeAttachedFileNames, timeThresholds);
+					includeAttachedFileNames, threadClusters);
 
 			File privateFolder = new File(getSubOutFolder("private_data"), id);
 			if (!privateFolder.exists()) {

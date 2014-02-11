@@ -22,6 +22,24 @@ public class ThreadData {
 	Set<String> unseenMessages;
 
 	Map<String, Integer> addressIDs;
+	
+	//Cluster for threads that do not fit any others
+	final static ThreadCluster MISFITS_CLUSTER = new ThreadCluster() {
+
+		@Override
+		public boolean matchesCluster(OfflineThread thread) {
+			return true;
+		}
+
+		@Override
+		public int compareTo(ThreadCluster o) {
+			if (o != this) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	};
 
 	public ThreadData(int totalMessages, ArrayList<Set<OfflineMessage>> threads,
 			Set<String> seenMessages, Set<String> unseenMessages) {
@@ -83,128 +101,56 @@ public class ThreadData {
 		return mappingsStr;
 	}
 
-	private static Date[] getFirstAndResponseDates(Set<OfflineMessage> thread)
-			throws MessagingException {
-		if (thread.size() < 2) {
-			return null;
-		}
-
-		OfflineMessage firstMessage = null;
-		OfflineMessage response = null;
-		for (OfflineMessage message : thread) {
-			Date msgDate = message.getReceivedDate();
-			if (msgDate != null) {
-				if (firstMessage == null || firstMessage.getReceivedDate().after(msgDate)) {
-					firstMessage = message;
-				} else if (response == null || response.getReceivedDate().after(msgDate)) {
-					response = message;
-
-				}
-			}
-		}
-
-		Date[] retVal = new Date[2];
-		if (firstMessage != null) {
-			retVal[0] = firstMessage.getReceivedDate();
-		}
-		if (response != null) {
-			retVal[1] = response.getReceivedDate();
-		}
-
-		return retVal;
-
-	}
-
-	private static Long getResponseTime(Set<OfflineMessage> thread) throws MessagingException {
-		if (thread.size() < 2) {
-			return null;
-		}
-
-		Date[] orignalAndResponseTime = getFirstAndResponseDates(thread);
-
-		if (orignalAndResponseTime[0] != null && orignalAndResponseTime[1] != null) {
-			return orignalAndResponseTime[1].getTime() - orignalAndResponseTime[0].getTime();
-		} else {
-			return null;
-		}
-	}
-
-	private static OfflineMessage[] getOriginalAndResponse(Set<OfflineMessage> thread)
-			throws MessagingException {
-		if (thread.size() < 2) {
-			return null;
-		}
-
-		OfflineMessage firstMessage = null;
-		OfflineMessage response = null;
-		for (OfflineMessage message : thread) {
-			Date msgDate = message.getReceivedDate();
-			if (msgDate != null) {
-				if (firstMessage == null || firstMessage.getReceivedDate().after(msgDate)) {
-					firstMessage = message;
-				} else if (response == null || response.getReceivedDate().after(msgDate)) {
-					response = message;
-
-				}
-			}
-		}
-
-		if (firstMessage != null && response != null) {
-			OfflineMessage[] retVal = { firstMessage, response };
-			return retVal;
-		} else {
-			return null;
-		}
-	}
-
-	private void addThread(Long threshold, Set<OfflineMessage> thread,
-			Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads) {
-		ArrayList<Set<OfflineMessage>> thresholdThreads = sortedThreads.get(threshold);
+	private void addThread(ThreadCluster cluster, OfflineThread thread,
+			Map<ThreadCluster, ArrayList<OfflineThread>> sortedThreads) {
+		ArrayList<OfflineThread> thresholdThreads = sortedThreads.get(cluster);
 		if (thresholdThreads == null) {
-			thresholdThreads = new ArrayList<Set<OfflineMessage>>();
-			sortedThreads.put(threshold, thresholdThreads);
+			thresholdThreads = new ArrayList<OfflineThread>();
+			sortedThreads.put(cluster, thresholdThreads);
 		}
 
 		thresholdThreads.add(thread);
 	}
 
-	private Map<Long, ArrayList<Set<OfflineMessage>>> getThreadsSortedByResponseTime(
-			Collection<Long> timeThresholds) throws MessagingException {
+	private Map<ThreadCluster, ArrayList<OfflineThread>> getSortedThreads(
+			Collection<ThreadCluster> clusters) throws MessagingException {
 
-		TreeSet<Long> sortedTimeThresholds = new TreeSet<Long>(timeThresholds);
+		TreeSet<ThreadCluster> sortedClusters = new TreeSet<ThreadCluster>(clusters);
+		
+		
+		
+		Map<ThreadCluster, ArrayList<OfflineThread>> sortedThreads =
+				new TreeMap<ThreadCluster, ArrayList<OfflineThread>>();
+		for (Set<OfflineMessage> messages : threads) {
 
-		Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads = new TreeMap<Long, ArrayList<Set<OfflineMessage>>>();
-		for (Set<OfflineMessage> thread : threads) {
-
-			Long responseTime = getResponseTime(thread);
-			if (responseTime == null) {
+			OfflineThread thread = new OfflineThread(messages);
+			if (thread.getResponseTime() == null) {
 				continue;
 			}
 
 			boolean sorted = false;
-			for (Long threshold : sortedTimeThresholds) {
-				if (responseTime < threshold) {
-					addThread(threshold, thread, sortedThreads);
+			for (ThreadCluster cluster : sortedClusters) {
+				if (cluster.matchesCluster(thread)) {
+					addThread(cluster, thread, sortedThreads);
 					sorted = true;
 					break;
 				}
 			}
 
 			if (!sorted) {
-				Long threshold = -1L;
-				addThread(threshold, thread, sortedThreads);
+				addThread(MISFITS_CLUSTER, thread, sortedThreads);
 			}
 		}
 
 		return sortedThreads;
 	}
 
-	private String getAllThreadStrings(Collection<Long> timeThresholds) throws MessagingException {
-		Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads = getThreadsSortedByResponseTime(timeThresholds);
+	private String getAllThreadStrings(Collection<ThreadCluster> cluster) throws MessagingException {
+		Map<ThreadCluster, ArrayList<OfflineThread>> sortedThreads = getSortedThreads(cluster);
 
 		String retVal = "";
-		for (ArrayList<Set<OfflineMessage>> threads : sortedThreads.values()) {
-			for (Set<OfflineMessage> thread : threads) {
+		for (ArrayList<OfflineThread> threads : sortedThreads.values()) {
+			for (OfflineThread thread : threads) {
 				retVal += getSurveyThreadString(thread) + "\n";
 			}
 		}
@@ -212,19 +158,19 @@ public class ThreadData {
 		return retVal;
 	}
 
-	private Map<Long, Set<OfflineMessage>> getSelectedThreadsForSurvey(
-			Collection<Long> timeThresholds) throws MessagingException {
+	private Map<ThreadCluster, OfflineThread> getSelectedThreadsForSurvey(
+			Collection<ThreadCluster> clusters) throws MessagingException {
 
-		Map<Long, Set<OfflineMessage>> surveyThreads = new TreeMap<Long, Set<OfflineMessage>>();
+		Map<ThreadCluster, OfflineThread> surveyThreads = new TreeMap<ThreadCluster, OfflineThread>();
 
 		Random rand = new Random();
-		Map<Long, ArrayList<Set<OfflineMessage>>> sortedThreads = getThreadsSortedByResponseTime(timeThresholds);
-		for (Entry<Long, ArrayList<Set<OfflineMessage>>> entry : sortedThreads.entrySet()) {
-			Long threshold = entry.getKey();
-			ArrayList<Set<OfflineMessage>> threads = entry.getValue();
+		Map<ThreadCluster, ArrayList<OfflineThread>> sortedThreads = getSortedThreads(clusters);
+		for (Entry<ThreadCluster, ArrayList<OfflineThread>> entry : sortedThreads.entrySet()) {
+			ThreadCluster cluster = entry.getKey();
+			ArrayList<OfflineThread> threads = entry.getValue();
 
 			int pos = rand.nextInt(threads.size());
-			surveyThreads.put(threshold, threads.get(pos));
+			surveyThreads.put(cluster, threads.get(pos));
 		}
 		return surveyThreads;
 	}
@@ -276,12 +222,12 @@ public class ThreadData {
 		return timeStr;
 	}
 
-	private String getSurveyThreadString(Set<OfflineMessage> thread) throws MessagingException {
-		Long responseTime = getResponseTime(thread);
-		Date[] originalAndResponseDate = getFirstAndResponseDates(thread);
+	private String getSurveyThreadString(OfflineThread thread) throws MessagingException {
+		Long responseTime = thread.getResponseTime();
+		Date[] originalAndResponseDate = thread.getFirstAndResponseDates();
 
 		String timeString = getTimeString(responseTime);
-		OfflineMessage[] originalAndResponse = getOriginalAndResponse(thread);
+		OfflineMessage[] originalAndResponse = thread.getOriginalAndResponse();
 		String from = null;
 		if (originalAndResponse[0].getFrom() != null && originalAndResponse[0].getFrom().length > 0) {
 			from = getPublicAddressRepresentation(originalAndResponse[0].getFrom()[0], true);
@@ -309,20 +255,20 @@ public class ThreadData {
 		return threadString;
 	}
 
-	private String getAllSurveyThreadStrings(Collection<Long> timeThresholds)
+	private String getAllSurveyThreadStrings(Collection<ThreadCluster> clusters)
 			throws MessagingException {
 
 		String surveyString = "";
 
-		Map<Long, Set<OfflineMessage>> surveyThreads = getSelectedThreadsForSurvey(timeThresholds);
-		for (Long threshold : timeThresholds) {
-			Set<OfflineMessage> thread = surveyThreads.get(threshold);
+		Map<ThreadCluster, OfflineThread> surveyThreads = getSelectedThreadsForSurvey(clusters);
+		for (ThreadCluster cluster : clusters) {
+			OfflineThread thread = surveyThreads.get(cluster);
 			if (thread != null) {
 				surveyString += getSurveyThreadString(thread) + "\n";
 			}
 		}
 
-		Set<OfflineMessage> thread = surveyThreads.get(-1L);
+		OfflineThread thread = surveyThreads.get(MISFITS_CLUSTER);
 		if (thread != null) {
 			surveyString += getSurveyThreadString(thread) + "\n";
 		}
@@ -331,7 +277,7 @@ public class ThreadData {
 
 	public Map<String, String> getCompartmentalizedData(String sourceEmail,
 			boolean includeSubjects, boolean includeFullEmailAddresses, boolean includeAttachments,
-			boolean includeAttachedFileNames, Collection<Long> timeThresholds)
+			boolean includeAttachedFileNames, Collection<ThreadCluster> clusters)
 			throws MessagingException {
 
 		Map<String, String> compartments = new HashMap<String, String>();
@@ -427,8 +373,8 @@ public class ThreadData {
 			compartments.put("attachments", attachmentsStr);
 		}
 		if (includeSubjects && includeFullEmailAddresses) {
-			compartments.put("threads with responses", getAllThreadStrings(timeThresholds));
-			compartments.put("survey", getAllSurveyThreadStrings(timeThresholds));
+			compartments.put("threads with responses", getAllThreadStrings(clusters));
+			compartments.put("survey", getAllSurveyThreadStrings(clusters));
 		}
 		return compartments;
 	}
