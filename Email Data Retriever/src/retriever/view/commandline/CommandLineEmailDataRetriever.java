@@ -41,13 +41,14 @@ import retriever.imap.ImapThreadRetriever;
  */
 public class CommandLineEmailDataRetriever implements MessageListener {
 
-	final static File OUT_FOLDER = new File("email_threads");//"/afs/cs.unc.edu/home/bartel/email_threads/");
+	final static File OUT_FOLDER = new File("/afs/cs.unc.edu/home/bartel/email_threads/");
 
 	final static Collection<ThreadCluster> threadClusters = new TreeSet<ThreadCluster>();
 
 	static {
 		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60)); // minute;
-		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 30)); // 30 minutes;
+		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 30)); // 30
+																			// minutes;
 		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 60)); // hour;
 		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 60 * 24)); // day;
 		threadClusters.add(new ResponseTimeThreadCluster(1000L * 60 * 60 * 24 * 7)); // week;
