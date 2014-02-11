@@ -276,7 +276,7 @@
 			function toggleVisible(id, isVisible) {
 				var item = $('#'+id);
 				if (isVisible) {
-					item.css('display', 'inline');
+					item.css('display', 'block');
 				} else {
 					item.css('display', 'none');
 				}
@@ -374,6 +374,14 @@
 	<?php 
 		if (!$survey_results_exist) {
 			print('<h1>Please complete this short survey about response time</h1>');
+			
+			print('<div style="width:650px">This study is about predicting if and when you will receive a response. '.
+					'For the purposes of this survey, please assume there is already some tool '.
+					'that is able to predict when you will receive a response and appropriately '.
+					'displays it.</div>');
+			
+			print ('<br><br>');
+			
 			if ($survey_exist) {
 				for ($i = 0; $i < $survey_count; $i++) {
 					writeSurveyQuestions($survey_items[$i], $i);
@@ -390,17 +398,12 @@
 			<tr>
 				<td>
 					<b>
-						Do you recall any situation(s) where you needed a response to
+						Do you recall any following situation(s) where you needed a response to
 						an email or a post on an online forum (such as Piazza or Stack Overflow)
 						quickly enough to meet some deadline? These may be situations in the above 
 						questions, which you may have already answered.
 						<br>If so, please describe them.
 					</b>
-					<br>
-					For example, you may have messaged friends or family about
-					meeting for dinner that evening, or you may have needed to contact
-					your professor, TA, boss, colleague, or coworker about an
-					assignment or project shortly before it was due.
 				</td>
 			</tr>
 			<tr>
@@ -408,33 +411,68 @@
 					<table>
 						<tr>
 							<td>
-								<input style="width: 20px" type="radio" name="deadlineConfirm"
-								onclick="toggleVisible('shortAnswerDeadlines', true)" value="yes">
-								Yes
-							</td>
+								<input style='width: 10px' type='checkbox' name='deadlineSituation'
+								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
+								id='deadline_dinner'>
 							<td>
-								<input style="width: 20px" type="radio"	name="deadlineConfirm"
-								onclick="toggleVisible('shortAnswerDeadlines', false)" value="no">
-								No
+								Coordinating with friends or family about meeting later
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' name='deadlineSituation'
+								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
+								id='deadline_project'></td>
+							<td>
+								Clarifying an assignment or project with a professor, TA, boss, colleague, or coworker  before it was due
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' name='deadlineSituation'
+								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
+								id='deadline_collaborate'></td>
+							<td>
+								Coordinating with colleagues or coworkers about an upcoming assignment or project you are collaborating on
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' name='deadlineSituation'
+								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
+								id='deadline_collaborate'></td>
+							<td>
+								Getting necessary information form a professor, TA, boss, colleague, or coworker before a meeting, presentation, exam, or quiz
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' name='deadlineSituation'
+								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
+								id='deadline_other'></td>
+							<td>
+								Other (Please Specify): <input style='width: 250px' 
+									id='deadline_other_val' />
 							</td>
 						</tr>
 					</table>
-			<table id="shortAnswerDeadlines" style="margin-top:0px; display:none">
+					</td></tr>
 			<tr>
-				<td><b>Please describe the situation(s).</b>
+				<td><b>Please elaborate on your selection(s).</b>
 				</td>
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px"
-						id="deadlineSituation"></textarea>
+						id="deadline_elaboration"></textarea>
 				</td>
 			</tr>
+			<table id="shortAnswerDeadlines" style="margin-top:0px; display:none">
 			<tr>
 				<td>
 					<br> 
 					<b>
-						In the described situation(s), suppose that as you were
-						composing your message we predicted when you would receive a
+						In the selected situation(s) about deadlines, suppose that as you were
+						composing your message or post we predicted when you would receive a
 						response, and it would not arrive quickly enough for you to meet
 						your deadline. Would you do any of the following?
 					</b>
@@ -454,6 +492,14 @@
 							<td>Not send it</td>
 						</tr>
 						<tr>
+							<td><input style='width: 10px' type='checkbox' id='switchEmailAndForum'>
+							</td>
+							<td>
+								Post on a forum instead of or in addition to sending an email
+								(or vice versa if you originally posted on a forum)
+							</td>
+						</tr>
+						<tr>
 							<td><input style='width: 10px' type='checkbox' id='addRecipients'>
 							</td>
 							<td>Send to more people (e.g. post to other forums or include
@@ -470,15 +516,67 @@
 						<tr>
 							<td></td>
 							<td>
-								<div id='removeReasonAnswer' style='display:none; margin-left: 10px'>
-								Why would you remove them? <input
-										id="removeReason" style='width: 250px' id='removeVal' />
+								<div id='removeReasonAnswer' style='display:none; margin: 10px 40px'>
+									<b>Why would you remove them?</b>
+									<table>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='removeReason_bother'></td>
+											<td>Would not want to bother them</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='removeReason_privacy'></td>
+											<td>Avoid unnecessarily sharing sensitive or private information with them</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='removeReason_other'></td>
+											<td>Other (Please Specify): <input style='width: 250px' 
+													id='removeReason_other_val' /></td>
+										</tr>
+									</table>
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td><input style='width: 10px' type='checkbox' id='findAnswer'></td>
+							<td><input style='width: 10px' type='checkbox'
+								onclick='toggleVisible("findAnswerMeans",  $("#findAnswer").prop("checked"));'
+								id='findAnswer'></td>
 							<td>Use means other than sending an email or posting on forums (e.g. searching Google) to find an answer.</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<div id='findAnswerMeans' style='display:none; margin: 10px 40px'>
+									<b>How would you find your answer?</b>
+									<table>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='findAnswer_search'></td>
+											<td>Search engine (Google, etc.)</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='removeReason_postOther'></td>
+											<td>Post on a forum in addition to or instead of on email, or vice versa</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='removeReason_inPerson'></td>
+											<td>Ask a classmate or coworker in person</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='removeReason_phone'></td>
+											<td>Call someone on the phone</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='removeReason_officeHours'></td>
+											<td>Attend office hours</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='removeReason_other'></td>
+											<td>Other (Please Specify): <input style='width: 250px' 
+													id='removeReason_other_val' />
+											</td>
+										</tr>
+									</table>
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td><input style='width: 10px' type='checkbox' id='doOther'></td>
@@ -499,12 +597,35 @@
 					<b>
 						There may be other reasons besides trying to meet a deadline 
 						where you care about when you will receive a response.
-						Please list any other reasons why you in
-						particular would want to know when you will receive a response.
+						Please select any other reasons why you in particular would want
+						to know when you will receive a response.
 					</b>
-					<br>
-					For example, you may want to plan your schedule or confirm people are not 
-						ignoring you.
+				</td>
+			</tr>
+			<tr>
+				<td><table>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='other_ignore'>
+							
+							<td>Confirm people are not ignoring you</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox'
+								id='other_schedule'>
+							
+							<td>Plan your schedule</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='other_other'>
+							</td>
+							<td>Other (Please Specify): <input style='width: 250px'
+								id='other_other_val' />
+							</td>
+						</tr>
+					</table></td>
+			</tr>
+			<tr>
+				<td><b>Please elaborate on your selection(s).</b>
 				</td>
 			</tr>
 			<tr>
@@ -517,15 +638,52 @@
 		<br> <br>
 
 		<table style='width: 700px'>
-			<br>
-			<b>Would it be helpful if we were able to detect how long it normally
-				takes for you to respond to a particular post or message and notify you when
-				you took longer than normal to respond? Why or why not?</b>
-			<br>
-			</td>
+			<tr><td>
+				<br>
+				<b>Would it be helpful in any of the following situations
+				   if we were able to detect how long it normally takes for
+				   you to respond to a particular post or message and notify
+				   you when you took longer than normal to respond? </b>
+				<br>
+			</td></tr>
+			<tr><td>
+				<table>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' id='self_disappoint'>
+							<td>
+								Ensure I would not disappoint someone
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' id='self_opportunity'>
+							<td>
+								Ensure I would not miss some opportunity
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' id='self_deadline'>
+							<td>
+								Ensure a project or assignment is completed before a deadline
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' id='self_other'></td>
+							<td>
+								Other (Please Specify): <input style='width: 250px'	id='self_other_val' />
+							</td>
+						</tr>
+					</table>
+			</td></tr>
+			<tr>
+				<td><b>Please elaborate on your selection(s).</b>
+				</td>
 			</tr>
 			<tr>
-				<td><textarea style="width: 700px; height: 50px" id="selfReason"></textarea>
+				<td><textarea style="width: 700px; height: 50px" id="self_elaboration"></textarea>
 				</td>
 			</tr>
 		</table>
