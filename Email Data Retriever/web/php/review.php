@@ -324,38 +324,101 @@
 				surveyData.id = userId;
 				surveyData.count = surveyCount;
 				for (i = 0; i < surveyCount; i++) {
+					surveyData[i] = {};
 					var question_id = ""+i+"_notAnswer";
 					checkedVal = $('input[name="'+question_id+'"]:checked').val();
 					if (checkedVal != undefined) {
-						surveyData[question_id] = checkedVal;;
+						surveyData[i]["notAnswered"] = checkedVal;;
 					} else {
-						surveyData[question_id] = 'unanswered';
+						surveyData[i]["notAnswered"] = 'unanswered';
 					}
 					for (j = 1; j <= 8; j++) {
 						question_id = "" + i  + "_" + j;
 						checkedVal = $('input[name="'+question_id+'"]:checked').val();
 						if (checkedVal != undefined) {
-							surveyData[question_id] = checkedVal;;
+							surveyData[i][j] = checkedVal;;
 						} else {
-							surveyData[question_id] = 'unanswered';
+							surveyData[i][j] = 'unanswered';
 						}
 					}
 				}
-				surveyData.deadlineConfirm = $('input[name=deadlineConfirm]:checked').val();
-				surveyData.deadlineSituation = $('#deadlineSituation').val();
-				
-				surveyData.deadline_wouldDo_nothing = $('#doNothing').prop('checked');
-				surveyData.deadline_wouldDo_notSend = $('#notSend').prop('checked');
-				surveyData.deadline_wouldDo_addRecipient = $('#addRecipients').prop('checked');
-				surveyData.deadline_wouldDo_removeRecipient = $('#removeRecipients').prop('checked');
-				surveyData.deadline_wouldDo_removeRecipient_reason = $('#removeReason').val();
-				surveyData.deadline_wouldDo_findAnswer = $('#findAnswer').prop('checked');
-				surveyData.deadline_wouldDo_other = $('#doOther').prop('checked');
-				surveyData.deadline_wouldDo_otherVal = $('#otherVal').val();
 
-				surveyData.otherSituations = $('#otherSituations').val();
-				surveyData.selfReason = $('#selfReason').val();
-				surveyData.noReason = $('#noReason').val();
+				surveyData.deadline = {};
+				surveyData.deadline.meeting = $('#deadline_meeting').prop('checked');
+				surveyData.deadline.clarifying = $('#deadline_clarifying').prop('checked');
+				surveyData.deadline.collaborate = $('#deadline_collaborate').prop('checked');
+				surveyData.deadline.information = $('#deadline_information').prop('checked');
+				surveyData.deadline.other = {};
+				surveyData.deadline.other.checked = $('#deadline_other').prop('checked');
+				surveyData.deadline.other.val = $('#deadline_other_val').val();
+				surveyData.deadline.elaboration = $('#deadline_elaboration').val();
+
+				surveyData.reaction = {};
+				surveyData.reaction.remove = {};
+				surveyData.reaction.remove.checked = $('#reaction_remove').prop('checked');
+				surveyData.reaction.keep = {};
+				surveyData.reaction.keep.checked = $('#reaction_keep').prop('checked');
+				surveyData.reaction.add = $('#reaction_add').prop('checked');
+				surveyData.reaction.notSend = $('#reaction_notSend').prop('checked');
+				surveyData.reaction.change = $('#reaction_switch').prop('checked');
+				surveyData.reaction.find = {};
+				surveyData.reaction.find.checked = $('#reaction_find').prop('checked');
+				surveyData.reaction.other = {};
+				surveyData.reaction.other.checked = $('#reaction_other').prop('checked');
+				surveyData.reaction.other.val = $('#reaction_other_val').val();
+				surveyData.reaction.elaboration = $('#reaction_elaboration').val();
+
+				
+				surveyData.reaction.remove.reason = {};
+				surveyData.reaction.remove.reason.bother = $('#removeReason_bother').prop('checked');
+				surveyData.reaction.remove.reason.privacy = $('#removeReason_privacy').prop('checked');
+				surveyData.reaction.remove.reason.other = {};
+				surveyData.reaction.remove.reason.other.checked = $('#removeReason_other').prop('checked');
+				surveyData.reaction.remove.reason.other.val = $('#removeReason_other_val').val();
+
+				surveyData.reaction.keep.reason = {};
+				surveyData.reaction.keep.reason.error = $('#keepReason_error').prop('checked');
+				surveyData.reaction.keep.reason.useful = $('#keepReason_useful').prop('checked');
+				surveyData.reaction.keep.reason.other = {};
+				surveyData.reaction.keep.reason.other.checked = $('#keepReason_other').prop('checked');
+				surveyData.reaction.keep.reason.other.val = $('#keepReason_other_val').val();
+
+				surveyData.reaction.find.search = $('#findAnswer_search').prop('checked');
+				surveyData.reaction.find.im = $('#findAnswer_im').prop('checked');
+				surveyData.reaction.find.phone = $('#findAnswer_phone').prop('checked');
+				surveyData.reaction.find.meetRecipient = $('#findAnswer_meetRecipient').prop('checked');
+				surveyData.reaction.find.meetOthers = $('#findAnswer_meetOthers').prop('checked');
+				surveyData.reaction.find.other = {};
+				surveyData.reaction.find.other.checked = $('#findAnswer_other').prop('checked');
+				surveyData.reaction.find.other.val = $('#findAnswer_other_val').val();
+
+				surveyData.other = {};
+				surveyData.other.ignored = $('#other_ignored').prop('checked');
+				surveyData.other.schedule = $('#other_schedule').prop('checked');
+				surveyData.other.ok = $('#other_ok').prop('checked');
+				surveyData.other.excitement = $('#other_excitement').prop('checked');
+				surveyData.other.reliable = $('#other_reliable').prop('checked');
+				surveyData.other.other = {};
+				surveyData.other.other.checked = $('#other_other').prop('checked');
+				surveyData.other.other.val = $('#other_other_val').val();
+				surveyData.other.elaboration = $('#other_elaboration').val();
+
+				surveyData.self = {};
+				surveyData.self.judged = $('#self_judged').prop('checked');
+				surveyData.self.opportunity = $('#self_opportunity').prop('checked');
+				surveyData.self.other = {};
+				surveyData.self.other.checked = $('#self_other').prop('checked');
+				surveyData.self.other.val = $('#self_other_val').val();
+				surveyData.self.elaboration = $('#self_elaboration').val();
+
+				surveyData.harm = {};
+				surveyData.harm.privacy = $('#harm_privacy').prop('checked');
+				surveyData.harm.error = $('#harm_error').prop('checked');
+				surveyData.harm.reminder = $('#harm_reminder').prop('checked');
+				surveyData.harm.other = {};
+				surveyData.harm.other.checked = $('#harm_other').prop('checked');
+				surveyData.harm.other.val = $('#harm_other_val').val();
+				surveyData.harm.elaboration = $('#harm_elaboration').val();
 
 				console.dir(surveyData);
 
@@ -375,10 +438,10 @@
 		if (!$survey_results_exist) {
 			print('<h1>Please complete this short survey about response time</h1>');
 			
-			print('<div style="width:650px">This study is about predicting if and when you will receive a response. '.
+			print('<div style="width:650px">This study is about predicting if and when you will respond or receive a response to an email message or forum post. '.
 					'For the purposes of this survey, please assume there is already some tool '.
-					'that is able to predict when you will receive a response and appropriately '.
-					'displays it.</div>');
+					'that is able to predict if and when a response will occur and that can appropriately '.
+					'display the prediction.</div>');
 			
 			print ('<br><br>');
 			
@@ -397,12 +460,11 @@
 		<table style='width: 700px'>
 			<tr>
 				<td>
-					<b>
-						Do you recall any following situation(s) where you needed a response to
-						an email or a post on an online forum (such as Piazza or Stack Overflow)
-						quickly enough to meet some deadline? These may be situations in the above 
-						questions, which you may have already answered.
-						<br>If so, please describe them.
+					<b> 
+						Have you been in any of following situation(s) where you needed
+						a response to an email or a post on an online forum (such as
+						Piazza or Stack Overflow) quickly enough to meet some deadline?
+						The specific emails above may fit into these situations.
 					</b>
 				</td>
 			</tr>
@@ -413,27 +475,18 @@
 							<td>
 								<input style='width: 10px' type='checkbox' name='deadlineSituation'
 								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
-								id='deadline_dinner'>
+								id='deadline_meeting'>
 							<td>
-								Coordinating with friends or family about meeting later
+								Coordinating with people about meeting later
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<input style='width: 10px' type='checkbox' name='deadlineSituation'
 								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
-								id='deadline_project'></td>
+								id='deadline_clarifying'></td>
 							<td>
-								Clarifying an assignment or project with a professor, TA, boss, colleague, or coworker  before it was due
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input style='width: 10px' type='checkbox' name='deadlineSituation'
-								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
-								id='deadline_collaborate'></td>
-							<td>
-								Coordinating with colleagues or coworkers about an upcoming assignment or project you are collaborating on
+								Clarifying assignments or projects with professors, TAs, bosses, colleagues, coworkers, or others before they were due
 							</td>
 						</tr>
 						<tr>
@@ -442,7 +495,16 @@
 								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
 								id='deadline_collaborate'></td>
 							<td>
-								Getting necessary information form a professor, TA, boss, colleague, or coworker before a meeting, presentation, exam, or quiz
+								 Coordinating with colleagues, coworkers, or others about upcoming assignments or projects you are collaborating on
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' name='deadlineSituation'
+								onclick="toggleVisible('shortAnswerDeadlines', $(&quot;input[type='checkbox'][name='deadlineSituation']:checked&quot;).length > 0);"
+								id='deadline_information'></td>
+							<td>
+								Getting necessary information from professors, TAs, bosses, colleagues, coworkers, or others before meetings, presentations, exams, or quizzes
 							</td>
 						</tr>
 						<tr>
@@ -458,8 +520,7 @@
 					</table>
 					</td></tr>
 			<tr>
-				<td><b>Please elaborate on your selection(s).</b>
-				</td>
+				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b></td>
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px"
@@ -470,11 +531,13 @@
 			<tr>
 				<td>
 					<br> 
-					<b>
-						In the selected situation(s) about deadlines, suppose that as you were
-						composing your message or post we predicted when you would receive a
-						response, and it would not arrive quickly enough for you to meet
-						your deadline. Would you do any of the following?
+					<b> 
+						In the above situation(s) that you selected, suppose that as
+						you were composing your message or post we predicted if and when
+						you would receive a response (with a small chance of error).
+						Based on that prediction, assume you determined that the response would not
+						arrive quickly enough for you to meet your deadline. Would you do
+						any of the following?
 					</b>
 					<br>
 					(You may select more than one)
@@ -484,48 +547,28 @@
 				<td>
 					<table>
 						<tr>
-							<td><input style='width: 10px' type='checkbox' id='doNothing'></td>
-							<td>Send the message or post as is</td>
-						</tr>
-						<tr>
-							<td><input style='width: 10px' type='checkbox' id='notSend'></td>
-							<td>Not send it</td>
-						</tr>
-						<tr>
-							<td><input style='width: 10px' type='checkbox' id='switchEmailAndForum'>
-							</td>
-							<td>
-								Post on a forum instead of or in addition to sending an email
-								(or vice versa if you originally posted on a forum)
-							</td>
-						</tr>
-						<tr>
-							<td><input style='width: 10px' type='checkbox' id='addRecipients'>
-							</td>
-							<td>Send to more people (e.g. post to other forums or include
-								other TAs, other classmates, etc.)</td>
-						</tr>
-						<tr>
 							<td><input style='width: 10px' type='checkbox' 
-								onclick='toggleVisible("removeReasonAnswer",  $("#removeRecipients").prop("checked"));'
-								id='removeRecipients'></td>
-							<td>Remove one or more of the already listed recipients before
-								sending (e.g. You may not want to bother them, share
-									sensitive information with them, etc.)</td>
+								onclick='toggleVisible("removeReason",  $("#reaction_remove").prop("checked"));'
+								id='reaction_remove'></td>
+							<td>
+								I would remove one or more of the already listed recipients
+								before sending (you may not want to bother them, share
+								sensitive information with them, etc.).
+							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div id='removeReasonAnswer' style='display:none; margin: 10px 40px'>
+								<div id='removeReason' style='display:none; margin: 10px 40px'>
 									<b>Why would you remove them?</b>
 									<table>
 										<tr>
 											<td><input style='width: 10px' type='checkbox' id='removeReason_bother'></td>
-											<td>Would not want to bother them</td>
+											<td>I would not want to bother them.</td>
 										</tr>
 										<tr>
 											<td><input style='width: 10px' type='checkbox' id='removeReason_privacy'></td>
-											<td>Avoid unnecessarily sharing sensitive or private information with them</td>
+											<td>I would want to avoid unnecessarily sharing sensitive or private information with them.</td>
 										</tr>
 										<tr>
 											<td><input style='width: 10px' type='checkbox' id='removeReason_other'></td>
@@ -538,14 +581,70 @@
 						</tr>
 						<tr>
 							<td><input style='width: 10px' type='checkbox'
-								onclick='toggleVisible("findAnswerMeans",  $("#findAnswer").prop("checked"));'
-								id='findAnswer'></td>
-							<td>Use means other than sending an email or posting on forums (e.g. searching Google) to find an answer.</td>
+								onclick='toggleVisible("keepReason",  $("#reaction_keep").prop("checked"));'
+								id='reaction_keep'></td>
+							<td>
+								I would keep one or more of the original recipients (because there is a small
+								chance of error, the sent information would still be useful to
+								the readers, etc.).
+							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div id='findAnswerMeans' style='display:none; margin: 10px 40px'>
+								<div id='keepReason' style='display:none; margin: 10px 40px'>
+									<b>Why would you keep them?</b>
+									<table>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='keepReason_error'></td>
+											<td>There is a small chance of error.</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='keepReason_useful'></td>
+											<td>The sent or posted information would still be useful to the readers.</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='keepReason_other'></td>
+											<td>Other (Please Specify): <input style='width: 250px' 
+													id='keepReason_other_val' /></td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='reaction_add'>
+							</td>
+							<td>
+								I would send it to more people. (in forums, post to other forums; in email,
+								include other recipients such as TAs, other classmates, etc.)
+							</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='reaction_notSend'></td>
+							<td>I would not send or post it.</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox' id='reaction_switch'>
+							</td>
+							<td>
+								If the message was an email, I would post it on a forum, and if it was a forum post, I would send it via email.
+							</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox'
+								onclick='toggleVisible("findAnswer",  $("#reaction_find").prop("checked"));'
+								id='reaction_find'></td>
+							<td>
+								I would use means other than sending an email or posting on forums
+								(e.g. searching Google, meeting someone n person, sending an IM) to
+								find an answer.
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<div id='findAnswer' style='display:none; margin: 10px 40px'>
 									<b>How would you find your answer?</b>
 									<table>
 										<tr>
@@ -553,25 +652,25 @@
 											<td>Search engine (Google, etc.)</td>
 										</tr>
 										<tr>
-											<td><input style='width: 10px' type='checkbox' id='removeReason_postOther'></td>
-											<td>Post on a forum in addition to or instead of on email, or vice versa</td>
+											<td><input style='width: 10px' type='checkbox' id='findAnswer_im'></td>
+											<td>Sending an instant message</td>
 										</tr>
 										<tr>
-											<td><input style='width: 10px' type='checkbox' id='removeReason_inPerson'></td>
-											<td>Ask a classmate or coworker in person</td>
-										</tr>
-										<tr>
-											<td><input style='width: 10px' type='checkbox' id='removeReason_phone'></td>
+											<td><input style='width: 10px' type='checkbox' id='findAnswer_phone'></td>
 											<td>Call someone on the phone</td>
 										</tr>
 										<tr>
-											<td><input style='width: 10px' type='checkbox' id='removeReason_officeHours'></td>
-											<td>Attend office hours</td>
+											<td><input style='width: 10px' type='checkbox' id='findAnswer_meetRecipient'></td>
+											<td>Meet in person with recipient(s)</td>
 										</tr>
 										<tr>
-											<td><input style='width: 10px' type='checkbox' id='removeReason_other'></td>
+											<td><input style='width: 10px' type='checkbox' id='findAnswer_meetOthers'></td>
+											<td>Meet in person with someone else</td>
+										</tr>
+										<tr>
+											<td><input style='width: 10px' type='checkbox' id='findAnswer_other'></td>
 											<td>Other (Please Specify): <input style='width: 250px' 
-													id='removeReason_other_val' />
+													id='findAnswer_other_val' />
 											</td>
 										</tr>
 									</table>
@@ -579,12 +678,21 @@
 							</td>
 						</tr>
 						<tr>
-							<td><input style='width: 10px' type='checkbox' id='doOther'></td>
+							<td><input style='width: 10px' type='checkbox' id='reaction_other'></td>
 							<td>Other (Please specify): <input style='width: 250px'
-								id='otherVal' />
+								id='reaction_other_val' />
 							</td>
 						</tr>
 					</table>
+				</td>
+			</tr>
+			<tr>
+				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b>
+				</td>
+			</tr>
+			<tr>
+				<td><textarea style="width: 700px; height: 50px"
+						id="reaction_elaboration"></textarea>
 				</td>
 			</tr>
 			</table>
@@ -595,25 +703,39 @@
 					<br>
 					<br>
 					<b>
-						There may be other reasons besides trying to meet a deadline 
-						where you care about when you will receive a response.
-						Please select any other reasons why you in particular would want
-						to know when you will receive a response.
+						There may be reasons other than trying to meet a deadline where you care
+						about if and when you will receive a response. Please select any other
+						reasons why you in particular would want to know if and when you will
+						receive a response.
 					</b>
 				</td>
 			</tr>
 			<tr>
 				<td><table>
 						<tr>
-							<td><input style='width: 10px' type='checkbox' id='other_ignore'>
+							<td><input style='width: 10px' type='checkbox' id='other_ignored'>
 							
-							<td>Confirm people are not ignoring you</td>
+							<td>I would need to confirm people were not ignoring me.</td>
 						</tr>
 						<tr>
 							<td><input style='width: 10px' type='checkbox'
 								id='other_schedule'>
-							
-							<td>Plan your schedule</td>
+							<td>Knowing if and when responses will occur would help me plan my schedule.</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox'
+								id='other_ok'>
+							<td>I would need to make sure everything is ok with my recipient(s).</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox'
+								id='other_excitement'>
+							<td>I would like to determine if people are excited about my message or post.</td>
+						</tr>
+						<tr>
+							<td><input style='width: 10px' type='checkbox'
+								id='other_reliable'>
+							<td>It would help me determine how reliable people are.</td>
 						</tr>
 						<tr>
 							<td><input style='width: 10px' type='checkbox' id='other_other'>
@@ -625,12 +747,12 @@
 					</table></td>
 			</tr>
 			<tr>
-				<td><b>Please elaborate on your selection(s).</b>
+				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b>
 				</td>
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px"
-						id="otherSituations"></textarea>
+						id="other_elaboration"></textarea>
 				</td>
 			</tr>
 		</table>
@@ -640,33 +762,28 @@
 		<table style='width: 700px'>
 			<tr><td>
 				<br>
-				<b>Would it be helpful in any of the following situations
-				   if we were able to detect how long it normally takes for
-				   you to respond to a particular post or message and notify
-				   you when you took longer than normal to respond? </b>
+				<b>
+					Suppose we were able to predict (with a small chance of error) how long it
+					would take you to respond to a particular post or message and notify you when
+					you took longer than normal to respond. Which, if any, of the following
+					situations have you experienced where that would helpful? 
+				</b>
 				<br>
 			</td></tr>
 			<tr><td>
 				<table>
 						<tr>
 							<td>
-								<input style='width: 10px' type='checkbox' id='self_disappoint'>
+								<input style='width: 10px' type='checkbox' id='self_judged'>
 							<td>
-								Ensure I would not disappoint someone
+								I needed to ensure I would not be judged poorly.
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<input style='width: 10px' type='checkbox' id='self_opportunity'>
 							<td>
-								Ensure I would not miss some opportunity
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input style='width: 10px' type='checkbox' id='self_deadline'>
-							<td>
-								Ensure a project or assignment is completed before a deadline
+								I needed to ensure I would not miss some opportunity.
 							</td>
 						</tr>
 						<tr>
@@ -679,7 +796,7 @@
 					</table>
 			</td></tr>
 			<tr>
-				<td><b>Please elaborate on your selection(s).</b>
+				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b>
 				</td>
 			</tr>
 			<tr>
@@ -693,17 +810,54 @@
 		<table>
 			<tr>
 				<td>
-					<b>Are there any situations where it would not be useful or even harmful for
-					the sender or receiver of a message to know when a response will occur?  If so,
-					please list them and explain why they would be harmful or not useful.</b>
+					<b>
+						Based on your experience, how might predicting if and when
+						responses occur for senders or receivers be useless or harmful?
+					</b>
+				</td>
+			</tr>
+			<tr><td>
+				<table>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' id='harm_privacy'>
+							<td>
+								A sender can determine private information about the receiver(s)
+								based on the predicted response times.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' id='harm_error'>
+							<td>
+								Because of potential error, senders or receivers may take wrong
+								actions or have unreasonable expectations.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' id='harm_reminder'>
+							<td>
+								Others may already remind senders if they miss or are close to missing a deadline. 
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input style='width: 10px' type='checkbox' id='harm_other'></td>
+							<td>
+								Other (Please Specify): <input style='width: 250px'	id='harm_other_val' />
+							</td>
+						</tr>
+					</table>
+			</td></tr>
+			<tr>
+				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b>
 				</td>
 			</tr>
 			<tr>
-				<td><textarea style="width: 700px; height: 50px" id="noReason"></textarea>
+				<td><textarea style="width: 700px; height: 50px" id="harm_elaboration"></textarea>
 				</td>
 			</tr>
-			<tr>
-				<td>
 		
 		</table>
 
