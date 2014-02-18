@@ -259,11 +259,11 @@ if (isset($_SESSION['a'])) {
 				<?php
 					$user_id = $_SESSION['s'];
 					$add_calendar_url = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar?s=$user_id";
-					print "<input type=\"submit\" value=\"Add another calendar\" onclick=\"location.href='$add_calendar_url'\"/>";
+					print "<input type=\"submit\" value=\"Add a calendar from another Google account\" onclick=\"location.href='$add_calendar_url'\"/>";
 				?>
 				
 			</div>
-			<input type="submit" value="I am done submitting my data" onclick="completeSubmission()" />
+			<input type="submit" value="I am done.  Submit my data." onclick="completeSubmission()" />
 		</div>
 		</div>
 	</body>

@@ -18,15 +18,36 @@
 		<div class="center" id="retriever">
 			<h1>Email Data Point Retriever</h1>
 			<p>
-				This tool collects anonymized email data for research purposes.
-				We are working to study different how people communicate via threads and how we can predict when threads will receive a reply.
+				This tool collects non-sensitive and non-private email thread data for research purposes.
+				Email threads are groups of email messages that include an original message and all of its replies and forwards.
+				<br><br>
+				
+				We are working to study how different people communicate via  email messages or forum posts and how we can predict
+				when posts or messages will receive a response. In order to
+				do so, we ask participants to share limited records of how they
+				have communicated via email threads in the past and/or complete
+				a short survey.
 				Thank you for participating
 			</p>
 			<p>
-				We will only retrieve the data about from, to, cc, bcc, subjects and threads information from your messages.
+				We will at most retrieve the data about from, to, cc, bcc, subjects, and attachments in your email messages, and how messages are sorted into threads.
 				We will <b>NOT</b> collect the content of your messages.
-				After you retrieve your data, 
-				you will be able to modify and confirm what is stored by the researchers to ensure it is properly anonymized.
+				<br><br>
+				If you choose not to share any recipient, subject, or attachment information with us (using the checkboxes below),
+				we will only collect data in the following format, where we only collect anonymous IDs for recipients, messages, and threads.
+				<textarea style="display:block; width:99%; height:100px; margin:auto">Message:1 Thread:1 From:[1] Recipients:[2] Date:Jan 10 13:03
+Message:1 Thread:1 From:[3] Recipients:[2] Date:Jan 09 16:31
+Message:2 Thread:2 From:[2] Recipients:[4,5] Date:Thu Jan 09 16:26
+Message:3 Thread:2 From:[4] Recipients:[5,2] Date:Thu Jan 09 16:14
+Message:4 Thread:3 From:[6] Recipients:[2] Date:Thu Jan 09 15:54
+Message:5 Thread:4 From:[7] Recipients:[2] Date:Thu Jan 09 15:08</textarea>
+				<br>
+				If you share subjects, recipients, or attachements with us, we will associate email addresses, subjects, or attachments with those IDs.
+				<br><br>
+				After we retrieve your data, we will send you an email message.  In this message,
+				we will provide a link to complete a short follow-up survey and review the data that we 
+				collected. This review is so that you will be able to modify and confirm what is stored by the
+				researchers to ensure does not contain any sensitive or private information.
 				During the review of your data, you will be able to remove part or all of your data.
 			</p>
 			<p>
@@ -38,10 +59,10 @@
 			<div id="retriever-form">
 				<table>
 					<tr>
-						<td>IMAP Server</td>
+						<td>Email Service</td>
 						<td class='email-input'><select id='imap' >
-								<option>imap.gmail.com</option>
-								<option>outlook.office365.com</option>
+								<option>Gmail</option>
+								<option>Outlook or Live mail</option>
 						</select></td>
 					</tr>
 					<tr>
@@ -92,6 +113,9 @@
 				</div>
 				<div class="collector-button">
 					<input type="submit" value="Collect email data" onclick="testAuthentication()" />
+					<input type="submit" style="display:block;white-space:normal"
+					value="I do not want to submit email data, but I am willing to complete a shortened version of the follow-up survey"
+					onclick="switchToSurvey($.getUrlVar('s'))">
 					<input type="submit" id="switchToCalendar" value="Switch to collecting calendar data" onclick="switchToCalendar($.getUrlVar('s'))"/> 
 				</div>
 			</div>

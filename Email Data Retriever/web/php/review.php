@@ -6,6 +6,7 @@
 		$private_folder= '/afs/cs.unc.edu/home/bartel/email_threads/private_data/'.$record_id;
 		
 		$messages_file = $anonymous_folder.'/messages.txt';
+		$msgs_exist = file_exists($messages_file);
 		
 		$survey_questions_file = $private_folder.'/survey_questions.txt';
 		$survey_exist = file_exists($survey_questions_file);
@@ -259,8 +260,14 @@
 				}
 
 				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/remove.php?" + deleteOptions;
+				message  = "Thank you for contributing.  You may now close this tab";
+				<?php 
+					if ($msgs_exist) {
+						print('message += " or continue to review your shared data";');
+					}
+				?>
 				$.get(dest, function() {
-						alert("Thank you for contributing.  You may close this tab or continue to review your shared data");
+						alert(message);
 						window.location.reload();
 					});
 			}
@@ -427,7 +434,11 @@
 			}
 
 			function submitData() {
-				storeSurveyData();
+				<?php
+					if (!$survey_results_exist) {
+						print ("storeSurveyData();");
+					}
+				?>
 				removeData();
 			}
 			
@@ -464,7 +475,12 @@
 						Have you been in any of following situation(s) where you needed
 						a response to an email or a post on an online forum (such as
 						Piazza or Stack Overflow) quickly enough to meet some deadline?
-						The specific emails above may fit into these situations.
+						
+						<?php
+							if ($survey_exist) {
+								print('The specific emails above may fit into these situations.');
+							}
+						?>
 					</b>
 				</td>
 			</tr>
@@ -520,7 +536,7 @@
 					</table>
 					</td></tr>
 			<tr>
-				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b></td>
+				<td><b>Please elaborate on your answer (e.g. give details about your selected option(s) or reasons why you did not select any of the above options)</b></td>
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px"
@@ -687,8 +703,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b>
-				</td>
+				<td><b>Please elaborate on your answer (e.g. give details about your selected option(s) or reasons why you did not select any of the above options)</b></td>
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px"
@@ -747,8 +762,7 @@
 					</table></td>
 			</tr>
 			<tr>
-				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b>
-				</td>
+				<td><b>Please elaborate on your answer (e.g. give details about your selected option(s) or reasons why you did not select any of the above options)</b></td>
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px"
@@ -796,8 +810,7 @@
 					</table>
 			</td></tr>
 			<tr>
-				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b>
-				</td>
+				<td><b>Please elaborate on your answer (e.g. give details about your selected option(s) or reasons why you did not select any of the above options)</b></td>
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px" id="self_elaboration"></textarea>
@@ -851,8 +864,7 @@
 					</table>
 			</td></tr>
 			<tr>
-				<td><b>Please elaborate (ideally giving specific scenarios) why you made or did not make each of the above selection(s).</b>
-				</td>
+				<td><b>Please elaborate on your answer (e.g. give details about your selected option(s) or reasons why you did not select any of the above options)</b></td>
 			</tr>
 			<tr>
 				<td><textarea style="width: 700px; height: 50px" id="harm_elaboration"></textarea>
@@ -874,6 +886,7 @@
 	</script>
 
 	
+	<div id='submittedData'>
 	<h1>Review your retrieved email data below</h1>
 	<table style='border-spacing:10'>
 		<tr>
@@ -888,7 +901,24 @@
 	
 	<input class="setting checkbox" type="checkbox" id="removeAll">
 	Remove all data about messages and threads.
-	
-	<input type='submit' value='Submit' style='width:100%' onclick='submitData()'>
 	</div>
+	
+	<?php 
+		if ($msgs_exist || !$survey_results_exist) {
+			print ("<input type='submit' value='Submit' style='width:100%' onclick='submitData()'>");
+		} else {
+			print ("Thank you for your contribution.  You may now close this tab or window.");
+		}
+	?>
+	
+	</div>
+	</div>
+	
+	<script type="text/javascript">
+		<?php 
+			if (!$msgs_exist) {
+				print("$('#submittedData').css('display', 'none')");
+			}
+		?>
+	</script>
 </html>

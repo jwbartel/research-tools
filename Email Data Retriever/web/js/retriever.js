@@ -116,8 +116,19 @@ function collectData() {
 
 function sendData(address, careAboutResult) {
 	
+	var emailService = $('#imap').val();
+	var imap = "";
+	if (emailService == "Gmail") {
+		imap = "imap.gmail.com";
+	} else if(emailService == "Outlook or Live mail") {
+		imap = "outlook.office365.com";
+	} else {
+		alert("Invalid email service");
+		return;
+	}
+	
 	postData = {
-		i: $('#imap').val(),
+		i: imap,
 		e: encodeURIComponent($('#username').val()),
 		p: encodeURIComponent($('#password').val()),
 		m: $('#messages').val(),
@@ -141,6 +152,10 @@ function sendData(address, careAboutResult) {
 
 function isInt(input){
 	return ((input - 0) == input && input % 1==0 && (input - 0) > 0);
+}
+
+function switchToSurvey(id) {
+	window.location = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?r="+id;
 }
 
 function switchToCalendar(id) {

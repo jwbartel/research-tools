@@ -6,6 +6,9 @@
 	$anonymous_folder= '/afs/cs.unc.edu/home/bartel/email_threads/anonymous_data/'.$id;
 	$private_folder= '/afs/cs.unc.edu/home/bartel/email_threads/private_data/'.$id;
 	
+	if (!file_exists($private_folder)) {
+		mkdir($private_folder, 0777, true);
+	}
 	$survey_data_file = $private_folder.'/survey_data.txt';
 	
 // 	$data_str = "";
