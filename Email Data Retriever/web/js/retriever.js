@@ -110,7 +110,7 @@ function collectData() {
 			"You will be emailed at your provided email address when it has completed <br>" +
 			"<center>"+
 			"<button onclick='reset()'>Try a different email address</button>"+
-			"<button onclick='switchToCalendar($.getUrlVar(\"s\"))'>Upload calendar data</button>");
+			"<button onclick='switchToCalendar($.getUrlVar(\"s\"))'>Upload calendar data in addition to email data</button>");
 	$('switchToCalendar').visible = true;
 }
 
