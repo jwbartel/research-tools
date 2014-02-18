@@ -427,6 +427,8 @@
 				surveyData.harm.other.val = $('#harm_other_val').val();
 				surveyData.harm.elaboration = $('#harm_elaboration').val();
 
+				surveyData.comments = $('#additional_comments').val();
+
 				console.dir(surveyData);
 
 				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/survey.php";
@@ -873,6 +875,18 @@
 		
 		</table>
 
+		<table>
+			<tr>
+				<td>
+					<b>
+						If you have any additional comments or feedback, please type it in the box below.
+					</b>
+				</td>
+			</tr>
+			<tr>
+				<td><textarea style="width: 700px; height: 50px" id="additional_comments"></textarea>
+				</td>
+			</tr>
 		<br>
 
 	</div>
