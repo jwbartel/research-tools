@@ -80,12 +80,22 @@
 			}
 		}
 		
+		$messages_data = '';
+		if ($msgs_exist) {
+			$file_handle = fopen($messages_file, "r");
+			while (!feof($file_handle)) {
+				$line = fgets($file_handle);
+				$messages_data .= $line;
+			}
+			fclose($file_handle);
+		}
+		
 		$addresses_data = '';
 		if ($addr_exist) {
 			$file_handle = fopen($addresses_file, "r");
 			while (!feof($file_handle)) {
 				$line = fgets($file_handle);
-				$addresses_data .= substr($line,strpos($line,':')+1);
+				$addresses_data .= $line;
 			}
 			fclose($file_handle);
 		}
@@ -95,7 +105,7 @@
 		$file_handle = fopen($subjects_file, "r");
 			while (!feof($file_handle)) {
 				$line = fgets($file_handle);
-				$subjects_data .= substr($line,strpos($line,'Subject:')+8);
+				$subjects_data .= $line;
 			}
 			fclose($file_handle);
 		}
@@ -120,7 +130,7 @@
 			$num_columns += 1;
 		}
 		
-		$col_width = ($num_columns > 0)? 800/$num_columns: 0;
+		$col_width = (($num_columns > 0)? 800/$num_columns: 0).'px';
 		
 		function writeSingleQuestion($question, $question_id, $setOnClick, $message_id) {
 			print('<tr>');
@@ -205,17 +215,19 @@
 			print('<br><br>');
 		}
 		
-		function writeColumn($exists, $data, $label, $width) {
+		function writeColumn($exists, $data, $label, $width, $includeRemove) {
 			if ($exists) {
-				print('<td style="width:'.$width.'px">');
+				print('<td style="width:'.$width.'">');
 				print('<center>');
 				print('<h3>'.$label.'</h3>');
 				print('<textarea style="width:100%;height:400px;white-space:nowrap;overflow:auto;" readonly="true">');
 				print($data);
 				print('</textarea></center>');
 				print('<br>');
-				print('<input class="setting checkbox" type="checkbox" id="remove'.$label.'">');
-				print('Remove '.$label.' Data');
+				if ($includeRemove) {
+					print('<input class="setting checkbox" type="checkbox" id="remove'.$label.'">');
+					print('Remove '.$label.' Data');
+				}
 				print('</td>');
 			}
 		}
@@ -874,6 +886,8 @@
 			</tr>
 		
 		</table>
+		
+		<br>
 
 		<table>
 			<tr>
@@ -887,6 +901,7 @@
 				<td><textarea style="width: 700px; height: 50px" id="additional_comments"></textarea>
 				</td>
 			</tr>
+		</table>
 		<br>
 
 	</div>
@@ -902,12 +917,17 @@
 	
 	<div id='submittedData'>
 	<h1>Review your retrieved email data below</h1>
+	<table style='width:100%'>
+		<?php 
+			writeColumn($msgs_exist, $messages_data, 'Messages and Threads', '100%', false);
+		?>
+	</table>
 	<table style='border-spacing:10'>
 		<tr>
 			<?php 
-				writeColumn($addr_exist, $addresses_data, 'Addresses', $col_width);
-				writeColumn($subj_exist, $subjects_data, 'Subjects', $col_width);
-				writeColumn($attach_exist, $attach_data, 'Attachments', $col_width);
+				writeColumn($addr_exist, $addresses_data, 'Addresses', $col_width, true);
+				writeColumn($subj_exist, $subjects_data, 'Subjects', $col_width, true);
+				writeColumn($attach_exist, $attach_data, 'Attachments', $col_width, true);
 			?>
 		
 		</tr>
