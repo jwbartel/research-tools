@@ -142,7 +142,11 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					"attachments.txt"));
 
 		} catch (Exception e) {
-			logMessage("Failure retrieving and saving threads: " + e.getMessage());
+			String message = e.getMessage();
+			if (message == null) {
+				message = e.toString();
+			}
+			logMessage("Failure retrieving and saving threads: " + message);
 			e.printStackTrace();
 		}
 
