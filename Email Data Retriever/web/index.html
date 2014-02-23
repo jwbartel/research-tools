@@ -18,7 +18,7 @@
 		<div class="center" id="retriever">
 			<h1>Email Data Point Retriever</h1>
 			<p>
-				This tool collects non-sensitive and non-private email thread data for research purposes.
+				This tool works to study threads by collecting at most header email data, such as to, from, cc, subjects, etc., (and not email message bodies) for research purposes.
 				Email threads are groups of email messages that include an original message and all of its replies and forwards.
 				<br><br>
 				
@@ -113,7 +113,7 @@ Message:5 Thread:4 From:[7] Recipients:[2] Date:Thu Jan 09 15:08</textarea>
 				</div>
 				<div class="collector-button">
 					<input type="submit" value="Collect email data" onclick="testAuthentication()" />
-					<input type="submit" style="display:block;white-space:normal"
+					<input type="submit" style="display:block;-webkit-appearance: button;;white-space:normal"
 					value="I do not want to submit email data, but I am willing to complete a shortened version of the follow-up survey"
 					onclick="switchToSurvey($.getUrlVar('s'))">
 					<input type="submit" id="switchToCalendar" value="Switch to collecting calendar data" onclick="switchToCalendar($.getUrlVar('s'))"/> 
