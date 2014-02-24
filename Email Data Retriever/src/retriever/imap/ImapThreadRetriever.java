@@ -35,11 +35,13 @@ public class ImapThreadRetriever extends ThreadRetriever implements MessageListe
 	}
 
 	@Override
-	public ThreadData retrieveThreads(int numMessages, int numThreads) throws MessagingException {
+	public ThreadData retrieveThreads(int numMessages, int numThreads, boolean fetchAttachments)
+			throws MessagingException {
 		if (imapServer.equals("imap.gmail.com")) {
-			return retrievers.get(GMAIL).retrieveThreads(numMessages, numThreads);
+			return retrievers.get(GMAIL).retrieveThreads(numMessages, numThreads, fetchAttachments);
 		} else if (imapServer.equals("outlook.office365.com")) {
-			return retrievers.get(OUTLOOK).retrieveThreads(numMessages, numThreads);
+			return retrievers.get(OUTLOOK).retrieveThreads(numMessages, numThreads,
+					fetchAttachments);
 		}
 		return new ThreadData(0, new ArrayList<Set<OfflineMessage>>(), new TreeSet<String>(),
 				new TreeSet<String>());

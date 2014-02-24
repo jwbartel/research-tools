@@ -96,7 +96,7 @@ public class EmailDataRetriever extends JFrame implements MessageListener {
 			retriever = new ImapThreadRetriever(imapServer, authenticator.getStore());
 			retriever.addMessageListener(this);
 			ThreadData data = retriever.retrieveThreads(ThreadRetriever.DEFAULT_MAX_MESSAGES,
-					ThreadRetriever.DEFAULT_NUM_THREADS_RETRIEVED);
+					ThreadRetriever.DEFAULT_NUM_THREADS_RETRIEVED, true);
 			logMessage("Generating data points");
 			sendPane.setThreadData(data);
 			contentPane.remove(authenticationPane);

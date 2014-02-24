@@ -69,7 +69,7 @@ public class EmailRetriever implements Serializable, MessageListener {
 			retriever = new ImapThreadRetriever(imapServer, authenticator.getStore());
 			retriever.addMessageListener(this);
 			retriever.retrieveThreads(ThreadRetriever.DEFAULT_MAX_MESSAGES,
-					ThreadRetriever.DEFAULT_NUM_THREADS_RETRIEVED);
+					ThreadRetriever.DEFAULT_NUM_THREADS_RETRIEVED, true);
 			return true;
 		} catch (MessagingException e) {
 			logMessage("ERROR:" + e.getMessage());

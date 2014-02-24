@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 
 import retriever.MessageListener;
 import retriever.OfflineMessage;
+import retriever.PrefetchOptions;
 import retriever.ThreadData;
 import retriever.ThreadRetriever;
 
@@ -24,20 +25,22 @@ public class GmailThreadRetriever extends ThreadRetriever {
 	}
 
 	@Override
-	public ThreadData retrieveThreads(int numMessages, int numThreads) throws MessagingException {
+	public ThreadData retrieveThreads(int numMessages, int numThreads, boolean fetchAttachments)
+			throws MessagingException {
 		Folder promotionsFolder = store.getFolder("Promotions");
 		if (promotionsFolder.exists()) {
 			promotionsFolder.open(Folder.READ_ONLY);
-			return retrieveGmailThreadsWithPromotions(promotionsFolder, numMessages, numThreads);
+			return retrieveGmailThreadsWithPromotions(promotionsFolder, numMessages, numThreads,
+					fetchAttachments);
 		}
 
 		Folder folder = store.getFolder("[Gmail]/All Mail");
 		folder.open(Folder.READ_ONLY);
-		return super.retrieveThreads(folder, numMessages, numThreads);
+		return super.retrieveThreads(folder, numMessages, numThreads, fetchAttachments);
 	}
 
 	public ThreadData retrieveGmailThreadsWithPromotions(Folder promotionsFolder, int numMessages,
-			int numThreads) throws MessagingException {
+			int numThreads, boolean fetchAttachments) throws MessagingException {
 		Folder allMailFolder = store.getFolder("[Gmail]/All Mail");
 		allMailFolder.open(Folder.READ_ONLY);
 
@@ -113,8 +116,10 @@ public class GmailThreadRetriever extends ThreadRetriever {
 
 						String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
 								"References" };
+						PrefetchOptions prefetchOptions = new PrefetchOptions(prefetchedHeaders,
+								fetchAttachments);
 						OfflineMessage message = new OfflineMessage(
-								(MimeMessage) allMailMessages[msgPos], prefetchedHeaders);
+								(MimeMessage) allMailMessages[msgPos], prefetchOptions);
 
 						ArrayList<String> references = message.getReferences();
 						String inReplyTo = message.getInReplyTo();

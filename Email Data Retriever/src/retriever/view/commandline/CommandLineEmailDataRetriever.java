@@ -108,11 +108,11 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		retriever.addMessageListener(this);
 		try {
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-			ThreadData data = retriever.retrieveThreads(messages, threads);
 			boolean includeSubjects = Boolean.parseBoolean(flags.get("subjects"));
 			boolean includeFullEmailAddresses = Boolean.parseBoolean(flags.get("addresses"));
 			boolean includeAttachments = Boolean.parseBoolean(flags.get("numAttach"));
 			boolean includeAttachedFileNames = Boolean.parseBoolean(flags.get("fileNames"));
+			ThreadData data = retriever.retrieveThreads(messages, threads, includeAttachments);
 			Map<String, String> compartmentalizedData = data.getCompartmentalizedData(email,
 					includeSubjects, includeFullEmailAddresses, includeAttachments,
 					includeAttachedFileNames, threadClusters);
@@ -142,11 +142,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 					"attachments.txt"));
 
 		} catch (Exception e) {
-			String message = e.getMessage();
-			if (message == null) {
-				message = e.toString();
-			}
-			logMessage("Failure retrieving and saving threads: " + message);
+			logMessage("Failure retrieving and saving threads: " + getStackTrace(e));
 			e.printStackTrace();
 		}
 
@@ -279,7 +275,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		return flags;
 	}
 
-	private String getStackTrace(Throwable e) {
+	public static String getStackTrace(Throwable e) {
 		StackTraceElement[] stack = e.getStackTrace();
 		String stacktrace = e.getClass().toString();
 		if (e.getMessage() != null) {

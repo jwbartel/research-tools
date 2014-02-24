@@ -15,12 +15,15 @@ import javax.mail.internet.MimeMessage;
 
 import retriever.imap.IgnoredMessageChecker;
 import retriever.imap.MasterIgnoredMessageChecker;
+import retriever.view.commandline.CommandLineEmailDataRetriever;
 
 public abstract class ThreadRetriever {
 
 	public final static int DEFAULT_MAX_MESSAGES = 2000;
 	public final static int DEFAULT_NUM_THREADS_RETRIEVED = 400;
 	public final static int BUFFER_SIZE = 100;
+
+	protected Long timeout = null;
 
 	protected static final IgnoredMessageChecker messageChecker = new MasterIgnoredMessageChecker();
 
@@ -203,11 +206,14 @@ public abstract class ThreadRetriever {
 		}
 	}
 
-	protected ThreadData retrieveThreads(Folder folder) throws MessagingException {
-		return retrieveThreads(folder, DEFAULT_MAX_MESSAGES, DEFAULT_NUM_THREADS_RETRIEVED);
+	protected ThreadData retrieveThreads(Folder folder, boolean fetchAttachments)
+			throws MessagingException {
+		return retrieveThreads(folder, DEFAULT_MAX_MESSAGES, DEFAULT_NUM_THREADS_RETRIEVED,
+				fetchAttachments);
 	}
 
-	protected ThreadData retrieveThreads(Object[] messages, int numMessages, int numThreads) {
+	protected ThreadData retrieveThreads(Object[] messages, int numMessages, int numThreads,
+			boolean fetchAttachments) {
 		ArrayList<ArrayList<String>> idsForThreads = new ArrayList<ArrayList<String>>();
 		ArrayList<Set<OfflineMessage>> threads = new ArrayList<Set<OfflineMessage>>();
 		Set<String> seenMessages = new TreeSet<String>();
@@ -218,10 +224,26 @@ public abstract class ThreadRetriever {
 		try {
 
 			for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
+				if (timeout != null) {
+					try {
+						logMessage("Sleeping for " + timeout + " ms");
+						Thread.sleep(timeout);
+					} catch (InterruptedException e) {
+					}
+				}
+
 				String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
 						"References" };
-				OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos],
-						prefetchedHeaders);
+				PrefetchOptions prefetchOptions = new PrefetchOptions(prefetchedHeaders,
+						fetchAttachments);
+				OfflineMessage message;
+				try {
+					message = new OfflineMessage((MimeMessage) messages[msgPos], prefetchOptions);
+				} catch (Exception e) {
+					logMessage("Error processing message: "
+							+ CommandLineEmailDataRetriever.getStackTrace(e));
+					continue;
+				}
 
 				if (message.getHeader("Message-ID") == null
 						|| message.getHeader("Message-ID").length < 1) {
@@ -253,18 +275,15 @@ public abstract class ThreadRetriever {
 
 		} catch (MessagingException e) {
 			e.printStackTrace();
-			logMessage("ERROR: " + e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			logMessage("ERROR: " + e.getMessage());
+			logMessage("ERROR: " + CommandLineEmailDataRetriever.getStackTrace(e));
 		}
 
 		updateRetrievedMessageCounts(seenMessages.size(), threads.size(), unseenMessages.size());
 		return new ThreadData(messages.length, threads, seenMessages, unseenMessages);
 	}
 
-	protected ThreadData retrieveThreads(Folder folder, int numMessages, int numThreads)
-			throws MessagingException {
+	protected ThreadData retrieveThreads(Folder folder, int numMessages, int numThreads,
+			boolean fetchAttachments) throws MessagingException {
 
 		int totalMessages = folder.getMessageCount();
 
@@ -293,9 +312,10 @@ public abstract class ThreadRetriever {
 				for (int msgPos = messages.length - 1; msgPos >= 0; msgPos--) {
 					String[] prefetchedHeaders = { "Message-ID", "References", "In-Reply-To",
 							"References" };
-
+					PrefetchOptions prefetchOptions = new PrefetchOptions(prefetchedHeaders,
+							fetchAttachments);
 					OfflineMessage message = new OfflineMessage((MimeMessage) messages[msgPos],
-							prefetchedHeaders);
+							prefetchOptions);
 
 					if (message.getHeader("Message-ID") == null
 							|| message.getHeader("Message-ID").length < 1) {
@@ -356,6 +376,6 @@ public abstract class ThreadRetriever {
 		return new ThreadData(totalMessages, threads, seenMessages, unseenMessages);
 	}
 
-	public abstract ThreadData retrieveThreads(int numMessages, int numThreads)
-			throws MessagingException;
+	public abstract ThreadData retrieveThreads(int numMessages, int numThreads,
+			boolean fetchAttachments) throws MessagingException;
 }

@@ -19,6 +19,8 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
 
+import retriever.view.commandline.CommandLineEmailDataRetriever;
+
 public class OfflineMessage {
 
 	static String NON_WSP = "([^\\s])"; // any CHAR other than WSP
@@ -49,24 +51,28 @@ public class OfflineMessage {
 	private Address[] allRecipients;
 	private final ArrayList<String> attachedFiles = new ArrayList<String>();
 
-	public OfflineMessage(MimeMessage parent, String[] prefetchedHeaders)
+	public OfflineMessage(MimeMessage parent, PrefetchOptions prefetchOptions)
 			throws MessagingException, IOException {
 		this.parent = parent;
-		preloadData(prefetchedHeaders);
+		preloadData(prefetchOptions);
 	}
 
-	private void preloadData(String[] prefetchedHeaders) throws MessagingException, IOException {
+	private void preloadData(PrefetchOptions prefetchOptions) throws MessagingException,
+			IOException {
 		subject = parent.getSubject();
 		receivedDate = extractDate();
 		from = parent.getFrom();
 		allRecipients = parent.getAllRecipients();
-		for (String header : prefetchedHeaders) {
+		for (String header : prefetchOptions.prefetchedHeaders) {
 			seenHeaders.put(header, parent.getHeader(header));
 		}
 		try {
-			loadAttachments();
-		} catch (MessagingException e) {
-			System.out.println("loadAttachments() failed: " + e.getMessage());
+			if (prefetchOptions.prefetchAttachments) {
+				loadAttachments();
+			}
+		} catch (Exception e) {
+			System.out.println("loadAttachments() failed: "
+					+ CommandLineEmailDataRetriever.getStackTrace(e));
 			// System.out.println(parent);
 		}
 	}
