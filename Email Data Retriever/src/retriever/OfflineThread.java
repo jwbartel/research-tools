@@ -134,7 +134,9 @@ public class OfflineThread {
 			Address address = null;
 			addresses = new HashSet<Address>();
 			for (OfflineMessage message : messages) {
-				addresses.addAll(Arrays.asList(message.getAllRecipients()));
+				if (message.getAllRecipients() != null) {
+					addresses.addAll(Arrays.asList(message.getAllRecipients()));
+				}
 			}
 		}
 		return addresses;

@@ -248,7 +248,10 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 	public static void main(String[] args) {
 
-		ArrayList<String> argsList = new ArrayList<String>(Arrays.asList(args));
+		ArrayList<String> argsList = new ArrayList<String>();
+		if (args != null) {
+			argsList.addAll(Arrays.asList(args));
+		}
 		Map<String, String> flags = extractFlags(argsList);
 
 		try {

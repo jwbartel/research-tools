@@ -39,8 +39,12 @@ public class AddressThreadCluster implements ThreadCluster {
 				return false;
 			}
 			Set<Address> addresses = new HashSet<Address>();
-			addresses.addAll(Arrays.asList(original.getAllRecipients()));
-			addresses.addAll(Arrays.asList(original.getFrom()));
+			if (original.getAllRecipients() != null) {
+				addresses.addAll(Arrays.asList(original.getAllRecipients()));
+			}
+			if (original.getFrom() != null) {
+				addresses.addAll(Arrays.asList(original.getFrom()));
+			}
 			for (Address address : addresses) {
 				String addressStr = address.toString().toLowerCase();
 				if (!Pattern.matches(ownerEmailRegex, addressStr) &&
