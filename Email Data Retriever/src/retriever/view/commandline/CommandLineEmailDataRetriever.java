@@ -151,6 +151,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			sendResponse(email, id);
 		} catch (MessagingException e) {
 			logMessage(getStackTrace(e));
+		} catch (IOException e) {
+			logMessage(getStackTrace(e));
 		}
 
 		log.flush();
@@ -160,7 +162,11 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 	private synchronized void sendResponse(String email, String id) throws MessagingException,
 			IOException {
 
-		Map<String, String> credentials = loadSenderCredentials(new File("credentials"));
+		File secretsFolder = new File(
+				"/afs/cs.unc.edu/home/bartel/secrets/email_sampler");
+		Map<String, String> credentials = loadSenderCredentials(new File(
+				secretsFolder, "credentials"));
+		logMessage("credentials loaded");
 
 		// Get system properties
 		Properties props = System.getProperties();
@@ -180,6 +186,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		// create the message part
 		String reviewAddress = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?r="
 				+ id;
+		logMessage("sending message created");
 
 		// fill message
 		String bodyHtml = "Your email data has been collected.  Thank you for your contribution.  <a href='"
@@ -192,6 +199,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		Transport transport = session.getTransport("smtp");
 		transport.connect(credentials.get("username"), credentials.get("password"));
 		transport.sendMessage(message, message.getAllRecipients());
+		logMessage("message sent");
 		transport.close();
 	}
 
@@ -222,6 +230,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 
 			line = in.readLine();
 		}
+		in.close();
 		return loadedCredentials;
 	}
 
