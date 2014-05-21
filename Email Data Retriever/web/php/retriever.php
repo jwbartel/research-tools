@@ -21,5 +21,5 @@ foreach($javaParams as $key => $value) {
 }
 
 exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' &');
-
+exec('java -jar "prediction_jars/Email Predictions.jar" '.$javaParams['id']);
 ?>

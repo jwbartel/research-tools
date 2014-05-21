@@ -22,7 +22,10 @@
 		
 		$attachments_file = $anonymous_folder.'/attachments.txt';
 		$attach_exist = file_exists($attachments_file);
-		
+
+        $groups_file = $private_folder.'/groups.txt';
+        $groups_exist = file_exists($groups_file);
+
 		$survey_count = 0;
 		$survey_items = array();
 		if ($survey_exist) {
@@ -118,6 +121,15 @@
 			}
 			fclose($file_handle);
 			}
+
+        $groups_data = '';
+        if ($groups_exist) {
+            $file_handle = fopen($groups_file, "r");
+            while (!feof($file_handle)) {
+                $groups_data .= fgets($file_handle);
+            }
+            fclose($file_handle);
+        }
 		
 		$num_columns = 0;
 		if ($addr_exist) {
@@ -932,6 +944,11 @@
 		
 		</tr>
 	</table>
+    <table style='width:100%'>
+        <?php
+            writeColumn($groups_exist, $groups_data, 'Predicted Groups', '100%', false);
+        ?>
+    </table>
 	
 	<input class="setting checkbox" type="checkbox" id="removeAll">
 	Remove all data about messages and threads.
