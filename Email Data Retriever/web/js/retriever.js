@@ -155,12 +155,12 @@ function isInt(input){
 }
 
 function switchToSurvey(id) {
-	window.location = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?r="+id;
+	window.location = rootAddress()+"/php/review.php?r="+id;
 }
 
 function switchToCalendar(id) {
 	window.onbeforeunload = null;
-	window.location = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/?s="+id;
+	window.location = rootAddress()+"/php/calendar/?s="+id;
 }
 
 function collectCalendarData() {
@@ -169,7 +169,16 @@ function collectCalendarData() {
 			e: $('#event_names').is(":checked"),
 			a: $('#attendee_names').is(":checked"),
 		};
-	$.get("https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/calendar_query.php", getData, function(data) {
+	$.get(rootAddress()+"/php/calendar/calendar_query.php", getData, function(data) {
 		location.reload();
 	});
+}
+
+function rootAddress() {
+
+    if(window.location.host.substring(0,9)==="localhost")
+        return 'http://'+window.location.host+'/web';
+    else if (window.location.host=='wwwx.cs.unc.edu')
+        return 'https://'+window.location.host+'/~bartel/cgi-bin/emailsampler';
+    return window.location.host;
 }

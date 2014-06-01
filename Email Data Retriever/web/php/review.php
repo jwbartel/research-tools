@@ -283,7 +283,7 @@
 					deleteOptions +='no';
 				}
 
-				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/remove.php?" + deleteOptions;
+				dest = rootAddress()+"/php/remove.php?" + deleteOptions;
 				message  = "Thank you for contributing.  You may now close this tab";
 				<?php 
 					if ($msgs_exist) {
@@ -455,10 +455,17 @@
 
 				console.dir(surveyData);
 
-				dest = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/survey.php";
+				dest = rootAddress()+"/php/survey.php";
 				$.post(dest, surveyData);
 			}
+            function rootAddress() {
 
+                if(window.location.host.substring(0,9)==="localhost")
+                    return 'http://'+window.location.host+'/web';
+                else if (window.location.host=='wwwx.cs.unc.edu')
+                    return 'https://'+window.location.host+'/~bartel/cgi-bin/emailsampler';
+                return window.location.host;
+            }
 			function submitData() {
 				<?php
 					if (!$survey_results_exist) {

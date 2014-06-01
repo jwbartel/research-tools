@@ -4,6 +4,8 @@
 *.settings
 *credentials
 *config.php
+*.idea
+*.iml
 
 # Package Files #
 *.jar
