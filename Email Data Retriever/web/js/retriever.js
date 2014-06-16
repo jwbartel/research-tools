@@ -177,7 +177,7 @@ function collectCalendarData() {
 function rootAddress() {
 
     if(window.location.host.substring(0,9)==="localhost")
-        return 'http://'+window.location.host+'/web';
+        return 'https://'+window.location.host+'/web';
     else if (window.location.host=='wwwx.cs.unc.edu')
         return 'https://'+window.location.host+'/~bartel/cgi-bin/emailsampler';
     return window.location.host;

@@ -6,8 +6,8 @@ require_once 'google-api-php-client/src/Google_Client.php';
 require_once 'google-api-php-client/src/contrib/Google_CalendarService.php';
 
 
-$oauth_redirect = 'https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/retrieve.php';
-$calendar_entry_point = 'https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/index.php';
+$oauth_redirect = rootAddress().'/php/calendar/retrieve.php';
+$calendar_entry_point = rootAddress().'/php/calendar/index.php';
 
 $client = new Google_Client();
 $client->setApplicationName($apiConfig['application_name']);
@@ -17,6 +17,14 @@ $client->setClientId($apiConfig['oauth2_client_id']);
 $client->setClientSecret($apiConfig['oauth2_client_secret']);
 $client->setRedirectUri($oauth_redirect);
 $service = new Google_CalendarService($client);
+
+function rootAddress () {
+    if  (strncmp($_SERVER['HTTP_HOST'], 'localhost',9)==0)
+        return 'https://'.$_SERVER['HTTP_HOST'].'/web';
+    elseif (strcmp($_SERVER['HTTP_HOST'],'wwwx.cs.unc.edu')==0)
+        return 'https://'.$_SERVER['HTTP_HOST'].'/~bartel/cgi-bin/emailsampler';
+    return $_SERVER['HTTP_HOST'];
+}
 
 function getEvents($service, $maxMonths) {
 	

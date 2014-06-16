@@ -19,7 +19,7 @@
 
     function rootAddress () {
         if  (strncmp($_SERVER['HTTP_HOST'], 'localhost',9)==0)
-            return 'http://'.$_SERVER['HTTP_HOST'].'/web';
+            return 'https://'.$_SERVER['HTTP_HOST'].'/web';
         elseif (strcmp($_SERVER['HTTP_HOST'],'wwwx.cs.unc.edu')==0)
             return 'https://'.$_SERVER['HTTP_HOST'].'/~bartel/cgi-bin/emailsampler';
         return $_SERVER['HTTP_HOST'];

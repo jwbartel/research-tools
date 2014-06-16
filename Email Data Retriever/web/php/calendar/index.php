@@ -11,7 +11,7 @@ if (!isset($_SESSION['calenderNum'])) {
 } else {
 	$_SESSION['calenderNum'] = $_SESSION['calenderNum'] + 1;
 }
-$redirect = 'https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/retrieve.php';
+$redirect = rootAddress().'/php/calendar/retrieve.php';
 
 $client = new Google_Client();
 $client->setApplicationName($apiConfig['application_name']);
@@ -21,6 +21,14 @@ $client->setClientId($apiConfig['oauth2_client_id']);
 $client->setClientSecret($apiConfig['oauth2_client_secret']);
 $client->setRedirectUri($redirect);
 $service = new Google_CalendarService($client);
+
+function rootAddress () {
+    if  (strncmp($_SERVER['HTTP_HOST'], 'localhost',9)==0)
+        return 'https://'.$_SERVER['HTTP_HOST'].'/web';
+    elseif (strcmp($_SERVER['HTTP_HOST'],'wwwx.cs.unc.edu')==0)
+        return 'https://'.$_SERVER['HTTP_HOST'].'/~bartel/cgi-bin/emailsampler';
+    return $_SERVER['HTTP_HOST'];
+}
 
 ?>
 <!DOCTYPE html>

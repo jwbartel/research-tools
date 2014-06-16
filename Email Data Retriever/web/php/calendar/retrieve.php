@@ -5,8 +5,8 @@ require_once 'config.php';
 require_once 'google-api-php-client/src/Google_Client.php';
 require_once 'google-api-php-client/src/contrib/Google_CalendarService.php';
 
-$oauth_redirect = 'https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/retrieve.php';
-$calendar_entry_point = 'https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/index.php';
+$oauth_redirect = rootAddress().'/php/calendar/retrieve.php';
+$calendar_entry_point = rootAddress().'/php/calendar/index.php';
 
 $client = new Google_Client();
 $client->setApplicationName($apiConfig['application_name']);
@@ -16,6 +16,14 @@ $client->setClientId($apiConfig['oauth2_client_id']);
 $client->setClientSecret($apiConfig['oauth2_client_secret']);
 $client->setRedirectUri($oauth_redirect);
 $service = new Google_CalendarService($client);
+
+function rootAddress () {
+    if  (strncmp($_SERVER['HTTP_HOST'], 'localhost',9)==0)
+        return 'https://'.$_SERVER['HTTP_HOST'].'/web';
+    elseif (strcmp($_SERVER['HTTP_HOST'],'wwwx.cs.unc.edu')==0)
+        return 'https://'.$_SERVER['HTTP_HOST'].'/~bartel/cgi-bin/emailsampler';
+    return $_SERVER['HTTP_HOST'];
+}
 
 function getEvents($service, $maxMonths) {
 
@@ -70,7 +78,7 @@ function eventStrList($events_list, $include_event_names, $include_attendee_name
 			$str_val .= 'name: '.$event['summary']."\n";
 		}
 		$str_val .= 'status: '.$event['status']."\n";
-		
+
 		if ($include_attendee_names) {
 			if (isset($event['creator']) && isset($event['creator']['email'])) {
 				$str_val .= 'creator: '.$event['creator']['email']."\n";
@@ -139,7 +147,7 @@ if (!($client->getAccessToken())){
 
 
 if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
-	header('Location: https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar/retrieve.php');
+	header('Location: '.rootAddress().'/php/calendar/retrieve.php');
 }
 
 $maxMonths = 12;
@@ -184,31 +192,31 @@ if (isset($_SESSION['a'])) {
 		<script src='../../js/retriever.js' type='text/javascript'></script>
 		<script type='text/javascript'>
 			function completeSubmission() {
-				location.href = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/complete.html";
+				<?php print 'location.href = "'.rootAddress().'/complete.html";'; ?>
 			}
 		</script>
 	</head>
-	
+
 	<body>
 		<div class="center" id="retriever">
 			<h1>Calendar Data Retriever</h1>
 			<p>
 				The following is your calendar data that we retrieved
 			</p>
-			
+
 			<div id="retriever-form">
 				<table class='settings'>
 					<tr>
 						<td>
 						Months of data to retrieve:
-						<?php 
+						<?php
 						print "<input class='setting short-input' type='number' id='months' min='1' value='$maxMonths'>"
 						?>
 						</td>
 					</tr>
 					</table>
 				<div class='settings'>
-					<?php 
+					<?php
 					print "<input class='setting checkbox' type='checkbox' id='event_names' value='include' ";
 					if ($includeEventNames){
 						print "checked";
@@ -218,7 +226,7 @@ if (isset($_SESSION['a'])) {
 					<label for='event_names'>Include event names</label>
 				</div>
 				<div class='settings'>
-					<?php 
+					<?php
 					print "<input class='setting checkbox' type='checkbox' id='attendee_names' value='include' ";
 					if ($includeAttendeeNames){
 						print "checked";
@@ -231,19 +239,19 @@ if (isset($_SESSION['a'])) {
 					<input type="submit" value="Update" onclick="collectCalendarData()"/>
 				</div>
 			</div>
-			
+
 			<br>
-			
-			<?php 
+
+			<?php
 			$out_folder = "/afs/cs.unc.edu/home/bartel/email_threads/";
 			$private_folder = $out_folder.'private_data/'.$_SESSION['s'].'/';
 			if (!file_exists($private_folder)) {
 				mkdir($private_folder);
 			}
-			
+
 			$calendar_out_file = $private_folder.'calendar_'.$_SESSION['calenderNum'].'.txt';
 			$file = fopen($calendar_out_file, 'w');
-			
+
 			$result_str = "";
 			$events_list = getEvents($service, $maxMonths);
 			foreach(eventStrList($events_list, $includeEventNames, $includeAttendeeNames) as $event) {
@@ -254,11 +262,11 @@ if (isset($_SESSION['a'])) {
 			fclose($file);
 			print "<center><textarea id='calendarData'>$result_str</textarea></center>";
 			?>
-			
+
 			<div class="collector-button">
 				<?php
 					$user_id = $_SESSION['s'];
-					$add_calendar_url = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/calendar?s=$user_id";
+					$add_calendar_url = rootAddress()."/php/calendar?s=$user_id";
 					print "<input type=\"submit\" value=\"Add a calendar from another Google account\" onclick=\"location.href='$add_calendar_url'\"/>";
 				?>
 				
