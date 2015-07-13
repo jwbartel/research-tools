@@ -24,9 +24,9 @@ $service = new Google_CalendarService($client);
 
 function rootAddress () {
     if  (strncmp($_SERVER['HTTP_HOST'], 'localhost',9)==0)
-        return 'https://'.$_SERVER['HTTP_HOST'].'/web';
+        return 'http://'.$_SERVER['HTTP_HOST'].'/web';
     elseif (strcmp($_SERVER['HTTP_HOST'],'wwwx.cs.unc.edu')==0)
-        return 'https://'.$_SERVER['HTTP_HOST'].'/~bartel/cgi-bin/emailsampler';
+        return 'https://'.$_SERVER['HTTP_HOST'].'/~andrewwg/emailsampler/web';
     return $_SERVER['HTTP_HOST'];
 }
 

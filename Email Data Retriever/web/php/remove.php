@@ -6,8 +6,8 @@
 	$subjects = $_GET['subj'];
 	$attachments = $_GET['attach'];
 	
-	$anonymous_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/anonymous_data/'.$id;
-	$private_folder= '/afs/cs.unc.edu/home/bartel/public_html/email_threads/private_data/'.$id;
+	$anonymous_folder= '/afs/cs.unc.edu/home/andrewwg/public_html/email_threads/anonymous_data/'.$id;
+	$private_folder= '/afs/cs.unc.edu/home/andrewwg/public_html/email_threads/private_data/'.$id;
 	print $anonymous_folder;
 	print '<br>';
 	print $private_folder;

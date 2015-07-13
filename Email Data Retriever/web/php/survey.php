@@ -3,8 +3,8 @@
 	$id = $_POST['id'];
 	$count = intval($_POST['count']);
 	
-	$anonymous_folder= '/afs/cs.unc.edu/home/bartel/email_threads/anonymous_data/'.$id;
-	$private_folder= '/afs/cs.unc.edu/home/bartel/email_threads/private_data/'.$id;
+	$anonymous_folder= '/afs/cs.unc.edu/home/andrewwg/email_threads/anonymous_data/'.$id;
+	$private_folder= '/afs/cs.unc.edu/home/andrewwg/email_threads/private_data/'.$id;
 	
 	if (!file_exists($private_folder)) {
 		mkdir($private_folder, 0777, true);

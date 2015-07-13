@@ -1,9 +1,9 @@
 <html>
 	
-	<?php 
+	<?php
 		$record_id = $_GET['r'];
-		$anonymous_folder= '/afs/cs.unc.edu/home/bartel/email_threads/anonymous_data/'.$record_id;
-		$private_folder= '/afs/cs.unc.edu/home/bartel/email_threads/private_data/'.$record_id;
+		$anonymous_folder= '/afs/cs.unc.edu/home/andrewwg/email_threads/anonymous_data/'.$record_id;
+		$private_folder= '/afs/cs.unc.edu/home/andrewwg/email_threads/private_data/'.$record_id;
 		
 		$messages_file = $anonymous_folder.'/messages.txt';
 		$msgs_exist = file_exists($messages_file);
@@ -279,8 +279,7 @@
 					}
 				?>
 				$.get(dest, function() {
-						alert(message);
-						window.location.reload();
+					window.location.href = rootAddress()+'/php/groups.php?r='+<?php print $record_id?>;
 					});
 			}
 
@@ -449,9 +448,9 @@
             function rootAddress() {
 
                 if(window.location.host.substring(0,9)==="localhost")
-                    return 'https://'+window.location.host+'/web';
+                    return 'http://'+window.location.host+'/web';
                 else if (window.location.host=='wwwx.cs.unc.edu')
-                    return 'https://'+window.location.host+'/~bartel/cgi-bin/emailsampler';
+                    return 'https://'+window.location.host+'/~andrewwg/emailsampler/web';
                 return window.location.host;
             }
 			function submitData() {

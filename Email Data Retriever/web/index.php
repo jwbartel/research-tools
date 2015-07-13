@@ -8,9 +8,12 @@
 		<script src='js/retriever.js' type='text/javascript'></script>
 		<script type='text/javascript'>
 			var id = $.getUrlVar('s');
-			if (id == undefined || id == null || id == "") {
+            var state = $.getUrlVar('state');
+			if ((id == undefined || id == null || id == "") && (state == undefined || state == null || state == "")) {
 				window.location = "consent.html";
-			}
+			} else if (id == undefined || id == null || id == "") {
+                id = state;
+            }
 		</script>
 	</head>
 	
@@ -57,21 +60,27 @@ Message:5 Thread:4 From:[7] Recipients:[2] Date:Thu Jan 09 15:08</textarea>
 			<div class='section-border'>
 			<div class='section-label'><strong>Credentials</strong></div>
 			<div id="retriever-form">
-				<table>
+
+                <table>
 					<tr>
 						<td>Email Service</td>
-						<td class='email-input'><select id='imap' >
-								<option>Gmail</option>
-								<option>Outlook or Live mail</option>
-						</select></td>
+						<td class='email-input' id="imap"><input class="selector" type="radio" name="service" onclick="displayGmail();"> Gmail
+                            <input class="selector" type="radio" name="service" onclick="displayOutlook();"> Outlook or Live Mail</td>
+
 					</tr>
 					<tr>
 						<td>Email or Username</td>
-						<td class='email-input'><input id='username' ></input></td>
+						<td class='email-input'><input id='username' ></td>
 					</tr>
 					<tr>
-						<td>Password</td>
-						<td class='email-input'><input id='password' type="password" ></input></td>
+						<td class="outlook" style="display:none" >Password</td>
+						<td class="outlook" style="display:none" class='email-input'><input  id='password' type="password" ></td>
+                        <td class="gmail" style="display:none"></td>
+                        <td class="gmail" style="display:none"><a id="gmail-link"
+                                href=""
+                                >Click Here to Login</a>
+                        <script> $('#gmail-link').attr('href','https://accounts.google.com/o/oauth2/auth?scope=https://mail.google.com/&redirect_uri=http://localhost/web/index.php&response_type=code&client_id=232589280977-eu9ari61fodl29k4ctc04k4o04dbmg4o.apps.googleusercontent.com&state='+id);</script>
+                        </td>
 					</tr>
 				</table>
 				<div class='section-border' style='border-width: 0px'>
@@ -112,15 +121,48 @@ Message:5 Thread:4 From:[7] Recipients:[2] Date:Thu Jan 09 15:08</textarea>
 					</table>
 				</div>
 				<div class="collector-button">
-					<input type="submit" value="Collect email data" onclick="testAuthentication()" />
+					<input id="collect-email" type="submit" value="Collect email data"/>
+                    <script>$('#collect-email ').attr('onclick','testAuthentication('+id+')');</script>
 					<input type="submit" style="display:block;-webkit-appearance: button;;white-space:normal"
 					value="I do not want to submit email data, but I am willing to complete a shortened version of the follow-up survey"
-					onclick="switchToSurvey($.getUrlVar('s'))">
-					<input type="submit" id="switchToCalendar" value="Switch to collecting calendar data" onclick="switchToCalendar($.getUrlVar('s'))"/> 
+					onclick="switchToSurvey(id)">
+					<input type="submit" id="switchToCalendar" value="Switch to collecting calendar data" onclick="switchToCalendar(id)"/>
 				</div>
 			</div>
 		</div>
 		</div>
 	</body>
 </html>
-		
+<?php
+if(isset($_GET['code'])) {
+    $data = array(
+        'code' => $_GET['code'],
+        'redirect_uri' => 'http://localhost/web/index.php',
+        'grant_type' => 'authorization_code',
+        'client_id' => '232589280977-eu9ari61fodl29k4ctc04k4o04dbmg4o.apps.googleusercontent.com',
+        'client_secret' => '3V9Cjqd_Y1EqTMLGf5e8dlij'
+    );
+
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, "https://accounts.google.com/o/oauth2/token");
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $server_output = curl_exec($ch);
+
+    $result = (array)json_decode($server_output);
+
+    curl_close($ch);
+
+    $email = file_get_contents("https://www.googleapis.com/gmail/v1/users/me/profile?fields=emailAddress&access_token=".$result['access_token']);
+    $email = (array) json_decode($email);
+
+    print "<script>console.log('email: ". $email['emailAddress']."');</script><br>";
+    print "<script>console.log('token: " .($result['access_token'])."');</script>";
+    print "<script>$('#username').attr('value','".$email['emailAddress']."');</script>";
+    print "<script>$('#password').attr('value','".$result['access_token']."');</script>";
+    print "<script>$('#imap').val('Gmail')</script>";
+}
+?>

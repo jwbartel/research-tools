@@ -3,12 +3,9 @@ package retriever.imap;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import javax.mail.Authenticator;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Store;
+import javax.mail.*;
 
+import com.google.code.samples.oauth2.OAuth2Authenticator;
 import retriever.MessageListener;
 
 public class ImapAuthenticator {
@@ -41,13 +38,23 @@ public class ImapAuthenticator {
 		logMessage("Email address:" + email);
 		logMessage("ImapServer:" + imapServer);
 
-		Properties props = System.getProperties();
-		props.setProperty("mail.store.protocol", "imaps");
-		props.setProperty("mail.imap.starttls.enable", "true");
-		Session session = Session.getDefaultInstance(props, null);
-		store = session.getStore("imaps");
-		logMessage(email);
-		store.connect(imapServer, email, password);
+        if (imapServer.equals("imap.gmail.com")) {
+			OAuth2Authenticator.initialize();
+            store = OAuth2Authenticator.connectToImap("imap.gmail.com",
+                    993,
+                    email,
+                    password,
+                    false);
+        } else if (imapServer.equals("outlook.office365.com")) {
+            Properties props = System.getProperties();
+            props.setProperty("mail.store.protocol", "imaps");
+            props.setProperty("mail.imap.starttls.enable", "true");
+            Session session = Session.getDefaultInstance(props, null);
+            store = session.getStore("imaps");
+            logMessage(email);
+            store.connect(imapServer, email, password);
+        }
+
 
 		logMessage("Logged into: " + store.getURLName().toString() + "\n");
 	}

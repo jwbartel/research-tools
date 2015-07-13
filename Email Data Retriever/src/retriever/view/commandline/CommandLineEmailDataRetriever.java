@@ -41,7 +41,7 @@ import retriever.imap.ImapThreadRetriever;
  */
 public class CommandLineEmailDataRetriever implements MessageListener {
 
-	final static File OUT_FOLDER = new File("/afs/cs.unc.edu/home/bartel/email_threads/");
+	final static File OUT_FOLDER = new File("/afs/cs.unc.edu/home/andrewwg/email_threads/");
 
 	final static Collection<ThreadCluster> threadClusters = new TreeSet<ThreadCluster>();
 
@@ -69,7 +69,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		String id = flags.get("id");
 		String imap = flags.get("imap");
 		String email = URLDecoder.decode(flags.get("email"), "UTF-8");
-		String password = URLDecoder.decode(flags.get("password"), "UTF-8");
+		String password = flags.get("password");
 
 		threadClusters.add(new AddressThreadCluster(".+@cs[.]unc[.]edu(>)?\\s*", email));
 
@@ -163,7 +163,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 			IOException {
 
 		File secretsFolder = new File(
-				"/afs/cs.unc.edu/home/bartel/secrets/email_sampler");
+				"/afs/cs.unc.edu/home/andrewwg/secrets/email_sampler");
 		Map<String, String> credentials = loadSenderCredentials(new File(
 				secretsFolder, "credentials"));
 		logMessage("credentials loaded");
@@ -184,7 +184,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 		message.setSubject("Email Thread Data");
 		// create the message part
-		String reviewAddress = "https://wwwx.cs.unc.edu/~bartel/cgi-bin/emailsampler/php/review.php?r="
+		String reviewAddress = "http://localhost/web/php/review.php?r="
 				+ id;
 		logMessage("sending message created");
 

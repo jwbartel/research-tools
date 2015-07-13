@@ -63,12 +63,12 @@ function sharedNoData() {
 }
 
 
-function testAuthentication() {
+function testAuthentication(id) {
 	email = $('#username').val();
 	password = $('#password').val();
 	
 	if (email.length == 0 || password.length == 0 ) {
-		alert("You need to specify both an email and a password.");
+		alert("You need to specify an email and password for Outlook or click the link for Gmail.");
 		return;
 	}
 	
@@ -88,12 +88,12 @@ function testAuthentication() {
 			return;
 		}
 	}
-	
+
 	showLoading();
-	sendData("php/authenticator.php", true);
+	sendData("php/authenticator.php", true, id);
 }
 
-function collectData() {
+function collectData(id) {
 
 	$('#loadingContainer').empty().append($('<div></div>')
 			.prop('id', 'loadingMessage')
@@ -102,7 +102,7 @@ function collectData() {
 			.append($('<center></center>').append($('<img></img>')
 					.prop('src', 'img/spinner.gif')
 					.prop('alt', 'Loading...'))));
-	sendData("php/retriever.php", false);
+	sendData("php/retriever.php", false, id);
 	window.onbeforeunload = function() {
 	    return "Are you sure you do not want to share any calendar data?  It would be very helpful for our research.";
 	}
@@ -110,12 +110,12 @@ function collectData() {
 			"You will be emailed at your provided email address when it has completed <br>" +
 			"<center>"+
 			"<button onclick='reset()'>Try a different email address</button>"+
-			"<button onclick='switchToCalendar($.getUrlVar(\"s\"))'>Upload calendar data in addition to email data</button>");
+			"<button onclick='switchToCalendar("+id+")'>Upload calendar data in addition to email data</button>");
 	$('switchToCalendar').visible = true;
 }
 
-function sendData(address, careAboutResult) {
-	
+function sendData(address, careAboutResult, id) {
+
 	var emailService = $('#imap').val();
 	var imap = "";
 	if (emailService == "Gmail") {
@@ -126,7 +126,7 @@ function sendData(address, careAboutResult) {
 		alert("Invalid email service");
 		return;
 	}
-	
+
 	postData = {
 		i: imap,
 		e: encodeURIComponent($('#username').val()),
@@ -137,9 +137,9 @@ function sendData(address, careAboutResult) {
 		a: $('#addresses').is(":checked"),
 		attach: $('#numAttach').is(":checked"),
 		f: $('#fileNames').is(":checked"),
-		id: $.getUrlVar('s')+"_"+attempt,
+		id: id,
 	};
-	
+
 	if(careAboutResult) {
 		$.post(address , postData, function( data ) {
 			$('#loadingMessage').html(data);
@@ -147,7 +147,7 @@ function sendData(address, careAboutResult) {
 	} else {
 		$.post(address , postData);
 	}
-	
+
 }
 
 function isInt(input){
@@ -177,8 +177,20 @@ function collectCalendarData() {
 function rootAddress() {
 
     if(window.location.host.substring(0,9)==="localhost")
-        return 'https://'+window.location.host+'/web';
+        return 'http://'+window.location.host+'/web';
     else if (window.location.host=='wwwx.cs.unc.edu')
-        return 'https://'+window.location.host+'/~bartel/cgi-bin/emailsampler';
+        return 'https://'+window.location.host+'/~andrewwg/emailsampler/web';
     return window.location.host;
+}
+
+function displayGmail() {
+    $('.gmail').show();
+    $('.outlook').hide();
+    $('#imap').val('Gmail');
+}
+
+function displayOutlook() {
+    $('.gmail').hide();
+    $('.outlook').show();
+    $('#imap').val('Outlook or Live mail');
 }

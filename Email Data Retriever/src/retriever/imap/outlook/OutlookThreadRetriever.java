@@ -60,7 +60,6 @@ public class OutlookThreadRetriever extends ThreadRetriever {
 				sentCount--;
 				System.out.println("Sent message with date: " + currSent.getReceivedDate());
 			}
-			System.out.println((i + 1) + "\n");
 		}
 		return super.retrieveThreads(messages.toArray(), numMessages, numThreads, fetchAttachments);
 	}

@@ -25,7 +25,7 @@ $output = exec('java -jar EmailDataRetriever.jar -onlyCheckLogin'.$javaParamStr)
 if (strcmp($output, 'Login successful') != 0) {
 	print $output;
 }else{
-	print "<script type='text/javascript'>collectData();</script>";
+	print "<script type='text/javascript'>collectData('".$_POST['id']."');</script>";
 	print "<a href='javascript:reset()'>Click here to try a different email address</a>";
 }
 

@@ -1,6 +1,6 @@
 <?php
         $record_id = $_GET['r'];
-        $private_folder= '/afs/cs.unc.edu/home/bartel/email_threads/private_data/'.$record_id;
+        $private_folder= '/afs/cs.unc.edu/home/andrewwg/email_threads/private_data/'.$record_id;
 
         $groups_file = $private_folder.'/groups.txt';
         $groups_exist = file_exists($groups_file);
