@@ -20,6 +20,8 @@ foreach($javaParams as $key => $value) {
 	$javaParamStr .= '-'.$key.' '.$value;
 }
 
-exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' &');
-exec('java -jar "prediction_jars/Email Predictions.jar" '.$javaParams['id']);
+$out = shell_exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' &');
+error_log($out);
+$out = shell_exec('java -jar "prediction_jars/Email Predictions.jar" '.$javaParams['id']);
+error_log($out);
 ?>

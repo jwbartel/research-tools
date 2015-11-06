@@ -79,7 +79,14 @@ Message:5 Thread:4 From:[7] Recipients:[2] Date:Thu Jan 09 15:08</textarea>
                         <td class="gmail" style="display:none"><a id="gmail-link"
                                 href=""
                                 >Click Here to Login</a>
-                        <script> $('#gmail-link').attr('href','https://accounts.google.com/o/oauth2/auth?scope=https://mail.google.com/&redirect_uri=http://localhost/web/index.php&response_type=code&client_id=232589280977-eu9ari61fodl29k4ctc04k4o04dbmg4o.apps.googleusercontent.com&state='+id);</script>
+                        <script>
+							var redirect_url;
+							if(window.location.host==='wwwx.cs.unc.edu') {
+								redirect_url = 'https://wwwx.cs.unc.edu/~andrewwg/emailsampler/web/index.php'
+							} else {
+								redirect_url = 'http://localhost/web/index.php'
+							}
+							$('#gmail-link').attr('href','https://accounts.google.com/o/oauth2/auth?scope=https://mail.google.com/&redirect_uri='+redirect_url+'&response_type=code&client_id=232589280977-eu9ari61fodl29k4ctc04k4o04dbmg4o.apps.googleusercontent.com&state='+id);</script>
                         </td>
 					</tr>
 				</table>
@@ -134,10 +141,19 @@ Message:5 Thread:4 From:[7] Recipients:[2] Date:Thu Jan 09 15:08</textarea>
 	</body>
 </html>
 <?php
+function rootAddress () {
+	if  (strncmp($_SERVER['HTTP_HOST'], 'localhost',9)==0)
+		return 'http://'.$_SERVER['HTTP_HOST'].'/web';
+	elseif (strcmp($_SERVER['HTTP_HOST'],'wwwx.cs.unc.edu')==0)
+		return 'https://'.$_SERVER['HTTP_HOST'].'/~andrewwg/emailsampler/web';
+	return $_SERVER['HTTP_HOST'];
+}
+
 if(isset($_GET['code'])) {
+	rootAddress();
     $data = array(
         'code' => $_GET['code'],
-        'redirect_uri' => 'http://localhost/web/index.php',
+        'redirect_uri' => rootAddress().'/index.php',
         'grant_type' => 'authorization_code',
         'client_id' => '232589280977-eu9ari61fodl29k4ctc04k4o04dbmg4o.apps.googleusercontent.com',
         'client_secret' => '3V9Cjqd_Y1EqTMLGf5e8dlij'

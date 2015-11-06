@@ -19,10 +19,9 @@ foreach($javaParams as $key => $value) {
 	$javaParamStr .= ' ';
 	$javaParamStr .= '-'.$key.' '.$value;
 }
-
 $output = exec('java -jar EmailDataRetriever.jar -onlyCheckLogin'.$javaParamStr);
-
 if (strcmp($output, 'Login successful') != 0) {
+	error_log( $output);
 	print $output;
 }else{
 	print "<script type='text/javascript'>collectData('".$_POST['id']."');</script>";

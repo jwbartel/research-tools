@@ -83,7 +83,7 @@ function testAuthentication(id) {
 	if (sharedNoData()) {
 		shouldUseNoData = confirm('Are you sure you do not want to contribute any data about subjects, email, or attachments? '+
 				' It would greatly benefit our research.\n'+
-				'If you would like to go back to share this data, please kick cancel below.')
+				'If you would like to go back to share this data, please click cancel below.')
 		if (!shouldUseNoData) {
 			return;
 		}
