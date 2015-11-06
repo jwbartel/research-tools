@@ -184,8 +184,10 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 		message.setSubject("Email Thread Data");
 		// create the message part
-		String reviewAddress = "http://localhost/web/php/review.php?r="
+		String sendingServer = credentials.get("this server").trim();
+		String reviewAddress = sendingServer+"/web/php/review.php?r="
 				+ id;
+		System.out.println(reviewAddress);
 		logMessage("sending message created");
 
 		// fill message
@@ -226,6 +228,8 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 				loadedCredentials.put("from email", line.substring(line.indexOf(':') + 1));
 			} else if (line.startsWith("password:")) {
 				loadedCredentials.put("password", line.substring(line.indexOf(':') + 1));
+			} else if (line.startsWith("this server:")) {
+				loadedCredentials.put("this server", line.substring(line.indexOf(':') + 1));
 			}
 
 			line = in.readLine();

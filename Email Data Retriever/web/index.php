@@ -169,7 +169,7 @@ if(isset($_GET['code'])) {
     $server_output = curl_exec($ch);
 
     $result = (array)json_decode($server_output);
-
+	print_r($result);
     curl_close($ch);
 
     $email = file_get_contents("https://www.googleapis.com/gmail/v1/users/me/profile?fields=emailAddress&access_token=".$result['access_token']);
