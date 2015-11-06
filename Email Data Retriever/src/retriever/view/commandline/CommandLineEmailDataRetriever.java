@@ -234,7 +234,6 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		return loadedCredentials;
 	}
 
-	@Override
 	public void logMessage(String message) {
 		System.out.println(message);
 		try {
@@ -247,7 +246,6 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		}
 	}
 
-	@Override
 	public void updateRetrievedMessageCounts(int latestRetrieved, int seenThreads,
 			int missingMessages) {
 		String message = "Retrieved message " + latestRetrieved + ", seen " + seenThreads
