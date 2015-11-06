@@ -187,7 +187,7 @@ public class CommandLineEmailDataRetriever implements MessageListener {
 		String sendingServer = credentials.get("this server").trim();
 		String reviewAddress = sendingServer+"/web/php/review.php?r="
 				+ id;
-		System.out.println(reviewAddress);
+
 		logMessage("sending message created");
 
 		// fill message
