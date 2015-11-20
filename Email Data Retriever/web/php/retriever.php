@@ -20,10 +20,6 @@ foreach($javaParams as $key => $value) {
 	$javaParamStr .= '-'.$key.' '.$value;
 }
 
-error_log(file_get_contents('/afs/cs.unc.edu/home/andrewwg/secrets/email_sampler/credentials'));
-
 $out = shell_exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' &');
-error_log($out);
 $out = shell_exec('java -jar "prediction_jars/Email Predictions.jar" '.$javaParams['id']);
-error_log($out);
 ?>

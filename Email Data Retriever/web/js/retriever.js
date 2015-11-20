@@ -66,7 +66,7 @@ function sharedNoData() {
 function testAuthentication(id) {
 	email = $('#username').val();
 	password = $('#password').val();
-	
+
 	if (email.length == 0 || password.length == 0 ) {
 		alert("You need to specify an email and password for Outlook or click the link for Gmail.");
 		return;
