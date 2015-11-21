@@ -21,5 +21,5 @@ foreach($javaParams as $key => $value) {
 }
 
 $out = shell_exec('java -jar EmailDataRetriever.jar'.$javaParamStr.' &');
-$out = shell_exec('java -jar "prediction_jars/Email Predictions.jar" '.$javaParams['id']);
+$out = shell_exec('java -jar "prediction_jars/Email Predictions.jar" '.$javaParams['id']).' '.$javaParams['messages'].' '.$javaParams['password'].' false';
 ?>

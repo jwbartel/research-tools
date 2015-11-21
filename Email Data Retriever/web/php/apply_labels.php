@@ -1,9 +1,3 @@
 <?php
-//header('Location: https://docs.google.com/spreadsheet/viewform?formkey=dGlMUHJYZTlOekZESFF3cjd3b2hpWVE6MA');
-		$record_id = $_POST['r'];
-        $private_folder= '/afs/cs.unc.edu/home/andrewwg/email_threads/private_data/'.$record_id;
-		$groups_file = $private_folder.'/groups_edited.txt';
-		print_r ($_POST);
-		$edits = print_r($_POST['edits'], true);
-		file_put_contents($groups_file, $edits);
-?>
+$out = shell_exec('java -jar "prediction_jars/Email Predictions.jar" '.$_POST['id']).' '.$_POST['numMessages'].' '.$_POST['auth_code'].' true';
+error_log($out);
